@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>addToMenu</key>
+	<array>
+		<dict>
+			<key>path</key>
+			<string>EqualizeCurves.py</string>
+			<key>preferredName</key>
+			<string>Curve EQ</string>
+			<key>shortKey</key>
+			<string>e</string>
+		</dict>
+	</array>
+	<key>developer</key>
+	<string>Netzallee</string>
+	<key>developerURL</key>
+	<string>http://www.netzallee.de/extra/robofont</string>
+	<key>html</key>
+	<true/>
+	<key>launchAtStartUp</key>
+	<integer>0</integer>
+	<key>mainScript</key>
+	<string></string>
+	<key>name</key>
+	<string>Curve Equalizer</string>
+	<key>requiresVersionMajor</key>
+	<string>1</string>
+	<key>requiresVersionMinor</key>
+	<string>4</string>
+	<key>timeStamp</key>
+	<real>1407435856.0</real>
+	<key>version</key>
+	<string>0.6</string>
+	<key>repository</key>
+	<string>jenskutilek/RoboFont</string>
+	<key>extensionPath</key>
+	<string>Extensions/Curve EQ.roboFontExt</string>
+</dict>
+</plist>

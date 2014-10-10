@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Curve Equalizer Help</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<style type="text/css">
+			table {
+				border-collapse: collapse;
+			}
+			th, td {
+				text-align: left;
+				vertical-align: top;
+				font-weight: normal;
+				padding: 0.3em 0.5em;
+			}
+			th {
+				border-bottom: 1px solid #000;
+				font-weight: bold;
+			}
+			td {
+				border-top: 1px solid #404040;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Curve Equalizer</h1>
+		<p>Curve Equalizer helps you quickly balance the Bézier handles of a curve, or adjust the curvature to a fixed amount.</p>
+		<h2>Interface</h2>
+		<p><img src="dialog.png" width="214" height="212" alt=""></p>
+		<p>Select the curve adjustment method.</p>
+		<table>
+			<tr>
+				<th>Method</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Circle</td>
+				<td>The result is similar to what FontLab Studio 5 does when you alt-shift-click a curve segment. If the triangle between the first and last point of the segment is rectangular with two 45° angles, the result will approximate a quarter circle.</td>
+			</tr>
+			<tr>
+				<td>Rule of thirds</td>
+				<td>The resulting handles and the line between the two handles will each be nearly equal in length.</td>
+			</tr>
+			<tr>
+				<td>TT (experimental)</td>
+				<td>Change the curve so it is well suited for conversion to a quadratic (TrueType) Bézier curve. Don’t use this, the results are terrible at the moment.</td>
+			</tr>
+			<tr>
+				<td>Adjust</td>
+				<td>Select the desired curvature from the horizontal radio buttons. The first will result in the same curve as the «Circle» method. The other buttons gradually add more curvature.</td>
+			</tr>
+			<tr>
+				<td>Adjust free</td>
+				<td>Change the curvature interactively using the slider. This is particularly useful if you want to keep the current curvature, but balance the handles.</td>
+			</tr>
+			<tr>
+				<td>Hobby</td>
+				<td>Change the tension of the curves. This uses the spline algorithm by John D. Hobby, which is also used by Metafont to create harmonic curves.</td>
+			</tr>
+		</table>
+		<p>Click the «Equalize selected» button to apply the adjustment to the selected curves in the current glyph window.</p>
+		<h2>Known Issues</h2>
+		<p>If the angle between the Bézier handles is less than 45°, or the handles are on different sides of the curve, the curvature can’t be changed. This is not a bug. Check the Output Window for messages.</p>
+		<p>The modified curves preview is not visible while you hold the Preview keyboard shortcut.</p>
+		<p>The «TT (experimental)» method is just that.</p>
+		<h2>Geometry</h2>
+		<p>These are my notes from which I derived the trigonometry at work:</p>
+		<p><img src="geometry.jpg" width="370" height="305" alt=""></p>
+		<hr>
+		<p>Curve Equalizer is © 2013 by Jens Kutilek.</p>
+		<p>The Hobby Spline code was sent in by Simon Egli with contributions by Juraj Sukop and Lasse Fister.</p>
+	</body>
+</html>
