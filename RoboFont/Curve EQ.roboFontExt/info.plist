@@ -30,12 +30,12 @@
 	<key>requiresVersionMinor</key>
 	<string>4</string>
 	<key>timeStamp</key>
-	<real>1407435856.0</real>
+	<real>1412957514.0</real>
 	<key>version</key>
-	<string>0.6</string>
+	<string>0.7</string>
 	<key>repository</key>
-	<string>jenskutilek/RoboFont</string>
+	<string>jenskutilek/Curve-Equalizer</string>
 	<key>extensionPath</key>
-	<string>Extensions/Curve EQ.roboFontExt</string>
+	<string>RoboFont/Curve EQ.roboFontExt</string>
 </dict>
 </plist>
