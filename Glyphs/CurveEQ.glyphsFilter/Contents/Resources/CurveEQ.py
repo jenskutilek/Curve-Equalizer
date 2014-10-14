@@ -13,6 +13,8 @@ if not path in sys.path:
 
 import GlyphsApp
 
+from eqmath import BaseCurveEqualizer
+
 """
 	Using Interface Builder (IB):
 	
@@ -58,6 +60,11 @@ class CurveEQ ( GSFilterPlugin ):
 	modeSelect = objc.IBOutlet()
 	adjustSlider = objc.IBOutlet()
 	hobbySlider = objc.IBOutlet()
+	quadraticSlider = objc.IBOutlet()
+	freeAdjustMin = objc.IBOutlet()
+	freeAdjustMax = objc.IBOutlet()
+	tensionMin = objc.IBOutlet()
+	tensionMax = objc.IBOutlet()
 	
 	def init( self ):
 		"""
@@ -66,6 +73,7 @@ class CurveEQ ( GSFilterPlugin ):
 		In that case, don't forget to import random at the top of this file.
 		"""
 		try:
+			self.eq = BaseCurveEqualizer()
 			NSBundle.loadNibNamed_owner_( "CurveEQ", self )
 			return self
 		except Exception as e:
@@ -97,7 +105,7 @@ class CurveEQ ( GSFilterPlugin ):
 		Use something descriptive like 'Move', 'Rotate', or at least 'Apply'.
 		"""
 		try:
-			return "Apply"
+			return "Equalize selected"
 		except Exception as e:
 			self.logToConsole( "actionName: %s" % str(e) )
 	
@@ -227,8 +235,9 @@ class CurveEQ ( GSFilterPlugin ):
 			
 		print "__selectMode_", sender, sender.selectedRow()
 		try:
-			self.adjustSlider.setHidden_(sender.selectedRow() != 3)
-			self.hobbySlider.setHidden_(sender.selectedRow() != 4)
+			self.adjustSlider.setEnabled_(sender.selectedRow() == 0)
+			self.hobbySlider.setEnabled_(sender.selectedRow() == 1)
+			self.quadraticSlider.setEnabled_(sender.selectedRow() == 3)
 			return
 			
 			myValue = sender.floatValue()
