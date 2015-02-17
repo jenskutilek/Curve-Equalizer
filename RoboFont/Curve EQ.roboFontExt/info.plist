@@ -14,9 +14,9 @@
 		</dict>
 	</array>
 	<key>developer</key>
-	<string>Netzallee</string>
+	<string>Jens Kutilek</string>
 	<key>developerURL</key>
-	<string>http://www.netzallee.de/extra/robofont</string>
+	<string>http://www.kutilek.de</string>
 	<key>html</key>
 	<true/>
 	<key>launchAtStartUp</key>
@@ -30,12 +30,13 @@
 	<key>requiresVersionMinor</key>
 	<string>4</string>
 	<key>timeStamp</key>
-	<real>1412957514.0</real>
+	<real>1424192749.0</real>
 	<key>version</key>
-	<string>0.7</string>
-	<key>repository</key>
-	<string>jenskutilek/Curve-Equalizer</string>
-	<key>extensionPath</key>
-	<string>RoboFont/Curve EQ.roboFontExt</string>
+	<string>0.7.2</string>
+	<key>com.robofontmechanic.Mechanic</key>
+	<dict>
+		<key>repository</key>
+		<string>jenskutilek/Curve-Equalizer</string>
+	</dict>
 </dict>
 </plist>

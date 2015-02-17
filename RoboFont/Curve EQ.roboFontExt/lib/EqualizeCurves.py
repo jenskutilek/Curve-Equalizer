@@ -17,7 +17,7 @@ Version history:
     Juraj Sukop, Lasse Fister, Simon Egli
     http://metapolator.com
 
-http://www.netzallee.de/extra/robofont
+http://www.kutilek.de/
 """
 
 import vanilla
@@ -36,7 +36,7 @@ from mojo.UI import UpdateCurrentGlyphView
 from mojo.events import addObserver, removeObserver
 from mojo.drawingTools import drawGlyph, save, restore, stroke, fill, strokeWidth
 
-extensionID = "de.netzallee.curveEQ"
+extensionID = "de.kutilek.curveEQ"
 
 
 # helper functions
@@ -264,7 +264,7 @@ class CurveEqualizer(BaseWindowController):
     
     def _curvePreview(self, info):
         _doodle_glyph = info["glyph"]
-        if _doodle_glyph is not None and len(_doodle_glyph.components) == 0 and _doodle_glyph.selection != []:
+        if CurrentGlyph() is not None and _doodle_glyph is not None and len(_doodle_glyph.components) == 0 and _doodle_glyph.selection != []:
             self.tmp_glyph.clear()
             self.tmp_glyph.appendGlyph(_doodle_glyph)
             self._eqSelected()
