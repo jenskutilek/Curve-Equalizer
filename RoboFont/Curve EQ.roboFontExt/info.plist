@@ -16,7 +16,7 @@
 	<key>developer</key>
 	<string>Jens Kutilek</string>
 	<key>developerURL</key>
-	<string>http://www.kutilek.de</string>
+	<string>http://www.kutilek.de/</string>
 	<key>html</key>
 	<true/>
 	<key>launchAtStartUp</key>
@@ -28,11 +28,11 @@
 	<key>requiresVersionMajor</key>
 	<string>1</string>
 	<key>requiresVersionMinor</key>
-	<string>4</string>
+	<string>6</string>
 	<key>timeStamp</key>
-	<real>1424192749.0</real>
+	<real>1448972038.0</real>
 	<key>version</key>
-	<string>0.7.2</string>
+	<string>0.8.0</string>
 	<key>com.robofontmechanic.Mechanic</key>
 	<dict>
 		<key>repository</key>
