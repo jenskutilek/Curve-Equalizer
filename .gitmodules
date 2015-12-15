@@ -1,0 +1,3 @@
+[submodule "RoboFont/Curve EQ.roboFontExt/lib/externals/jkRFExtensionSettings"]
+	path = RoboFont/Curve EQ.roboFontExt/lib/externals/jkRFExtensionSettings
+	url = https://github.com/jenskutilek/jkRFExtensionSettings
