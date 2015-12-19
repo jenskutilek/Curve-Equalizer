@@ -1,0 +1,1 @@
+extensionID = "de.kutilek.curveEQ"
