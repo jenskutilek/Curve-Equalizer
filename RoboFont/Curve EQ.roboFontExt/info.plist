@@ -12,14 +12,6 @@
 			<key>shortKey</key>
 			<string>e</string>
 		</dict>
-		<dict>
-			<key>path</key>
-			<string>Settings.py</string>
-			<key>preferredName</key>
-			<string>Settings...</string>
-			<key>shortKey</key>
-			<string></string>
-		</dict>
 	</array>
 	<key>developer</key>
 	<string>Jens Kutilek</string>
@@ -38,9 +30,9 @@
 	<key>requiresVersionMinor</key>
 	<string>6</string>
 	<key>timeStamp</key>
-	<real>1450531357.0</real>
+	<real>1450728829.0</real>
 	<key>version</key>
-	<string>0.9.0</string>
+	<string>0.9.1</string>
 	<key>com.robofontmechanic.Mechanic</key>
 	<dict>
 		<key>repository</key>
