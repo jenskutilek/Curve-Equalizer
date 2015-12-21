@@ -3,7 +3,7 @@ Curve Equalizer
 
 An extension for the RoboFont editor
 
-Requires RoboFont 1.5.1
+Requires RoboFont 1.6
 
 Version history:
 0.1 by Jens Kutilek 2013-02-13
@@ -19,6 +19,7 @@ Version history:
 
 0.8 by Jens Kutilek 2015-11-29
 0.9 by Jens Kutilek 2015-12-15 - Completely refactored
+0.9.1 by Jens Kutilek 2015-12-21
 
 http://www.kutilek.de/
 """

@@ -28,9 +28,9 @@
 	<key>html</key>
 	<true/>
 	<key>launchAtStartUp</key>
-	<integer>0</integer>
+	<integer>1</integer>
 	<key>mainScript</key>
-	<string></string>
+	<string>send.py</string>
 	<key>name</key>
 	<string>Curve Equalizer</string>
 	<key>requiresVersionMajor</key>
@@ -38,9 +38,9 @@
 	<key>requiresVersionMinor</key>
 	<string>6</string>
 	<key>timeStamp</key>
-	<real>1450531357.0</real>
+	<real>1450726041.0</real>
 	<key>version</key>
-	<string>0.9.0</string>
+	<string>0.9.1</string>
 	<key>com.robofontmechanic.Mechanic</key>
 	<dict>
 		<key>repository</key>
