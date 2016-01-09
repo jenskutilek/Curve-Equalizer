@@ -20,6 +20,7 @@ Version history:
 0.8 by Jens Kutilek 2015-11-29
 0.9 by Jens Kutilek 2015-12-15 - Completely refactored
 0.9.1 by Jens Kutilek 2015-12-21
+0.9.2 by Jens Kutilek 2016-01-09
 
 http://www.kutilek.de/
 """
@@ -316,11 +317,7 @@ class CurveEqualizer(BaseWindowController):
                 stroke(0, 0, 0, 0.5)
                 fill(None)
                 strokeWidth(info["scale"])
-                if roboFontVersion > "1.7":
-                    # FIXME: Hack to make preview work in RF 1.7
-                    drawGlyph(self.tmp_glyph.copy())
-                else:
-                    drawGlyph(self.tmp_glyph)
+                drawGlyph(self.tmp_glyph)
                 restore()
             if self.drawGeometry:
                 self._drawGeometry()
