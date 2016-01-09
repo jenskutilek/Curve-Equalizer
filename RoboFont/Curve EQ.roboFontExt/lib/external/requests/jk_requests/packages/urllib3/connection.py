@@ -257,14 +257,14 @@ class VerifiedHTTPSConnection(HTTPSConnection):
         elif resolved_cert_reqs != ssl.CERT_NONE \
                 and self.assert_hostname is not False:
             cert = self.sock.getpeercert()
-            if not cert.get('subjectAltName', ()):
-                warnings.warn((
-                    'Certificate for {0} has no `subjectAltName`, falling back to check for a '
-                    '`commonName` for now. This feature is being removed by major browsers and '
-                    'deprecated by RFC 2818. (See https://github.com/shazow/urllib3/issues/497 '
-                    'for details.)'.format(hostname)),
-                    SubjectAltNameWarning
-                )
+            #if not cert.get('subjectAltName', ()):
+            #    warnings.warn((
+            #        'Certificate for {0} has no `subjectAltName`, falling back to check for a '
+            #        '`commonName` for now. This feature is being removed by major browsers and '
+            #        'deprecated by RFC 2818. (See https://github.com/shazow/urllib3/issues/497 '
+            #        'for details.)'.format(hostname)),
+            #        SubjectAltNameWarning
+            #    )
 
             # In case the hostname is an IPv6 address, strip the square
             # brackets from it before using it to validate. This is because

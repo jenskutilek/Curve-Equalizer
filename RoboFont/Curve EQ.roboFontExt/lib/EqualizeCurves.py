@@ -21,6 +21,7 @@ Version history:
 0.9 by Jens Kutilek 2015-12-15 - Completely refactored
 0.9.1 by Jens Kutilek 2015-12-21
 0.9.2 by Jens Kutilek 2016-01-09
+1.0 by Jens Kutilek 2015-12
 
 http://www.kutilek.de/
 """
