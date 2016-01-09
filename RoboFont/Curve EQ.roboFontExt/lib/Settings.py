@@ -3,8 +3,8 @@ from EQExtensionID import extensionID
 
 # Make jkRFExtensionSettings importable
 from os.path import dirname, join
-from sys.path import append
-append(join(dirname(__file__), "externals", "jkRFExtensionSettings", "lib"))
+import sys
+sys.path.append(join(dirname(__file__), "external", "jkRFExtensionSettings", "lib"))
 
 from jkRFExtensionSettings.SettingsWindow import SettingsWindow
 
