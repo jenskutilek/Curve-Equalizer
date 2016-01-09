@@ -26,7 +26,7 @@
 		<h1>Curve Equalizer</h1>
 		<p>Curve Equalizer helps you quickly balance the Bézier handles of a curve, or adjust the curvature to a fixed amount.</p>
 		<h2>Interface</h2>
-		<p><img src="dialog.png" width="214" height="212" alt=""></p>
+		<p><img src="dialog.png" width="230" height="234" alt=""></p>
 		<p>Select the curve adjustment method.</p>
 		<table>
 			<tr>
@@ -41,9 +41,13 @@
 				<td>Rule of thirds</td>
 				<td>The resulting handles and the line between the two handles will each be nearly equal in length.</td>
 			</tr>
-			<tr>
+			<!--<tr>
 				<td>TT (experimental)</td>
 				<td>Change the curve so it is well suited for conversion to a quadratic (TrueType) Bézier curve. Don’t use this, the results are terrible at the moment.</td>
+			</tr>-->
+			<tr>
+				<td>Balance handles</td>
+				<td>The curvature is not changed, only the length of the handles is distributed evenly between the in- and outgoing handle. This is similar to the «Tunnifier» script by Eduardo Tunni.</td>
 			</tr>
 			<tr>
 				<td>Adjust</td>
@@ -59,13 +63,18 @@
 			</tr>
 		</table>
 		<p>Click the «Equalize selected» button to apply the adjustment to the selected curves in the current glyph window.</p>
+		<p>Tip: you can make the window larger, this will give you longer sliders and thus more precision.</p>
 		<h2>Known Issues</h2>
-		<p>If the angle between the Bézier handles is less than 45°, or the handles are on different sides of the curve, the curvature can’t be changed. This is not a bug. Check the Output Window for messages.</p>
+		<p>If the angle between the Bézier handles is less than 45°, or the handles are on different sides of the curve, the curvature can’t be changed. This is not a bug.</p>
 		<p>The modified curves preview is not visible while you hold the Preview keyboard shortcut.</p>
-		<p>The «TT (experimental)» method is just that.</p>
 		<h2>Geometry</h2>
 		<p>These are my notes from which I derived the trigonometry at work:</p>
 		<p><img src="geometry.jpg" width="370" height="305" alt=""></p>
+		<h2>Privacy Policy</h2>
+		<p>Curve Equalizer collects usage data and sends it to the host <tt>ws.kutilek.de</tt>. This data is not shared with anyone and is used strictly for development and debugging purposes of Curve Equalizer.</p>
+		<p>Basically, I would like to find out which EQ method is used how often.</p>
+		<p>The data that is recorded consists of the extension ID, a persistent user ID which is generated randomly on the first run of Curve Equalizer, the timestamp for start and end of a Curve Equalizer session, the timestamp and selected EQ method when you click «Equalize selected», the timestamp and selected option when you change any setting, the path of the Curve Equalizer script on your computer, the status and timestamp of the last communication with the server, and the timestamp of the next scheduled communication.</p>
+		<p>The collected data is sent to the server through a secure connection about once per day.</p>
 		<hr>
 		<p>Curve Equalizer is © 2013 by Jens Kutilek.</p>
 		<p>The Hobby Spline code was sent in by Simon Egli with contributions by Juraj Sukop and Lasse Fister.</p>
