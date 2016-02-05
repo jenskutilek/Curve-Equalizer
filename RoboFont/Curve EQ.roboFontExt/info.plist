@@ -37,6 +37,8 @@
 	<dict>
 		<key>repository</key>
 		<string>jenskutilek/Curve-Equalizer</string>
+		<key>summary</key>
+		<string>A panel to adjust and balance curve handles.</string>
 	</dict>
 </dict>
 </plist>
