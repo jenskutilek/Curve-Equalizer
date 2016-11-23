@@ -12,14 +12,6 @@
 			<key>shortKey</key>
 			<string>e</string>
 		</dict>
-		<dict>
-			<key>path</key>
-			<string>Settings.py</string>
-			<key>preferredName</key>
-			<string>Settings...</string>
-			<key>shortKey</key>
-			<string></string>
-		</dict>
 	</array>
 	<key>developer</key>
 	<string>Jens Kutilek</string>
@@ -28,9 +20,9 @@
 	<key>html</key>
 	<true/>
 	<key>launchAtStartUp</key>
-	<integer>1</integer>
+	<integer>0</integer>
 	<key>mainScript</key>
-	<string>send.py</string>
+	<string></string>
 	<key>name</key>
 	<string>Curve Equalizer</string>
 	<key>requiresVersionMajor</key>
@@ -38,13 +30,15 @@
 	<key>requiresVersionMinor</key>
 	<string>6</string>
 	<key>timeStamp</key>
-	<real>1452344490.0</real>
+	<real>1450728829.0</real>
 	<key>version</key>
-	<string>1.0.0</string>
+	<string>0.9.1</string>
 	<key>com.robofontmechanic.Mechanic</key>
 	<dict>
 		<key>repository</key>
 		<string>jenskutilek/Curve-Equalizer</string>
+		<key>summary</key>
+		<string>A panel to adjust and balance curve handles.</string>
 	</dict>
 </dict>
 </plist>
