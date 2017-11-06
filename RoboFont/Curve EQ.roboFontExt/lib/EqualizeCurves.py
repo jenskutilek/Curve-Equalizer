@@ -264,9 +264,9 @@ class CurveEqualizer(BaseWindowController):
                                     
                                     #alpha, beta, gamma = getTriangleAngles(p0, p1, p2, p3)
                                     a, b, c = getTriangleSides(p0, p1, p2, p3)
-                                    line(p0.x, p0.y, p0.x + (c+5) * cos(alpha), p0.y + (c+5) * sin(alpha))
-                                    line(p3.x, p3.y, p3.x + (a+5) * cos(beta) , p3.y + (a+5) * sin(beta) )
-                                    line(p0.x, p0.y, p3.x, p3.y)
+                                    line((p0.x, p0.y), (p0.x + (c+5) * cos(alpha), p0.y + (c+5) * sin(alpha)))
+                                    line((p3.x, p3.y), (p3.x + (a+5) * cos(beta) , p3.y + (a+5) * sin(beta) ))
+                                    line((p0.x, p0.y), (p3.x, p3.y))
                                     
                                     #line(p1, p2)
                                     #line(p2, p3)
@@ -293,8 +293,8 @@ class CurveEqualizer(BaseWindowController):
                         for p in segment.points[0:2]:
                             x = p.x
                             y = p.y
-                            line(x-l, y-l, x+l, y+l)
-                            line(x-l, y+l, x+l, y-l)
+                            line((x-l, y-l), (x+l, y+l))
+                            line((x-l, y+l), (x+l, y-l))
             restore()      
     
     def _curvePreview(self, info):
@@ -362,7 +362,10 @@ class CurveEqualizer(BaseWindowController):
                                 p1.round()
                                 p2.round()
             if sender is not None:
-                reference_glyph.update()
+                if roboFontVersion > "2.0b":
+                    reference_glyph.changed()
+                else:
+                    reference_glyph.update()
                 reference_glyph.performUndo()    
 
 if __name__ == "__main__":
