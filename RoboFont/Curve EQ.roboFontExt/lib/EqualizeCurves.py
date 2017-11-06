@@ -240,13 +240,13 @@ class CurveEqualizer(BaseWindowController):
             self.w.eqCurvatureSlider.enable(False)
             self.w.eqHobbyTensionSlider.enable(False)
     
-    def _drawGeometry(self):
+    def _drawGeometry(self, info):
         reference_glyph = CurrentGlyph()
         #rect(0, 0, 200, 100)
         #rect(0, 0, self.w.eqCurvatureSlider.get() * 200, 100)
                         
         stroke(0.5, 0.6, 0.9, 0.8)
-        strokeWidth(3)
+        strokeWidth(0.8 * info["scale"])
         if reference_glyph.selection != []:
             for contourIndex in range(len(reference_glyph.contours)):
                 reference_contour = reference_glyph.contours[contourIndex]
@@ -315,7 +315,7 @@ class CurveEqualizer(BaseWindowController):
                 drawGlyph(self.tmp_glyph)
                 restore()
             if self.drawGeometry:
-                self._drawGeometry()
+                self._drawGeometry(info)
             if self.previewHandles:
                 self._handlesPreview(info)
     
