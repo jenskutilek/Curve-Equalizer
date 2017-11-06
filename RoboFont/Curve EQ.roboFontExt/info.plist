@@ -29,6 +29,8 @@
 	<true/>
 	<key>launchAtStartUp</key>
 	<integer>0</integer>
+	<key>mainScript</key>
+	<string>EqualizeCurves.py</string>
 	<key>name</key>
 	<string>Curve Equalizer</string>
 	<key>requiresVersionMajor</key>
