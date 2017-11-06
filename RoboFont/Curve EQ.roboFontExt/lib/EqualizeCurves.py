@@ -38,7 +38,6 @@ from mojo.UI import UpdateCurrentGlyphView
 from mojo.events import addObserver, removeObserver
 from mojo.drawingTools import drawGlyph, fill, line, oval, rect, restore, save, stroke, strokeWidth
 
-from Analytics import Analytics
 from EQExtensionID import extensionID
 from EQMethods import *
 from EQMethods.geometry import getTriangleSides, isOnLeft, isOnRight
@@ -151,10 +150,6 @@ class CurveEqualizer(BaseWindowController):
         self._setPreviewOptions()
         self.drawGeometry = getExtensionDefault("%s.%s" %(extensionID, "drawGeometry"), False)
         
-        # Load analytics
-        self.analytics = Analytics()
-        self.analytics.start_session()
-        
         addObserver(self, "_curvePreview", "draw")
         addObserver(self, "_curvePreview", "drawInactive")
         addObserver(self, "_currentGlyphChanged", "currentGlyphChanged")
@@ -223,7 +218,6 @@ class CurveEqualizer(BaseWindowController):
         setExtensionDefault("%s.%s" % (extensionID, "curvature"), self.w.eqCurvatureSelector.get())
         setExtensionDefault("%s.%s" % (extensionID, "curvatureFree"), self.w.eqCurvatureSlider.get())
         setExtensionDefault("%s.%s" % (extensionID, "tension"), self.w.eqHobbyTensionSlider.get())
-        self.analytics.save()
         super(CurveEqualizer, self).windowCloseCallback(sender)
         UpdateCurrentGlyphView()
     
@@ -336,7 +330,6 @@ class CurveEqualizer(BaseWindowController):
             else:
                 modify_glyph = reference_glyph
                 reference_glyph.prepareUndo(undoTitle="Equalize curve in /%s" % reference_glyph.name)
-                self.analytics.log(self.method)
             for contourIndex in range(len(reference_glyph.contours)):
                 reference_contour = reference_glyph.contours[contourIndex]
                 modify_contour = modify_glyph.contours[contourIndex]
