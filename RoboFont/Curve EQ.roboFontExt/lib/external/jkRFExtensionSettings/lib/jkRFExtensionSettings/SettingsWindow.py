@@ -1,3 +1,4 @@
+from __future__ import division, print_function
 from defconAppKit.windows.baseWindow import BaseWindowController
 from mojo.extensions import getExtensionDefault, setExtensionDefault
 import vanilla
@@ -35,7 +36,7 @@ class SettingsWindow(BaseWindowController):
     
     def _save_settings(self):
         for settings_key, setting in self.settings.iteritems():
-            #print "Saving", "%s.%s" % (self._extension_id, settings_key), setting.value, setting.ui_object
+            #print("Saving", "%s.%s" % (self._extension_id, settings_key), setting.value, setting.ui_object)
             setExtensionDefault("%s.%s" % (self._extension_id, settings_key), setting.value)
     
     def _build_ui(self):

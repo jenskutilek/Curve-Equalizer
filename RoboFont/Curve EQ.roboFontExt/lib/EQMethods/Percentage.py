@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 from math import atan2
-from geometry import getNewCoordinates, getTriangleSides, isOnLeft, isOnRight
+from .geometry import getNewCoordinates, getTriangleSides, isOnLeft, isOnRight
 
 def eqPercentage(p0, p1, p2, p3, curvature=0.552):
     # check angles of the bcps

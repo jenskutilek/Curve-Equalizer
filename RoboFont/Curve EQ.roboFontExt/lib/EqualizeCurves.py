@@ -1,3 +1,4 @@
+from __future__ import division, print_function
 """
 Curve Equalizer
 
@@ -21,7 +22,8 @@ Version history:
 0.9 by Jens Kutilek 2015-12-15 - Completely refactored
 0.9.1 by Jens Kutilek 2015-12-21
 0.9.2 by Jens Kutilek 2016-01-09
-1.0 by Jens Kutilek 2015-12
+1.0 by Jens Kutilek 2016-12
+1.1.0 by Jens Kutilek 2018-01-10
 
 http://www.kutilek.de/
 """
@@ -206,7 +208,7 @@ class CurveEqualizer(BaseWindowController):
         #else:
         #    self.tmp_glyph.clear()
         #    self.tmp_glyph.appendGlyph(new_glyph)
-        #print "Updated tmp_glyph: ", new_glyph
+        #print("Updated tmp_glyph: ", new_glyph)
         UpdateCurrentGlyphView()
     
     def windowCloseCallback(self, sender):
@@ -357,12 +359,12 @@ class CurveEqualizer(BaseWindowController):
                             elif self.method == "hobby":
                                 p1, p2 = eqSpline(p0, p1, p2, p3, self.tension)
                             else:
-                                print "WARNING: Unknown equalize method: %s" % self.method
+                                print("WARNING: Unknown equalize method: %s" % self.method)
                             if sender is not None:
                                 p1.round()
                                 p2.round()
             if sender is not None:
-                if roboFontVersion > "2.0b":
+                if roboFontVersion >= "2.0b":
                     reference_glyph.changed()
                 else:
                     reference_glyph.update()

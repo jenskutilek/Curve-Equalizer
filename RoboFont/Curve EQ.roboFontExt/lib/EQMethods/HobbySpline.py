@@ -1,3 +1,4 @@
+from __future__ import division, print_function
 """
 Hobby Spline code contributed by
 Juraj Sukop, Lasse Fister, Simon Egli

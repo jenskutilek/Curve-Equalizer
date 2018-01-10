@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 from math import atan2
-from geometry import distance, getNewCoordinates, getTriangleSides, isOnLeft, isOnRight
+from .geometry import distance, getNewCoordinates, getTriangleSides, isOnLeft, isOnRight
 
 def eqBalance(p0, p1, p2, p3):
     # check angles of the bcps
@@ -17,7 +19,7 @@ def eqBalance(p0, p1, p2, p3):
             cc = distance(p0, p1) / c
             
             # Make new handle length the average of both handle lenghts
-            handle_percentage = (ca + cc) / 2.0
+            handle_percentage = (ca + cc) / 2
             
             # Scale triangle sides a and c by requested handle length
             a = a * handle_percentage
