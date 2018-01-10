@@ -52,11 +52,19 @@ def getTriangleAngles(p0, p1, p2, p3):
     # Calculate the angles
     
     alpha1 = atan2(p3.y - p0.y, p3.x - p0.x)
-    alpha2 = atan2(p1.y - p0.y, p1.x - p0.x)
+    if p1.y == p0.y and p1.x == p0.x:
+        # Zero handle p0-p1, use p2 as reference
+        alpha2 = atan2(p2.y - p0.y, p2.x - p0.x)
+    else:
+        alpha2 = atan2(p1.y - p0.y, p1.x - p0.x)
     alpha = alpha1 - alpha2
     
     gamma1 = atan2(p3.x - p0.x, p3.y - p0.y)
-    gamma2 = atan2(p3.x - p2.x, p3.y - p2.y)
+    if p3.x == p2.x and p3.y == p2.y:
+        # Zero handle p3-p2, use p1 as reference
+        gamma2 = atan2(p3.x - p1.x, p3.y - p1.y)
+    else:
+        gamma2 = atan2(p3.x - p2.x, p3.y - p2.y)
     gamma  = gamma1 - gamma2
     
     beta = pi - alpha - gamma

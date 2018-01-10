@@ -58,12 +58,26 @@ def controls(z0, w0, alpha, beta, w1, z1):
 
 def eqSpline(p0, p1, p2, p3, tension=1.75):
     # Hobby's splines with given tension
-    delta0 = complex(p1.x, p1.y) - complex(p0.x, p0.y)  
+    
+    # Check for zero handles
+    if p1.y == p0.y and p1.x == p0.x:
+        if p3.y == p2.y and p3.x == p2.x:
+            return p1, p2
+        else:
+            delta0 = complex(p2.x, p2.y) - complex(p0.x, p0.y)
+    else:
+        delta0 = complex(p1.x, p1.y) - complex(p0.x, p0.y)  
+        if p3.y == p2.y and p3.x == p2.x:
+            delta1 = complex(p3.x, p3.y) - complex(p1.x, p1.y)
+        else:
+            delta1 = complex(p3.x, p3.y) - complex(p2.x, p2.y)
+    
     rad0 = atan2(delta0.real, delta0.imag)
     w0 = complex(sin(rad0), cos(rad0))
-    delta1 = complex(p3.x, p3.y) - complex(p2.x, p2.y) 
+    
     rad1 = atan2(delta1.real, delta1.imag)
     w1 = complex(sin(rad1), cos(rad1))
+    
     alpha, beta = 1 * tension, 1 * tension
     u, v = controls(complex(p0.x, p0.y), w0, alpha, beta, w1, complex(p3.x, p3.y))
     p1.x, p1.y = u.real, u.imag
