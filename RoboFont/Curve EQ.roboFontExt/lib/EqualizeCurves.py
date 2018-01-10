@@ -156,7 +156,7 @@ class CurveEqualizer(BaseWindowController):
         addObserver(self, "_curvePreview", "drawInactive")
         addObserver(self, "_currentGlyphChanged", "currentGlyphChanged")
         
-        self.tmp_glyph = RGlyph()
+        self.tmp_glyph = None
         #self._currentGlyphChanged({"glyph": CurrentGlyph()})
         UpdateCurrentGlyphView()
         
@@ -305,9 +305,7 @@ class CurveEqualizer(BaseWindowController):
             and _doodle_glyph is not None \
             and len(_doodle_glyph.components) == 0 \
             and _doodle_glyph.selection != []:
-            self.tmp_glyph.clear()
-            self.tmp_glyph.appendGlyph(_doodle_glyph)
-            #glyph.getRepresentation("de.kutilek.curveEQ.factory")
+            self.tmp_glyph = CurrentGlyph().copy()
             self._eqSelected()
             if self.previewCurves:
                 save()
