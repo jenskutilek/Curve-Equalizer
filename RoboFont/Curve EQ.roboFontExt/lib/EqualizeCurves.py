@@ -246,10 +246,15 @@ class CurveEqualizer(BaseWindowController):
         reference_glyph = CurrentGlyph()
         #rect(0, 0, 200, 100)
         #rect(0, 0, self.w.eqCurvatureSlider.get() * 200, 100)
+
+        if roboFontVersion > "3.1":
+           reference_glyph_selected_points = reference_glyph.selectedPoints
+        else:
+           reference_glyph_selected_points = reference_glyph.selection
                         
         stroke(0.5, 0.6, 0.9, 0.8)
         strokeWidth(0.8 * info["scale"])
-        if reference_glyph.selection != []:
+        if reference_glyph_selected_points != []:
             for contourIndex in range(len(reference_glyph.contours)):
                 reference_contour = reference_glyph.contours[contourIndex]
                 for i in range(len(reference_contour.segments)):
@@ -275,10 +280,16 @@ class CurveEqualizer(BaseWindowController):
                             
     def _handlesPreview(self, info):
         _doodle_glyph = info["glyph"]
+
+        if roboFontVersion > "3.1":
+            _doodle_glyph_selected_points = _doodle_glyph.selectedPoints
+        else:
+            _doodle_glyph_selected_points = _doodle_glyph.selection
+
         if CurrentGlyph() is not None \
             and _doodle_glyph is not None \
             and len(_doodle_glyph.components) == 0 \
-            and _doodle_glyph.selection != []:
+            and _doodle_glyph_selected_points != []:
             glyph = self.tmp_glyph #.copy()
             ref_glyph = CurrentGlyph()
             save()
@@ -301,10 +312,16 @@ class CurveEqualizer(BaseWindowController):
     
     def _curvePreview(self, info):
         _doodle_glyph = info["glyph"]
+
+        if roboFontVersion > "3.1":
+            _doodle_glyph_selected_points = _doodle_glyph.selectedPoints
+        else:
+            _doodle_glyph_selected_points = _doodle_glyph.selection
+
         if CurrentGlyph() is not None \
             and _doodle_glyph is not None \
             and len(_doodle_glyph.components) == 0 \
-            and _doodle_glyph.selection != []:
+            and _doodle_glyph_selected_points != []:
             self.tmp_glyph = CurrentGlyph().copy()
             self._eqSelected()
             if self.previewCurves:
@@ -323,7 +340,13 @@ class CurveEqualizer(BaseWindowController):
     
     def _eqSelected(self, sender=None):
         reference_glyph = CurrentGlyph()
-        if reference_glyph.selection != []:
+
+        if roboFontVersion > "3.1":
+           reference_glyph_selected_points = reference_glyph.selectedPoints
+        else:
+           reference_glyph_selected_points = reference_glyph.selection
+
+        if reference_glyph_selected_points != []:
             if sender is None:
                 # EQ button not pressed, preview only.
                 modify_glyph = self.tmp_glyph
