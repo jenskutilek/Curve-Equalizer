@@ -8,7 +8,7 @@ from .RuleOfThirds import eqThirds
 __all__ = [
     "eqBalance",
     "eqPercentage",
-#    "eqQuadratic",
+    # "eqQuadratic",
     "eqSpline",
     "eqThirds",
 ]
