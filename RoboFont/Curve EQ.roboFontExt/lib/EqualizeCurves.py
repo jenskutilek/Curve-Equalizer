@@ -24,20 +24,20 @@ Version history:
 0.9.2 by Jens Kutilek 2016-01-09
 1.0 by Jens Kutilek 2016-12
 1.1.0 by Jens Kutilek 2018-01-10
+2.0.0-dev by Jens Kutilek 2021-10-19
 
 http://www.kutilek.de/
 """
 
 import vanilla
 
-from defconAppKit.windows.baseWindow import BaseWindowController
 from math import atan2, cos, sin
 from mojo.extensions import getExtensionDefault, setExtensionDefault
 from mojo.roboFont import version as roboFontVersion
 
 # for live preview:
+from mojo.subscriber import registerGlyphEditorSubscriber, Subscriber, WindowController
 from mojo.UI import UpdateCurrentGlyphView
-from mojo.events import addObserver, removeObserver
 from mojo.drawingTools import (
     drawGlyph,
     fill,
@@ -56,10 +56,10 @@ from EQMethods.geometry import getTriangleSides, isOnLeft, isOnRight
 DEBUG = getExtensionDefault(f"{extensionID}.debug", False)
 
 
-class CurveEqualizer(BaseWindowController):
-    
-    def __init__(self):
-        
+class CurveEqualizer(Subscriber, WindowController):
+    __name__ = "CurveEqualizerSubscriber"
+
+    def build(self):
         self.methods = {
             0: "fl",
             1: "thirds",
@@ -179,18 +179,96 @@ class CurveEqualizer(BaseWindowController):
         self.drawGeometry = getExtensionDefault(
             "%s.%s" % (extensionID, "drawGeometry"), False
         )
-
-        addObserver(self, "_curvePreview", "draw")
-        addObserver(self, "_curvePreview", "drawInactive")
-        addObserver(self, "_currentGlyphChanged", "currentGlyphChanged")
-
         self.tmp_glyph = None
-        # self._currentGlyphChanged({"glyph": CurrentGlyph()})
-        UpdateCurrentGlyphView()
+        self.container = None
 
-        self.setUpBaseWindowBehavior()
-        # _registerFactory()
+    def started(self):
+        UpdateCurrentGlyphView()
         self.w.open()
+
+    def destroy(self):
+        if self.container is not None:
+            self.container.clearSublayers()
+            del(self.container)
+
+    # Ex-observers
+
+    def glyphEditorDidOpen(self, info):
+        print("glyphEditorDidOpen", info["glyphEditor"])
+        self.glyphEditor = info["glyphEditor"]
+        self.buildContainer(glyphEditor=self.glyphEditor)
+        self._curvePreview(info)
+
+    def glyphEditorDidSetGlyph(self, info):
+        print("glyphEditorDidSetGlyph", info["glyphEditor"])
+        self.glyphEditor = info["glyphEditor"]
+        self.buildContainer(glyphEditor=self.glyphEditor)
+        self._curvePreview(info)
+
+    def glyphEditorWillClose(self, info):
+        print("glyphEditorWillClose", info["glyphEditor"])
+        self.glyphEditor = None
+        self.buildContainer(glyphEditor=None)
+
+    def roboFontDidSwitchCurrentGlyph(self, info):
+        print("roboFontDidSwitchCurrentGlyph", info["glyph"])
+        self._curvePreview(info)
+
+    def currentGlyphDidChangeOutline(self, info):
+        print("currentGlyphDidChangeOutline", info["glyph"])
+        self._curvePreview(info)
+
+    def currentGlyphDidChangeSelection(self, info):
+        print("currentGlyphDidChangeSelection", info["glyph"])
+        self._curvePreview(info)
+
+    def buildContainer(self, glyphEditor):
+        if glyphEditor is None:
+            if self.container is not None:
+                print("Clear layers")
+                self.container.clearSublayers()
+            else:
+                print("No layers to clear")
+        else:
+            if self.container is None:
+                print("Make container")
+                self.container = glyphEditor.extensionContainer(
+                    identifier=f"{extensionID}.preview",
+                    location="background",
+                    clear=True
+                )
+            else:
+                print("Using existing container")
+                pass
+
+    def getCurveLayer(self):
+        # FIXME: Why can't the existing layer be reused?
+        self.container.clearSublayers()
+        layer = self.container.appendPathSublayer(
+            name="curveLayer",
+            fillColor=None,  # FIXME: Why are the color attributes not used?
+            strokeColor=(0, 0, 0, 0.5),
+            strokeWidth=1,
+        )
+        return layer
+
+        # Code below doesn't work:
+
+        layer = self.container.getSublayer("curveLayer")
+        if layer is None:
+            print("Make layer")
+            layer = self.container.appendPathSublayer(
+                name="curveLayer",
+                # fillColor=(0, 1, 0, 0.1),
+                # strokeColor=(0, 0, 0, 0.5),
+                # strokeWidth=1,
+            )
+            # layer.setFillColor((0, 1, 0, 0.1))
+            # layer.setStrokeColor((0, 0, 0, 0.5))
+            # layer.setStrokeWidth(1)
+        else:
+            print("Use existing layer")
+        return layer
 
     def _setPreviewOptions(self):
         if self.method == "balance":
@@ -213,36 +291,22 @@ class CurveEqualizer(BaseWindowController):
         self.method = self.methods[choice]
         self._setPreviewOptions()
         self._checkSecondarySelectors()
-        UpdateCurrentGlyphView()
+        # UpdateCurrentGlyphView()
 
     def _changeCurvature(self, sender):
         choice = sender.get()
         self.curvature = self.curvatures[choice]
-        UpdateCurrentGlyphView()
+        # UpdateCurrentGlyphView()
 
     def _changeCurvatureFree(self, sender):
         self.curvatureFree = sender.get()
-        UpdateCurrentGlyphView()
+        # UpdateCurrentGlyphView()
 
     def _changeTension(self, sender):
         self.tension = sender.get()
-        UpdateCurrentGlyphView()
+        # UpdateCurrentGlyphView()
 
-    def _currentGlyphChanged(self, sender=None):
-        # FIXME: sender["glyph"] seems to contain the old glyph name, not the new one
-        # new_glyph = sender["glyph"]
-        # if new_glyph is None:
-        #    self.tmp_glyph = None
-        # else:
-        #    self.tmp_glyph.clear()
-        #    self.tmp_glyph.appendGlyph(new_glyph)
-        # print("Updated tmp_glyph: ", new_glyph)
-        UpdateCurrentGlyphView()
-
-    def windowCloseCallback(self, sender):
-        removeObserver(self, "draw")
-        removeObserver(self, "drawInactive")
-        # _unregisterFactory()
+    def windowWillClose(self, sender):
         setExtensionDefault(
             "%s.%s" % (extensionID, "method"), self.w.eqMethodSelector.get()
         )
@@ -258,8 +322,7 @@ class CurveEqualizer(BaseWindowController):
             "%s.%s" % (extensionID, "tension"),
             self.w.eqHobbyTensionSlider.get(),
         )
-        super(CurveEqualizer, self).windowCloseCallback(sender)
-        UpdateCurrentGlyphView()
+        # UpdateCurrentGlyphView()
 
     def _checkSecondarySelectors(self):
         # Enable or disable slider/radio buttons based on primary EQ selection
@@ -282,13 +345,7 @@ class CurveEqualizer(BaseWindowController):
 
     def _drawGeometry(self, info):
         reference_glyph = CurrentGlyph()
-        # rect(0, 0, 200, 100)
-        # rect(0, 0, self.w.eqCurvatureSlider.get() * 200, 100)
-
-        if roboFontVersion > "3.1":
-            reference_glyph_selected_points = reference_glyph.selectedPoints
-        else:
-            reference_glyph_selected_points = reference_glyph.selection
+        reference_glyph_selected_points = reference_glyph.selectedPoints
 
         stroke(0.5, 0.6, 0.9, 0.8)
         strokeWidth(0.8 * info["scale"])
@@ -338,12 +395,7 @@ class CurveEqualizer(BaseWindowController):
 
     def _handlesPreview(self, info):
         _doodle_glyph = info["glyph"]
-
-        if roboFontVersion > "3.1":
-            _doodle_glyph_selected_points = _doodle_glyph.selectedPoints
-        else:
-            _doodle_glyph_selected_points = _doodle_glyph.selection
-
+        _doodle_glyph_selected_points = _doodle_glyph.selectedPoints
         if (
             CurrentGlyph() is not None
             and _doodle_glyph is not None
@@ -372,42 +424,35 @@ class CurveEqualizer(BaseWindowController):
 
     def _curvePreview(self, info):
         _doodle_glyph = info["glyph"]
-
-        if roboFontVersion > "3.1":
-            _doodle_glyph_selected_points = _doodle_glyph.selectedPoints
-        else:
-            _doodle_glyph_selected_points = _doodle_glyph.selection
-
+        _doodle_glyph_selected_points = _doodle_glyph.selectedPoints
         if (
             CurrentGlyph() is not None
             and _doodle_glyph is not None
             and len(_doodle_glyph.components) == 0
             and _doodle_glyph_selected_points != []
         ):
+            print("Building curve preview ...")
             self.tmp_glyph = CurrentGlyph().copy()
             self._eqSelected()
             if self.previewCurves:
-                save()
-                stroke(0, 0, 0, 0.5)
-                fill(None)
-                strokeWidth(info["scale"])
-                drawGlyph(self.tmp_glyph)
-                restore()
-            if self.drawGeometry:
-                self._drawGeometry(info)
-            if self.previewHandles:
-                self._handlesPreview(info)
+                # self.buildContainer(self.glyphEditor)
+                curveLayer = self.getCurveLayer()
+                with curveLayer.drawingTools() as bot:
+                    bot.fill(None)
+                    bot.strokeWidth(1)
+                    bot.stroke(0, 0, 0, 0.5)
+                    bot.drawGlyph(self.tmp_glyph)
+            # if self.drawGeometry:
+            #     self._drawGeometry(info)
+            # if self.previewHandles:
+            #     self._handlesPreview(info)
 
     # The main method, check which EQ should be applied and do it (or just
     # apply it on the preview glyph)
 
     def _eqSelected(self, sender=None):
         reference_glyph = CurrentGlyph()
-
-        if roboFontVersion > "3.1":
-            reference_glyph_selected_points = reference_glyph.selectedPoints
-        else:
-            reference_glyph_selected_points = reference_glyph.selection
+        reference_glyph_selected_points = reference_glyph.selectedPoints
 
         if reference_glyph_selected_points != []:
             if sender is None:
@@ -460,12 +505,9 @@ class CurveEqualizer(BaseWindowController):
                                 p1.round()
                                 p2.round()
             if sender is not None:
-                if roboFontVersion >= "2.0b":
-                    reference_glyph.changed()
-                else:
-                    reference_glyph.update()
+                reference_glyph.changed()
                 reference_glyph.performUndo()
 
 
 if __name__ == "__main__":
-    OpenWindow(CurveEqualizer)
+    CurveEqualizer(currentGlyph=True)
