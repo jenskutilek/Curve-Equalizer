@@ -54,6 +54,12 @@ from EQMethods.geometry import getTriangleSides, isOnLeft, isOnRight
 
 DEBUG = getExtensionDefault(f"{extensionID}.debug", False)
 
+curvePreviewColor = (0, 0, 0, 0.5)
+curvePreviewWidth = 1
+geometryViewColor = (0.5, 0.6, 0.9, 0.8)
+geometryViewWidth = 0.8
+handlePreviewSize = 1.2
+
 
 class CurveEqualizer(Subscriber, WindowController):
     def build(self):
