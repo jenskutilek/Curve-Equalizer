@@ -34,6 +34,7 @@ import vanilla
 from math import atan2, cos, sin
 
 from mojo.extensions import getExtensionDefault, setExtensionDefault
+from mojo.roboFont import CurrentGlyph
 from mojo.subscriber import Subscriber, WindowController
 
 from EQExtensionID import extensionID
@@ -148,9 +149,10 @@ class CurveEqualizer(Subscriber, WindowController):
         )
         self.dglyph = None
         self.container = None
-        self._checkSecondarySelectors()
 
     def started(self):
+        self.dglyph = CurrentGlyph()
+        self._checkSecondarySelectors()
         self.w.open()
 
     def destroy(self):
@@ -528,4 +530,4 @@ class CurveEqualizer(Subscriber, WindowController):
 
 
 if __name__ == "__main__":
-    CurveEqualizer(currentGlyph=True)
+    CurveEqualizer()
