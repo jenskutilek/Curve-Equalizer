@@ -516,16 +516,8 @@ class CurveEqualizer(Subscriber, WindowController):
                                 p1, p2 = eqPercentage(
                                     p0, p1, p2, p3, self.curvatureFree
                                 )
-                            elif self.method == "fl":
-                                p1, p2 = eqPercentage(p0, p1, p2, p3)
-                            # elif self.method == "quad":
-                            #     p1, p2 = eqQuadratic(p0, p1, p2, p3)
                             elif self.method == "balance":
                                 p1, p2 = eqBalance(p0, p1, p2, p3)
-                            elif self.method == "adjust":
-                                p1, p2 = eqPercentage(
-                                    p0, p1, p2, p3, self.curvature
-                                )
                             elif self.method == "hobby":
                                 p1, p2 = eqSpline(p0, p1, p2, p3, self.tension)
                             else:
