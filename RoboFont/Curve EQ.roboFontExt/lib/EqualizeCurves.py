@@ -126,7 +126,6 @@ class CurveEqualizer(Subscriber, WindowController):
             getExtensionDefault("%s.%s" % (extensionID, "method"), 0)
         )
         self.method = self.methods[self.w.eqMethodSelector.get()]
-        self._checkSecondarySelectors()
 
         # default curvature for slider
         self.w.eqCurvatureSlider.set(
@@ -154,6 +153,7 @@ class CurveEqualizer(Subscriber, WindowController):
         )
         self.dglyph = None
         self.container = None
+        self._checkSecondarySelectors()
 
     def started(self):
         self.w.open()
