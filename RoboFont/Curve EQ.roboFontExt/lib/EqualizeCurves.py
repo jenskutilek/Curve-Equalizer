@@ -193,22 +193,26 @@ class CurveEqualizer(Subscriber, WindowController):
         self._curvePreview()
 
     def glyphEditorDidOpen(self, info):
-        # print("glyphEditorDidOpen", info)
+        if DEBUG:
+            print("glyphEditorDidOpen", info)
         self.updateGlyphAndGlyphEditor(info)
 
     def glyphEditorDidSetGlyph(self, info):
-        # print("glyphEditorDidSetGlyph", info)
+        if DEBUG:
+            print("glyphEditorDidSetGlyph", info)
         self.updateGlyphAndGlyphEditor(info)
 
     def glyphEditorWillClose(self, info):
-        # print("glyphEditorWillClose", info)
+        if DEBUG:
+            print("glyphEditorWillClose", info)
         self.dglyph = None
         self.dglyph_selection = None
         self.glyphEditor = None
         self.buildContainer(glyphEditor=None)
 
     def roboFontDidSwitchCurrentGlyph(self, info):
-        # print("roboFontDidSwitchCurrentGlyph", info["glyph"])
+        if DEBUG:
+            print("roboFontDidSwitchCurrentGlyph", info["glyph"])
         self.dglyph = info["glyph"]
         self.dglyph_selection = self.dglyph.selectedPoints
         self._curvePreview()
@@ -219,28 +223,32 @@ class CurveEqualizer(Subscriber, WindowController):
         self._curvePreview()
 
     def currentGlyphDidChangeSelection(self, info):
-        # print("currentGlyphDidChangeSelection", info["glyph"])
+        if DEBUG:
+            print("currentGlyphDidChangeSelection", info["glyph"])
         self.dglyph = info["glyph"]
         self._curvePreview()
 
     def buildContainer(self, glyphEditor):
         if glyphEditor is None:
             if self.container is not None:
-                print("Clear layers")
+                if DEBUG:
+                    print("Clear layers")
                 self.container.clearSublayers()
             else:
-                print("No layers to clear")
+                if DEBUG:
+                    print("No layers to clear")
         else:
             if self.container is None:
-                print("Make container")
+                if DEBUG:
+                    print("Make container")
                 self.container = glyphEditor.extensionContainer(
                     identifier=f"{extensionID}.preview",
                     location="background",
                     clear=True
                 )
             else:
-                print("Using existing container")
-                pass
+                if DEBUG:
+                    print("Using existing container")
 
     def getCurveLayer(self):
         # FIXME: Why can't the existing layer be reused?
@@ -257,7 +265,8 @@ class CurveEqualizer(Subscriber, WindowController):
 
         layer = self.container.getSublayer("curveLayer")
         if layer is None:
-            print("Make layer")
+            if DEBUG:
+                print("Make layer")
             layer = self.container.appendPathSublayer(
                 name="curveLayer",
                 # fillColor=(0, 1, 0, 0.1),
@@ -268,7 +277,8 @@ class CurveEqualizer(Subscriber, WindowController):
             # layer.setStrokeColor((0, 0, 0, 0.5))
             # layer.setStrokeWidth(1)
         else:
-            print("Use existing layer")
+            if DEBUG:
+                print("Use existing layer")
         return layer
 
     def _setPreviewOptions(self):
