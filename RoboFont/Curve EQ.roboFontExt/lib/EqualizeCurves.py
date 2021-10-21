@@ -221,10 +221,10 @@ class CurveEqualizer(Subscriber, WindowController):
         self.dglyph = info["glyph"]
         self._curvePreview()
 
-    def currentGlyphDidChangeOutline(self, info):
-        # print("currentGlyphDidChangeOutline", info["glyph"])
-        self.dglyph = info["glyph"]
-        self._curvePreview()
+    # def currentGlyphDidChangeOutline(self, info):
+    #     print("currentGlyphDidChangeOutline", info["glyph"])
+    #     self.dglyph = info["glyph"]
+    #     self._curvePreview()
 
     def currentGlyphDidChangeSelection(self, info):
         if DEBUG:
