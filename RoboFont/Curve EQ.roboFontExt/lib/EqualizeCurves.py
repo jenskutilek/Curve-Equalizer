@@ -213,6 +213,7 @@ class CurveEqualizer(Subscriber, WindowController):
         self.dglyph = None
         self.glyphEditor = None
         self.buildContainer(glyphEditor=None)
+        self._checkSecondarySelectors()
 
     def roboFontDidSwitchCurrentGlyph(self, info):
         if DEBUG:
@@ -229,6 +230,7 @@ class CurveEqualizer(Subscriber, WindowController):
         if DEBUG:
             print("currentGlyphDidChangeSelection", info["glyph"])
         self.dglyph = info["glyph"]
+        self._checkSecondarySelectors()
         self._curvePreview()
 
     def buildContainer(self, glyphEditor):
@@ -334,7 +336,17 @@ class CurveEqualizer(Subscriber, WindowController):
         )
 
     def _checkSecondarySelectors(self):
-        # Enable or disable slider/radio buttons based on primary EQ selection
+        # Enable or disable slider/radio buttons
+        if self.dglyph is None or not self.dglyph_selection:
+            self.w.eqMethodSelector.enable(False)
+            self.w.eqSelectedButton.enable(False)
+            self.w.eqCurvatureSlider.enable(False)
+            self.w.eqHobbyTensionSlider.enable(False)
+            return
+
+        self.w.eqMethodSelector.enable(True)
+        self.w.eqSelectedButton.enable(True)
+
         if self.method == "adjust":
             self.w.eqCurvatureSlider.enable(False)
             self.w.eqHobbyTensionSlider.enable(False)
