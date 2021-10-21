@@ -1,7 +1,7 @@
 from defconAppKit.windows.baseWindow import BaseWindowController
 from mojo.extensions import getExtensionDefault, setExtensionDefault
 import vanilla
-from jkRFExtensionSettings.Setting import Setting
+from .Setting import Setting
 
 
 class SettingsWindow(BaseWindowController):
