@@ -24,7 +24,7 @@ Version history:
 0.9.2 by Jens Kutilek 2016-01-09
 1.0 by Jens Kutilek 2016-12
 1.1.0 by Jens Kutilek 2018-01-10
-2.0.0-dev by Jens Kutilek 2021-10-19
+2.0.0-dev by Jens Kutilek 2021-10-21
 
 http://www.kutilek.de/
 """
