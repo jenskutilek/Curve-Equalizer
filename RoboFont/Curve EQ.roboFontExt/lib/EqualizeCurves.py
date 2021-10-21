@@ -172,8 +172,14 @@ class CurveEqualizer(Subscriber, WindowController):
         self._dglyph = value
         if self._dglyph is None:
             self.tmp_glyph = None
+            self.dglyph_selection = []
         else:
             self.tmp_glyph = self._dglyph.copy()
+            self.dglyph_selection = self._dglyph.selectedPoints
+            if not self.dglyph.contours:
+                if self.container is not None:
+                    del self.container
+                    self.container = None
 
     @property
     def dglyph_selection(self):
@@ -187,7 +193,6 @@ class CurveEqualizer(Subscriber, WindowController):
 
     def updateGlyphAndGlyphEditor(self, info):
         self.dglyph = info["glyph"]
-        self.dglyph_selection = self.dglyph.selectedPoints
         self.glyphEditor = info["glyphEditor"]
         self.buildContainer(glyphEditor=self.glyphEditor)
         self._curvePreview()
@@ -206,7 +211,6 @@ class CurveEqualizer(Subscriber, WindowController):
         if DEBUG:
             print("glyphEditorWillClose", info)
         self.dglyph = None
-        self.dglyph_selection = None
         self.glyphEditor = None
         self.buildContainer(glyphEditor=None)
 
@@ -214,7 +218,6 @@ class CurveEqualizer(Subscriber, WindowController):
         if DEBUG:
             print("roboFontDidSwitchCurrentGlyph", info["glyph"])
         self.dglyph = info["glyph"]
-        self.dglyph_selection = self.dglyph.selectedPoints
         self._curvePreview()
 
     def currentGlyphDidChangeOutline(self, info):
