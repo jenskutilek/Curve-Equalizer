@@ -37,7 +37,6 @@ from mojo.roboFont import version as roboFontVersion
 
 # for live preview:
 from mojo.subscriber import registerGlyphEditorSubscriber, Subscriber, WindowController
-from mojo.UI import UpdateCurrentGlyphView
 from mojo.drawingTools import (
     drawGlyph,
     fill,
@@ -159,7 +158,6 @@ class CurveEqualizer(Subscriber, WindowController):
         self.container = None
 
     def started(self):
-        UpdateCurrentGlyphView()
         self.w.open()
 
     def destroy(self):
@@ -267,20 +265,16 @@ class CurveEqualizer(Subscriber, WindowController):
         self.method = self.methods[choice]
         self._setPreviewOptions()
         self._checkSecondarySelectors()
-        # UpdateCurrentGlyphView()
 
     def _changeCurvature(self, sender):
         choice = sender.get()
         self.curvature = self.curvatures[choice]
-        # UpdateCurrentGlyphView()
 
     def _changeCurvatureFree(self, sender):
         self.curvatureFree = sender.get()
-        # UpdateCurrentGlyphView()
 
     def _changeTension(self, sender):
         self.tension = sender.get()
-        # UpdateCurrentGlyphView()
 
     def windowWillClose(self, sender):
         setExtensionDefault(
@@ -294,7 +288,6 @@ class CurveEqualizer(Subscriber, WindowController):
             "%s.%s" % (extensionID, "tension"),
             self.w.eqHobbyTensionSlider.get(),
         )
-        # UpdateCurrentGlyphView()
 
     def _checkSecondarySelectors(self):
         # Enable or disable slider/radio buttons based on primary EQ selection
