@@ -476,10 +476,10 @@ class CurveEqualizer(Subscriber, WindowController):
                     bot.strokeWidth(1)
                     bot.stroke(0, 0, 0, 0.5)
                     bot.drawGlyph(self.tmp_glyph)
-            # if self.drawGeometry:
-            #     self._drawGeometry(info)
-            # if self.previewHandles:
-            #     self._handlesPreview(info)
+            if self.drawGeometry:
+                self._drawGeometry()
+            if self.previewHandles:
+                self._handlesPreview()
 
     # The main method, check which EQ should be applied and do it (or just
     # apply it on the preview glyph)
