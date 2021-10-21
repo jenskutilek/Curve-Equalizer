@@ -33,12 +33,12 @@ import vanilla
 
 from math import atan2, cos, sin
 from mojo.extensions import getExtensionDefault, setExtensionDefault
-from mojo.roboFont import version as roboFontVersion
+from mojo.roboFont import CurrentGlyph
 
 # for live preview:
 from mojo.subscriber import Subscriber, WindowController
 from mojo.drawingTools import (
-    drawGlyph,
+    # drawGlyph,
     fill,
     line,
     restore,
@@ -56,8 +56,6 @@ DEBUG = getExtensionDefault(f"{extensionID}.debug", False)
 
 
 class CurveEqualizer(Subscriber, WindowController):
-    __name__ = "CurveEqualizerSubscriber"
-
     def build(self):
         self.methods = {
             0: "balance",
@@ -366,7 +364,9 @@ class CurveEqualizer(Subscriber, WindowController):
                                     and isOnRight(p0, p3, p2)
                                 ):
 
-                                    # alpha, beta, gamma = getTriangleAngles(p0, p1, p2, p3)
+                                    # alpha, beta, gamma = (
+                                    #     getTriangleAngles(p0, p1, p2, p3)
+                                    # )
                                     a, b, c = getTriangleSides(p0, p1, p2, p3)
                                     line(
                                         (p0.x, p0.y),
@@ -402,7 +402,7 @@ class CurveEqualizer(Subscriber, WindowController):
             stroke(0, 0, 0, 0.3)
             strokeWidth(info["scale"])
             fill(None)
-            l = 4 * info["scale"]
+            ln = 4 * info["scale"]
             for contourIndex in range(len(glyph)):
                 contour = self.tmp_glyph.contours[contourIndex]
                 ref_contour = ref_glyph.contours[contourIndex]
@@ -412,8 +412,8 @@ class CurveEqualizer(Subscriber, WindowController):
                         for p in segment.points[0:2]:
                             x = p.x
                             y = p.y
-                            line((x - l, y - l), (x + l, y + l))
-                            line((x - l, y + l), (x + l, y - l))
+                            line((x - ln, y - ln), (x + ln, y + ln))
+                            line((x - ln, y + ln), (x + ln, y - ln))
             restore()
 
     def _curvePreview(self):
@@ -422,7 +422,8 @@ class CurveEqualizer(Subscriber, WindowController):
             and len(self.dglyph.components) == 0
             and self.dglyph_selection != []
         ):
-            print("Building curve preview ...")
+            if DEBUG:
+                print("Building curve preview ...")
             self._eqSelected()
             if self.previewCurves:
                 # self.buildContainer(self.glyphEditor)
