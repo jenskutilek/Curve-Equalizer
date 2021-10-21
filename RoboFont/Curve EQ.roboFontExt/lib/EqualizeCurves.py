@@ -457,7 +457,8 @@ class CurveEqualizer(Subscriber, WindowController):
     def _curvePreview(self):
         if (
             self.dglyph is not None
-            and len(self.dglyph.components) == 0
+            and self.dglyph.contours
+            and not self.dglyph.components  # FIXME: Support mixed composites
             and self.dglyph_selection != []
         ):
             if DEBUG:
@@ -466,6 +467,10 @@ class CurveEqualizer(Subscriber, WindowController):
             if self.previewCurves:
                 # self.buildContainer(self.glyphEditor)
                 curveLayer = self.getCurveLayer()
+                if curveLayer is None:
+                    return
+                # FIXME: Don't draw the whole glyph, just the equalized
+                # selection
                 with curveLayer.drawingTools() as bot:
                     bot.fill(None)
                     bot.strokeWidth(1)
