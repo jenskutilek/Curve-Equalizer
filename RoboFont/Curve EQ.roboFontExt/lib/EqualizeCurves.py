@@ -36,7 +36,7 @@ from mojo.extensions import getExtensionDefault, setExtensionDefault
 from mojo.roboFont import version as roboFontVersion
 
 # for live preview:
-from mojo.subscriber import registerGlyphEditorSubscriber, Subscriber, WindowController
+from mojo.subscriber import Subscriber, WindowController
 from mojo.drawingTools import (
     drawGlyph,
     fill,
@@ -154,7 +154,7 @@ class CurveEqualizer(Subscriber, WindowController):
         self.drawGeometry = getExtensionDefault(
             "%s.%s" % (extensionID, "drawGeometry"), False
         )
-        self.tmp_glyph = None
+        self.dglyph = None
         self.container = None
 
     def started(self):
@@ -165,36 +165,65 @@ class CurveEqualizer(Subscriber, WindowController):
             self.container.clearSublayers()
             del(self.container)
 
+    @property
+    def dglyph(self):
+        return self._dglyph
+
+    @dglyph.setter
+    def dglyph(self, value):
+        self._dglyph = value
+        if self._dglyph is None:
+            self.tmp_glyph = None
+        else:
+            self.tmp_glyph = self._dglyph.copy()
+
+    @property
+    def dglyph_selection(self):
+        return self._dglyph_selection
+
+    @dglyph_selection.setter
+    def dglyph_selection(self, value):
+        self._dglyph_selection = value
+
     # Ex-observers
 
-    def glyphEditorDidOpen(self, info):
-        print("glyphEditorDidOpen", info["glyphEditor"])
+    def updateGlyphAndGlyphEditor(self, info):
+        self.dglyph = info["glyph"]
+        self.dglyph_selection = self.dglyph.selectedPoints
         self.glyphEditor = info["glyphEditor"]
         self.buildContainer(glyphEditor=self.glyphEditor)
-        self._curvePreview(info)
+        self._curvePreview()
+
+    def glyphEditorDidOpen(self, info):
+        # print("glyphEditorDidOpen", info)
+        self.updateGlyphAndGlyphEditor(info)
 
     def glyphEditorDidSetGlyph(self, info):
-        print("glyphEditorDidSetGlyph", info["glyphEditor"])
-        self.glyphEditor = info["glyphEditor"]
-        self.buildContainer(glyphEditor=self.glyphEditor)
-        self._curvePreview(info)
+        # print("glyphEditorDidSetGlyph", info)
+        self.updateGlyphAndGlyphEditor(info)
 
     def glyphEditorWillClose(self, info):
-        print("glyphEditorWillClose", info["glyphEditor"])
+        # print("glyphEditorWillClose", info)
+        self.dglyph = None
+        self.dglyph_selection = None
         self.glyphEditor = None
         self.buildContainer(glyphEditor=None)
 
     def roboFontDidSwitchCurrentGlyph(self, info):
-        print("roboFontDidSwitchCurrentGlyph", info["glyph"])
-        self._curvePreview(info)
+        # print("roboFontDidSwitchCurrentGlyph", info["glyph"])
+        self.dglyph = info["glyph"]
+        self.dglyph_selection = self.dglyph.selectedPoints
+        self._curvePreview()
 
     def currentGlyphDidChangeOutline(self, info):
-        print("currentGlyphDidChangeOutline", info["glyph"])
-        self._curvePreview(info)
+        # print("currentGlyphDidChangeOutline", info["glyph"])
+        self.dglyph = info["glyph"]
+        self._curvePreview()
 
     def currentGlyphDidChangeSelection(self, info):
-        print("currentGlyphDidChangeSelection", info["glyph"])
-        self._curvePreview(info)
+        # print("currentGlyphDidChangeSelection", info["glyph"])
+        self.dglyph = info["glyph"]
+        self._curvePreview()
 
     def buildContainer(self, glyphEditor):
         if glyphEditor is None:
@@ -265,16 +294,20 @@ class CurveEqualizer(Subscriber, WindowController):
         self.method = self.methods[choice]
         self._setPreviewOptions()
         self._checkSecondarySelectors()
+        self._curvePreview()
 
     def _changeCurvature(self, sender):
         choice = sender.get()
         self.curvature = self.curvatures[choice]
+        self._curvePreview()
 
     def _changeCurvatureFree(self, sender):
         self.curvatureFree = sender.get()
+        self._curvePreview()
 
     def _changeTension(self, sender):
         self.tension = sender.get()
+        self._curvePreview()
 
     def windowWillClose(self, sender):
         setExtensionDefault(
@@ -383,17 +416,13 @@ class CurveEqualizer(Subscriber, WindowController):
                             line((x - l, y + l), (x + l, y - l))
             restore()
 
-    def _curvePreview(self, info):
-        _doodle_glyph = info["glyph"]
-        _doodle_glyph_selected_points = _doodle_glyph.selectedPoints
+    def _curvePreview(self):
         if (
-            CurrentGlyph() is not None
-            and _doodle_glyph is not None
-            and len(_doodle_glyph.components) == 0
-            and _doodle_glyph_selected_points != []
+            self.dglyph is not None
+            and len(self.dglyph.components) == 0
+            and self.dglyph_selection != []
         ):
             print("Building curve preview ...")
-            self.tmp_glyph = CurrentGlyph().copy()
             self._eqSelected()
             if self.previewCurves:
                 # self.buildContainer(self.glyphEditor)
@@ -412,7 +441,7 @@ class CurveEqualizer(Subscriber, WindowController):
     # apply it on the preview glyph)
 
     def _eqSelected(self, sender=None):
-        reference_glyph = CurrentGlyph()
+        reference_glyph = self.dglyph
         reference_glyph_selected_points = reference_glyph.selectedPoints
 
         if reference_glyph_selected_points != []:
