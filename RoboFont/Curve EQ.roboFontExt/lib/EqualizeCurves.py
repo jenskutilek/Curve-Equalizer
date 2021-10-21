@@ -49,7 +49,7 @@ from mojo.drawingTools import (
 )
 
 from EQExtensionID import extensionID
-from EQMethods import eqBalance, eqPercentage, eqSpline, eqThirds
+from EQMethods import eqBalance, eqPercentage, eqSpline
 from EQMethods.geometry import getTriangleSides, isOnLeft, isOnRight
 
 
@@ -61,34 +61,19 @@ class CurveEqualizer(Subscriber, WindowController):
 
     def build(self):
         self.methods = {
-            0: "fl",
-            1: "thirds",
-            # 2: "quad",
-            2: "balance",
-            3: "adjust",
-            4: "free",
-            5: "hobby",
+            0: "balance",
+            1: "free",
+            2: "hobby",
         }
 
         self.methodNames = [
-            "Circle",
-            "Rule of thirds",
-            # "TT (experimental)",
-            "Balance handles",
-            "Adjust fixed:",
-            "Adjust free:",
+            "Balance",
+            "Adjust:",
             "Hobby:",
         ]
 
-        self.curvatures = {
-            0: 0.552,
-            1: 0.577,
-            2: 0.602,
-            3: 0.627,
-            4: 0.652,
-        }
-
-        height = 180
+        height = 108
+        sliderX = 76
 
         self.w = vanilla.FloatingWindow(
             posSize=(200, height),
@@ -99,34 +84,25 @@ class CurveEqualizer(Subscriber, WindowController):
 
         y = 8
         self.w.eqMethodSelector = vanilla.RadioGroup(
-            (10, y, -10, 140),
+            (8, y, -8, -36),
             titles=self.methodNames,
             callback=self._changeMethod,
             sizeStyle="small",
         )
 
-        y -= height - 72
-        self.w.eqCurvatureSelector = vanilla.RadioGroup(
-            (104, y, 90, 17),
-            isVertical=False,
-            titles=["", "", "", "", ""],
-            callback=self._changeCurvature,
-            sizeStyle="small",
-        )
-
         y += 22
         self.w.eqCurvatureSlider = vanilla.Slider(
-            (104, y, -8, 17),
+            (sliderX, y, -8, 17),
             callback=self._changeCurvatureFree,
             minValue=0.5,
             maxValue=1.0,
-            # value=self.curvatures[self.w.eqCurvatureSelector.get()],
+            value=0.75,  # Will be replaced by saved value
             sizeStyle="small",
         )
 
         y += 25
         self.w.eqHobbyTensionSlider = vanilla.Slider(
-            (104, y, -8, 17),
+            (sliderX, y, -8, 17),
             tickMarkCount=5,
             callback=self._changeTension,
             minValue=0.5,
@@ -136,24 +112,24 @@ class CurveEqualizer(Subscriber, WindowController):
 
         y = height - 32
         self.w.eqSelectedButton = vanilla.Button(
-            (10, y, -10, 25),
-            "Equalize selected",
+            (8, y, -8, 25),
+            "Equalize Selected",
             callback=self._eqSelected,
             sizeStyle="small",
         )
 
-        # default method
+        # Restore saved state
+
+        # If we come in from an older version, the selected method index
+        # may be out of range
+        method = getExtensionDefault("%s.%s" % (extensionID, "method"), 0)
+        if method >= len(self.methods):
+            method = 0
         self.w.eqMethodSelector.set(
             getExtensionDefault("%s.%s" % (extensionID, "method"), 0)
         )
         self.method = self.methods[self.w.eqMethodSelector.get()]
         self._checkSecondarySelectors()
-
-        # default curvature
-        self.w.eqCurvatureSelector.set(
-            getExtensionDefault("%s.%s" % (extensionID, "curvature"), 0)
-        )
-        self.curvature = self.curvatures[self.w.eqCurvatureSelector.get()]
 
         # default curvature for slider
         self.w.eqCurvatureSlider.set(
@@ -311,10 +287,6 @@ class CurveEqualizer(Subscriber, WindowController):
             "%s.%s" % (extensionID, "method"), self.w.eqMethodSelector.get()
         )
         setExtensionDefault(
-            "%s.%s" % (extensionID, "curvature"),
-            self.w.eqCurvatureSelector.get(),
-        )
-        setExtensionDefault(
             "%s.%s" % (extensionID, "curvatureFree"),
             self.w.eqCurvatureSlider.get(),
         )
@@ -327,19 +299,15 @@ class CurveEqualizer(Subscriber, WindowController):
     def _checkSecondarySelectors(self):
         # Enable or disable slider/radio buttons based on primary EQ selection
         if self.method == "adjust":
-            self.w.eqCurvatureSelector.enable(True)
             self.w.eqCurvatureSlider.enable(False)
             self.w.eqHobbyTensionSlider.enable(False)
         elif self.method == "free":
-            self.w.eqCurvatureSelector.enable(False)
             self.w.eqCurvatureSlider.enable(True)
             self.w.eqHobbyTensionSlider.enable(False)
         elif self.method == "hobby":
-            self.w.eqCurvatureSelector.enable(False)
             self.w.eqCurvatureSlider.enable(False)
             self.w.eqHobbyTensionSlider.enable(True)
         else:
-            self.w.eqCurvatureSelector.enable(False)
             self.w.eqCurvatureSlider.enable(False)
             self.w.eqHobbyTensionSlider.enable(False)
 
@@ -484,10 +452,8 @@ class CurveEqualizer(Subscriber, WindowController):
                                 )
                             elif self.method == "fl":
                                 p1, p2 = eqPercentage(p0, p1, p2, p3)
-                            elif self.method == "thirds":
-                                p1, p2 = eqThirds(p0, p1, p2, p3)
-                            elif self.method == "quad":
-                                p1, p2 = eqQuadratic(p0, p1, p2, p3)
+                            # elif self.method == "quad":
+                            #     p1, p2 = eqQuadratic(p0, p1, p2, p3)
                             elif self.method == "balance":
                                 p1, p2 = eqBalance(p0, p1, p2, p3)
                             elif self.method == "adjust":
