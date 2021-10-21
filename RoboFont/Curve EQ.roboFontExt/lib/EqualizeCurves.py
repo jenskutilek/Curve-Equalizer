@@ -255,6 +255,9 @@ class CurveEqualizer(Subscriber, WindowController):
 
     def getCurveLayer(self):
         # FIXME: Why can't the existing layer be reused?
+        if self.container is None:
+            return None
+
         self.container.clearSublayers()
         layer = self.container.appendPathSublayer(
             name="curveLayer",
