@@ -1,15 +1,15 @@
-# -*- coding: utf-8 -*-
 from defconAppKit.windows.baseWindow import BaseWindowController
 from mojo.extensions import getExtensionDefault, setExtensionDefault
 import vanilla
-from Setting import Setting
+from jkRFExtensionSettings.Setting import Setting
 
 
 class SettingsWindow(BaseWindowController):
-    def __init__(self, extension_id, name, save_on_edit=False):
+    def __init__(self, extension_id, name, save_on_edit=False, analytics=None):
         self._extension_id = extension_id
         self._name = name
         self._save_on_edit = save_on_edit
+        self.analytics = analytics
         self.settings_list = []
         self.settings = {}
 
@@ -28,15 +28,19 @@ class SettingsWindow(BaseWindowController):
         self.settings = {}
 
     def _load_settings(self):
-        for settings_key, setting in self.settings.iteritems():
+        for settings_key, setting in self.settings.items():
             self.settings[settings_key].value = getExtensionDefault(
                 "%s.%s" % (self._extension_id, settings_key),
                 setting.default_value,
             )
 
     def _save_settings(self):
-        for settings_key, setting in self.settings.iteritems():
-            # print("Saving", "%s.%s" % (self._extension_id, settings_key), setting.value, setting.ui_object)
+        for settings_key, setting in self.settings.items():
+            # print(
+            #     "Saving", "%s.%s" % (
+            #         self._extension_id, settings_key
+            #     ), setting.value, setting.ui_object
+            # )
             setExtensionDefault(
                 "%s.%s" % (self._extension_id, settings_key), setting.value
             )
@@ -79,15 +83,21 @@ class SettingsWindow(BaseWindowController):
     def _edit_value(self, sender):
         if self._save_on_edit:
             self._save_settings()
+        if self.analytics:
+            self.analytics.log("%s_%s" % (sender.getTitle(), sender.get()))
 
     def windowCloseCallback(self, sender):
         self._save_settings()
+        if self.analytics:
+            self.analytics.save()
         super(SettingsWindow, self).windowCloseCallback(sender)
 
     def show(self):
         self._load_settings()
         self._build_ui()
         self.setUpBaseWindowBehavior()
+        if self.analytics:
+            self.analytics.start_session()
         self.w.open()
 
 
