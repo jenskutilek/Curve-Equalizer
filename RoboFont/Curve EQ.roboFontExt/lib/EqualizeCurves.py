@@ -32,9 +32,8 @@ http://www.kutilek.de/
 import vanilla
 
 from math import atan2, cos, sin
-from mojo.extensions import getExtensionDefault, setExtensionDefault
 
-# for live preview:
+from mojo.extensions import getExtensionDefault, setExtensionDefault
 from mojo.subscriber import Subscriber, WindowController
 
 from EQExtensionID import extensionID
