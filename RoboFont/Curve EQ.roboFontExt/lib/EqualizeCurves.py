@@ -267,8 +267,8 @@ class CurveEqualizer(Subscriber, WindowController):
         layer = self.container.appendPathSublayer(
             name="curveLayer",
             fillColor=None,  # FIXME: Why are the color attributes not used?
-            strokeColor=(0, 0, 0, 0.5),
-            strokeWidth=1,
+            strokeColor=curvePreviewColor,
+            strokeWidth=curvePreviewWidth,
         )
         return layer
 
