@@ -424,23 +424,15 @@ class CurveEqualizer(Subscriber, WindowController):
                                     # line(p1, p2)
                                     # line(p2, p3)
 
-    def _handlesPreview(self, info):
-        _doodle_glyph = info["glyph"]
-        _doodle_glyph_selected_points = _doodle_glyph.selectedPoints
+    def _handlesPreview(self):
         if (
-            CurrentGlyph() is not None
-            and _doodle_glyph is not None
-            and len(_doodle_glyph.components) == 0
-            and _doodle_glyph_selected_points != []
+            self.dglyph is not None
+            and len(self.dglyph.components) == 0
+            and self.dglyph_selection != []
         ):
-            glyph = self.tmp_glyph  # .copy()
-            ref_glyph = CurrentGlyph()
-            save()
-            stroke(0, 0, 0, 0.3)
-            strokeWidth(info["scale"])
-            fill(None)
-            ln = 4 * info["scale"]
-            for contourIndex in range(len(glyph)):
+            ref_glyph = self.dglyph
+            ln = handlePreviewSize
+            for contourIndex in range(len(self.tmp_glyph)):
                 contour = self.tmp_glyph.contours[contourIndex]
                 ref_contour = ref_glyph.contours[contourIndex]
                 for i in range(len(contour.segments)):
@@ -449,9 +441,18 @@ class CurveEqualizer(Subscriber, WindowController):
                         for p in segment.points[0:2]:
                             x = p.x
                             y = p.y
-                            line((x - ln, y - ln), (x + ln, y + ln))
-                            line((x - ln, y + ln), (x + ln, y - ln))
-            restore()
+                            self.container.appendLineSublayer(
+                                startPoint=(x - ln, y - ln),
+                                endPoint=(x + ln, y + ln),
+                                strokeColor=(0, 0, 0, 0.3),
+                                strokeWidth=1,
+                            )
+                            self.container.appendLineSublayer(
+                                startPoint=(x - ln, y + ln),
+                                endPoint=(x + ln, y - ln),
+                                strokeColor=(0, 0, 0, 0.3),
+                                strokeWidth=1,
+                            )
 
     def _curvePreview(self):
         if (
