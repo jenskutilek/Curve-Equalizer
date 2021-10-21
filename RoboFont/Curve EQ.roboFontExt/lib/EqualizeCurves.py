@@ -33,19 +33,9 @@ import vanilla
 
 from math import atan2, cos, sin
 from mojo.extensions import getExtensionDefault, setExtensionDefault
-from mojo.roboFont import CurrentGlyph
 
 # for live preview:
 from mojo.subscriber import Subscriber, WindowController
-from mojo.drawingTools import (
-    # drawGlyph,
-    fill,
-    line,
-    restore,
-    save,
-    stroke,
-    strokeWidth,
-)
 
 from EQExtensionID import extensionID
 from EQMethods import eqBalance, eqPercentage, eqSpline
