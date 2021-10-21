@@ -366,12 +366,9 @@ class CurveEqualizer(Subscriber, WindowController):
             self.w.eqCurvatureSlider.enable(False)
             self.w.eqHobbyTensionSlider.enable(False)
 
-    def _drawGeometry(self, info):
-        reference_glyph = CurrentGlyph()
-        reference_glyph_selected_points = reference_glyph.selectedPoints
-
-        stroke(0.5, 0.6, 0.9, 0.8)
-        strokeWidth(0.8 * info["scale"])
+    def _drawGeometry(self):
+        reference_glyph = self.dglyph
+        reference_glyph_selected_points = self.dglyph_selection
         if reference_glyph_selected_points != []:
             for contourIndex in range(len(reference_glyph.contours)):
                 reference_contour = reference_glyph.contours[contourIndex]
@@ -399,21 +396,30 @@ class CurveEqualizer(Subscriber, WindowController):
                                     #     getTriangleAngles(p0, p1, p2, p3)
                                     # )
                                     a, b, c = getTriangleSides(p0, p1, p2, p3)
-                                    line(
-                                        (p0.x, p0.y),
-                                        (
+                                    self.container.appendLineSublayer(
+                                        startPoint=(p0.x, p0.y),
+                                        endPoint=(
                                             p0.x + (c + 5) * cos(alpha),
                                             p0.y + (c + 5) * sin(alpha),
                                         ),
+                                        strokeColor=geometryViewColor,
+                                        strokeWidth=geometryViewWidth,
                                     )
-                                    line(
-                                        (p3.x, p3.y),
-                                        (
+                                    self.container.appendLineSublayer(
+                                        startPoint=(p3.x, p3.y),
+                                        endPoint=(
                                             p3.x + (a + 5) * cos(beta),
                                             p3.y + (a + 5) * sin(beta),
                                         ),
+                                        strokeColor=geometryViewColor,
+                                        strokeWidth=geometryViewWidth,
                                     )
-                                    line((p0.x, p0.y), (p3.x, p3.y))
+                                    # self.container.appendLineSublayer(
+                                    #     startPoint=(p0.x, p0.y),
+                                    #     endPoint=(p3.x, p3.y),
+                                    #     strokeColor=geometryViewColor,
+                                    #     strokeWidth=geometryViewWidth,
+                                    # )
 
                                     # line(p1, p2)
                                     # line(p2, p3)
