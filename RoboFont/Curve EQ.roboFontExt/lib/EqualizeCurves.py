@@ -25,6 +25,7 @@ Version history:
 1.0 by Jens Kutilek 2016-12
 1.1.0 by Jens Kutilek 2018-01-10
 2.0.0-dev by Jens Kutilek 2021-10-21
+2.0.1 by Jens Kutilek 2021-11-10
 
 http://www.kutilek.de/
 """
@@ -214,11 +215,12 @@ class CurveEqualizer(Subscriber, WindowController):
         self.buildContainer(glyphEditor=None)
         self._checkSecondarySelectors()
 
-    def roboFontDidSwitchCurrentGlyph(self, info):
-        if DEBUG:
-            print("roboFontDidSwitchCurrentGlyph", info["glyph"])
-        self.dglyph = info["glyph"]
-        self._curvePreview()
+    # def roboFontDidSwitchCurrentGlyph(self, info):
+    #     if DEBUG:
+    #         print("roboFontDidSwitchCurrentGlyph", info["glyph"])
+    #     self.dglyph = info["glyph"]
+    #     self._checkSecondarySelectors()
+    #     self._curvePreview()
 
     # def currentGlyphDidChangeOutline(self, info):
     #     print("currentGlyphDidChangeOutline", info["glyph"])
