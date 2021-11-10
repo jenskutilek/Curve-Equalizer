@@ -193,6 +193,7 @@ class CurveEqualizer(Subscriber, WindowController):
         self.dglyph = info["glyph"]
         self.glyphEditor = info["glyphEditor"]
         self.buildContainer(glyphEditor=self.glyphEditor)
+        self._checkSecondarySelectors()
         self._curvePreview()
 
     def glyphEditorDidOpen(self, info):
