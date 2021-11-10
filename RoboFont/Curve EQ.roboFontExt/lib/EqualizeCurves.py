@@ -531,4 +531,4 @@ class CurveEqualizer(Subscriber, WindowController):
 
 
 if __name__ == "__main__":
-    CurveEqualizer()
+    CurveEqualizer(currentGlyph=True)
