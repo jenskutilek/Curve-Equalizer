@@ -199,13 +199,11 @@ class CurveEqualizer(Subscriber, WindowController):
         if DEBUG:
             print("glyphEditorDidOpen", info)
         self.updateGlyphAndGlyphEditor(info)
-        self._curvePreview()
 
     def glyphEditorDidSetGlyph(self, info):
         if DEBUG:
             print("glyphEditorDidSetGlyph", info)
         self.updateGlyphAndGlyphEditor(info)
-        self._curvePreview()
 
     def glyphEditorWillClose(self, info):
         if DEBUG:
