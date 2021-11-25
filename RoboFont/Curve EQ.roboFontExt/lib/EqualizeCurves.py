@@ -37,6 +37,7 @@ from mojo.extensions import getExtensionDefault, setExtensionDefault
 from mojo.roboFont import CurrentGlyph
 from mojo.subscriber import Subscriber, WindowController
 
+from baseCurveEqualizer import BaseCurveEqualizer
 from EQExtensionID import extensionID
 from EQMethods import eqBalance, eqPercentage, eqSpline
 from EQMethods.geometry import getTriangleSides, isOnLeft, isOnRight
@@ -51,65 +52,8 @@ geometryViewWidth = 0.8
 handlePreviewSize = 1.2
 
 
-class CurveEqualizer(Subscriber, WindowController):
-    def build(self):
-        self.methods = {
-            0: "balance",
-            1: "free",
-            2: "hobby",
-        }
-
-        self.methodNames = [
-            "Balance",
-            "Adjust:",
-            "Hobby:",
-        ]
-
-        height = 108
-        sliderX = 76
-
-        self.w = vanilla.FloatingWindow(
-            posSize=(200, height),
-            title="Curve EQ",
-            minSize=(200, height + 16),
-            maxSize=(1000, height + 16),
-        )
-
-        y = 8
-        self.w.eqMethodSelector = vanilla.RadioGroup(
-            (8, y, -8, -36),
-            titles=self.methodNames,
-            callback=self._changeMethod,
-            sizeStyle="small",
-        )
-
-        y += 22
-        self.w.eqCurvatureSlider = vanilla.Slider(
-            (sliderX, y, -8, 17),
-            callback=self._changeCurvatureFree,
-            minValue=0.5,
-            maxValue=1.0,
-            value=0.75,  # Will be replaced by saved value
-            sizeStyle="small",
-        )
-
-        y += 25
-        self.w.eqHobbyTensionSlider = vanilla.Slider(
-            (sliderX, y, -8, 17),
-            tickMarkCount=5,
-            callback=self._changeTension,
-            minValue=0.5,
-            maxValue=1.0,
-            sizeStyle="small",
-        )
-
-        y = height - 32
-        self.w.eqSelectedButton = vanilla.Button(
-            (8, y, -8, 25),
-            "Equalize Selected",
-            callback=self._eqSelected,
-            sizeStyle="small",
-        )
+class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
+    def restore_state(self):
 
         # Restore saved state
 
@@ -144,9 +88,14 @@ class CurveEqualizer(Subscriber, WindowController):
         )
 
         self._setPreviewOptions()
+
         self.drawGeometry = getExtensionDefault(
             "%s.%s" % (extensionID, "drawGeometry"), False
         )
+
+    def build(self):
+        self.build_ui()
+        self.restore_state()
         self.dglyph = None
         self.container = None
 
@@ -288,6 +237,7 @@ class CurveEqualizer(Subscriber, WindowController):
                 print("Use existing layer")
         return layer
 
+    @objc.python_method
     def _setPreviewOptions(self):
         if self.method == "balance":
             if self.alwaysPreviewCurves:
@@ -326,41 +276,41 @@ class CurveEqualizer(Subscriber, WindowController):
 
     def windowWillClose(self, sender):
         setExtensionDefault(
-            "%s.%s" % (extensionID, "method"), self.w.eqMethodSelector.get()
+            "%s.%s" % (extensionID, "method"), self.w.group.eqMethodSelector.get()
         )
         setExtensionDefault(
             "%s.%s" % (extensionID, "curvatureFree"),
-            self.w.eqCurvatureSlider.get(),
+            self.w.group.eqCurvatureSlider.get(),
         )
         setExtensionDefault(
             "%s.%s" % (extensionID, "tension"),
-            self.w.eqHobbyTensionSlider.get(),
+            self.w.group.eqHobbyTensionSlider.get(),
         )
 
     def _checkSecondarySelectors(self):
         # Enable or disable slider/radio buttons
         if self.dglyph is None or not self.dglyph_selection:
-            self.w.eqMethodSelector.enable(False)
-            self.w.eqSelectedButton.enable(False)
-            self.w.eqCurvatureSlider.enable(False)
-            self.w.eqHobbyTensionSlider.enable(False)
+            self.w.group.eqMethodSelector.enable(False)
+            self.w.group.eqSelectedButton.enable(False)
+            self.w.group.eqCurvatureSlider.enable(False)
+            self.w.group.eqHobbyTensionSlider.enable(False)
             return
 
-        self.w.eqMethodSelector.enable(True)
-        self.w.eqSelectedButton.enable(True)
+        self.w.group.eqMethodSelector.enable(True)
+        self.w.group.eqSelectedButton.enable(True)
 
         if self.method == "adjust":
-            self.w.eqCurvatureSlider.enable(False)
-            self.w.eqHobbyTensionSlider.enable(False)
+            self.w.group.eqCurvatureSlider.enable(False)
+            self.w.group.eqHobbyTensionSlider.enable(False)
         elif self.method == "free":
-            self.w.eqCurvatureSlider.enable(True)
-            self.w.eqHobbyTensionSlider.enable(False)
+            self.w.group.eqCurvatureSlider.enable(True)
+            self.w.group.eqHobbyTensionSlider.enable(False)
         elif self.method == "hobby":
-            self.w.eqCurvatureSlider.enable(False)
-            self.w.eqHobbyTensionSlider.enable(True)
+            self.w.group.eqCurvatureSlider.enable(False)
+            self.w.group.eqHobbyTensionSlider.enable(True)
         else:
-            self.w.eqCurvatureSlider.enable(False)
-            self.w.eqHobbyTensionSlider.enable(False)
+            self.w.group.eqCurvatureSlider.enable(False)
+            self.w.group.eqHobbyTensionSlider.enable(False)
 
     def _drawGeometry(self):
         reference_glyph = self.dglyph
