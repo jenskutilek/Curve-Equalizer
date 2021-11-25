@@ -6,56 +6,15 @@ from AppKit import NSBundle, NSLog, NSMutableArray, NSNumber
 from GlyphsApp import Glyphs
 from GlyphsApp.plugins import FilterWithDialog
 
-from eqmath import BaseCurveEqualizer
-
-"""
-    Using Interface Builder (IB):
-
-    Your code communicates with the UI through
-    - IBOutlets (.py->GUI): values available to a UI element (e.g. a string for
-      a text field)
-    - IBActions (GUI->.py): methods in this class, triggered by buttons or
-      other UI elements
-
-    In order to make the Interface Builder items work, follow these steps:
-    1. Make sure you have your IBOutlets (other than _theView)
-       defined as class variables at the beginning of this controller class.
-    2. Immediately *before* the def statement of a method that is supposed to
-       be triggered by a UI action (e.g., setMyValue_() triggered by the My
-       Value field), put:
-        @objc.IBAction
-       Make sure the method name ends with an underscore, e.g. setValue_(),
-       otherwise the action will not be able to send its value to the class
-       method.
-    3. Open the .xib file in XCode, and add and arrange interface elements.
-    4. Add this .py file via File > Add Files..., Xcode will recognize
-       IBOutlets and IBACtions
-    5. In the left sidebar, choose Placeholders > File's Owner,
-       in the right sidebar, open the Identity inspector (3rd icon),
-       and put the name of this controller class in the Custom Class > Class
-       field
-    6. IBOutlets: Ctrl-drag from the File's Owner to a UI element (e.g. text
-       field),
-       and choose which outlet shall be linked to the UI element
-    7. IBActions: Ctrl-drag from a UI element (e.g. button) to the File’s Owner
-       in the left sidebar, and choose the class method the UI element is
-    supposed to trigger.
-       If you want a stepping field (change the value with up/downarrow),
-       then select the Entry Field, and set Identity Inspector > Custom Class
-       to:
-        GSSteppingTextField
-       ... and Attributes Inspector (top right, 4th icon) > Control > State to:
-        Continuous
-    8. Compile the .xib file to a .nib file with this Terminal command:
-        ibtool xxx.xib --compile xxx.nib
-       (Replace xxx by the name of your xib/nib)
-       Please note: Every time the .xib is changed, it has to be recompiled to
-       a .nib.
-       Check Console.app for error messages to see if everything went right.
-"""
+from baseCurveEqualizer import BaseCurveEqualizer
+from EQExtensionID import extensionID
 
 
-class CurveEQ(FilterWithDialog):
+def fullkey(subkey):
+    return f"{extensionID}.{subkey}"
+
+
+class CurveEQ(BaseCurveEqualizer, FilterWithDialog):
 
     # Definitions of IBOutlets
 
@@ -95,13 +54,15 @@ class CurveEQ(FilterWithDialog):
             "zh": "应用",
         })
 
-        # Load dialog from .nib (without .extension)
-        self.loadNib("IBdialog", __file__)
+        # Build UI
+        self.build_ui(useFloatingWindow=False)
+        self.dialog = self.w.group.getNSView()
 
     # On dialog show
     @objc.python_method
     def start(self):
         # Set default value
+        self.restore_state()
         Glyphs.registerDefault("de.kutilek.CurveHQ.freeAdjustMin", 10)
         Glyphs.registerDefault("de.kutilek.CurveHQ.freeAdjustMax", 100)
 
@@ -112,6 +73,54 @@ class CurveEQ(FilterWithDialog):
 
         # Set focus to text field
         # self.myTextField.becomeFirstResponder()
+
+    @objc.python_method
+    def restore_state(self):
+
+        # Restore saved state
+
+        # If we come in from an older version, the selected method index
+        # may be out of range
+        if not Glyphs.defaults[fullkey("method")]:
+            Glyphs.defaults[fullkey("method")] = 0
+        if Glyphs.defaults[fullkey("method")] >= len(self.methods):
+            Glyphs.defaults[fullkey("method")] = 0
+
+        self.w.group.eqMethodSelector.set(
+            Glyphs.defaults[fullkey("method")]
+        )
+        self.method = self.methods[self.w.group.eqMethodSelector.get()]
+
+        # default curvature for slider
+        if not Glyphs.defaults[fullkey("curvatureFree")]:
+            Glyphs.defaults[fullkey("curvatureFree")] = 0.5
+        self.w.group.eqCurvatureSlider.set(
+            Glyphs.defaults[fullkey("curvatureFree")]
+        )
+        self.curvatureFree = self.w.group.eqCurvatureSlider.get()
+
+        # default curvature for Hobby's spline tension slider
+        if not Glyphs.defaults[fullkey("tension")]:
+            Glyphs.defaults[fullkey("tension")] = 0.5
+        self.w.eqHobbyTensionSlider.set(
+            Glyphs.defaults[fullkey("tension")]
+        )
+        self.tension = self.w.eqHobbyTensionSlider.get()
+
+        # load preview options
+        if not Glyphs.defaults[fullkey("previewCurves")]:
+            Glyphs.defaults[fullkey("previewCurves")] = False
+        self.alwaysPreviewCurves = Glyphs.defaults[fullkey("previewCurves")]
+
+        if not Glyphs.defaults[fullkey("previewHandles")]:
+            Glyphs.defaults[fullkey("previewHandles")] = False
+        self.alwaysPreviewHandles = Glyphs.defaults[fullkey("previewHandles")]
+
+        self._setPreviewOptions()
+
+        if not Glyphs.defaults[fullkey("drawGeometry")]:
+            Glyphs.defaults[fullkey("drawGeometry")] = False
+        self.drawGeometry = Glyphs.defaults[fullkey("drawGeometry")]
 
     # def keyEquivalent(self):
     #     """
