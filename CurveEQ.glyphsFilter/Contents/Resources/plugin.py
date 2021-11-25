@@ -1,8 +1,7 @@
-#!/usr/bin/env python
 # encoding: utf-8
-
 import objc
-from AppKit import NSBundle, NSLog, NSMutableArray, NSNumber
+
+# from AppKit import NSMutableArray, NSNumber
 from GlyphsApp import Glyphs
 from GlyphsApp.plugins import FilterWithDialog
 
@@ -14,21 +13,7 @@ def fullkey(subkey):
     return f"{extensionID}.{subkey}"
 
 
-class CurveEQ(BaseCurveEqualizer, FilterWithDialog):
-
-    # Definitions of IBOutlets
-
-    # The NSView object from the User Interface. Keep this here!
-    dialog = objc.IBOutlet()
-
-    modeSelect = objc.IBOutlet()
-    adjustSlider = objc.IBOutlet()
-    hobbySlider = objc.IBOutlet()
-    freeAdjustMin = objc.IBOutlet()
-    freeAdjustMax = objc.IBOutlet()
-    tensionMin = objc.IBOutlet()
-    tensionMax = objc.IBOutlet()
-
+class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
     @objc.python_method
     def settings(self):
         self.menuName = Glyphs.localize({
@@ -62,17 +47,8 @@ class CurveEQ(BaseCurveEqualizer, FilterWithDialog):
     @objc.python_method
     def start(self):
         # Set default value
-        self.restore_state()
-        Glyphs.registerDefault("de.kutilek.CurveHQ.freeAdjustMin", 10)
-        Glyphs.registerDefault("de.kutilek.CurveHQ.freeAdjustMax", 100)
-
-        # Set value of text field
-        # self.myTextField.setStringValue_(
-        #     Glyphs.defaults['com.myname.myfilter.value']
-        # )
-
-        # Set focus to text field
-        # self.myTextField.becomeFirstResponder()
+        # self.restore_state()
+        pass
 
     @objc.python_method
     def restore_state(self):
@@ -102,10 +78,10 @@ class CurveEQ(BaseCurveEqualizer, FilterWithDialog):
         # default curvature for Hobby's spline tension slider
         if not Glyphs.defaults[fullkey("tension")]:
             Glyphs.defaults[fullkey("tension")] = 0.5
-        self.w.eqHobbyTensionSlider.set(
+        self.w.group.eqHobbyTensionSlider.set(
             Glyphs.defaults[fullkey("tension")]
         )
-        self.tension = self.w.eqHobbyTensionSlider.get()
+        self.tension = self.w.group.eqHobbyTensionSlider.get()
 
         # load preview options
         if not Glyphs.defaults[fullkey("previewCurves")]:
@@ -134,34 +110,31 @@ class CurveEQ(BaseCurveEqualizer, FilterWithDialog):
     #         self.logToConsole("keyEquivalent: %s" % str(e))
 
     # Action triggered by UI
-    @objc.IBAction
-    def adjustFree_(self, sender):
-        print("__adjustSlider_", sender.floatValue())
-        # Store value coming in from dialog
-        Glyphs.defaults['de.kutilek.CurveHQ.adjustFree'] = sender.floatValue()
+    # def adjustFree_(self, sender):
+    #     print("__adjustSlider_", sender.floatValue())
+    #     # Store value coming in from dialog
+    #     Glyphs.defaults['de.kutilek.CurveHQ.adjustFree'] = sender.floatValue()
 
-        # Trigger redraw
-        self.update()
+    #     # Trigger redraw
+    #     self.update()
 
-    @objc.IBAction
-    def adjustHobby_(self, sender):
-        print("__adjustHobby_", sender.floatValue())
-        # Store value coming in from dialog
-        Glyphs.defaults['de.kutilek.CurveHQ.adjustHobby'] = sender.floatValue()
+    # def adjustHobby_(self, sender):
+    #     print("__adjustHobby_", sender.floatValue())
+    #     # Store value coming in from dialog
+    #     Glyphs.defaults['de.kutilek.CurveHQ.adjustHobby'] = sender.floatValue()
 
-        # Trigger redraw
-        self.update()
+    #     # Trigger redraw
+    #     self.update()
 
-    @objc.IBAction
-    def selectMode_(self, sender):
-        print("__selectMode_", sender, sender.selectedRow())
-        try:
-            self.adjustSlider.setEnabled_(sender.selectedRow() == 0)
-            self.hobbySlider.setEnabled_(sender.selectedRow() == 1)
-            self.quadraticSlider.setEnabled_(sender.selectedRow() == 3)
+    # def selectMode_(self, sender):
+    #     print("__selectMode_", sender, sender.selectedRow())
+    #     try:
+    #         self.adjustSlider.setEnabled_(sender.selectedRow() == 0)
+    #         self.hobbySlider.setEnabled_(sender.selectedRow() == 1)
+    #         self.quadraticSlider.setEnabled_(sender.selectedRow() == 3)
 
-        except Exception as e:
-            self.logToConsole("selectMode_: %s" % str(e))
+    #     except Exception as e:
+    #         self.logToConsole("selectMode_: %s" % str(e))
 
     def processLayerWithValues(self, Layer, myValue, NochWas,):
         """
@@ -196,7 +169,7 @@ class CurveEQ(BaseCurveEqualizer, FilterWithDialog):
         #         )
 
         return
-
+        """
         try:
             # Create Preview in Edit View, and save & show original in
             # ShadowLayers:
@@ -234,23 +207,16 @@ class CurveEQ(BaseCurveEqualizer, FilterWithDialog):
             )
 
             # call the superclass to trigger the immediate redraw:
-            super(CurveEQ, self).process_(sender)
+            # super(CurveEQ, self).process_(sender)
         except Exception as e:
             self.logToConsole("process_: %s" % str(e))
-
-    def logToConsole(self, message):
         """
-        The variable "message" will be passed to Console.app.
-        Use self.logToConsole("bla bla") for debugging.
-        """
-        myLog = "Filter %s:\n%s" % (self.title(), message)
-        NSLog(myLog)
 
     @objc.python_method
     def generateCustomParameter(self):
-        return "%s; shift:%s;" % (
+        return "%s; adjustFree:%s;" % (
             self.__class__.__name__,
-            Glyphs.defaults["com.myname.myfilter.shift"]
+            Glyphs.defaults[fullkey("adjustFree")]
         )
 
     @objc.python_method
