@@ -25,6 +25,7 @@ Version history:
 1.0 by Jens Kutilek 2016-12
 1.1.0 by Jens Kutilek 2018-01-10
 2.0.0-dev by Jens Kutilek 2021-10-21
+2.0.1 by Jens Kutilek 2021-11-10
 
 http://www.kutilek.de/
 """
@@ -141,19 +142,18 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         self.dglyph = info["glyph"]
         self.glyphEditor = info["glyphEditor"]
         self.buildContainer(glyphEditor=self.glyphEditor)
+        self._checkSecondarySelectors()
         self._curvePreview()
 
     def glyphEditorDidOpen(self, info):
         if DEBUG:
             print("glyphEditorDidOpen", info)
         self.updateGlyphAndGlyphEditor(info)
-        self._curvePreview()
 
     def glyphEditorDidSetGlyph(self, info):
         if DEBUG:
             print("glyphEditorDidSetGlyph", info)
         self.updateGlyphAndGlyphEditor(info)
-        self._curvePreview()
 
     def glyphEditorWillClose(self, info):
         if DEBUG:
@@ -163,20 +163,21 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         self.buildContainer(glyphEditor=None)
         self._checkSecondarySelectors()
 
-    def roboFontDidSwitchCurrentGlyph(self, info):
-        if DEBUG:
-            print("roboFontDidSwitchCurrentGlyph", info["glyph"])
-        self.dglyph = info["glyph"]
-        self._curvePreview()
+    # def roboFontDidSwitchCurrentGlyph(self, info):
+    #     if DEBUG:
+    #         print("roboFontDidSwitchCurrentGlyph", info["glyph"])
+    #     self.dglyph = info["glyph"]
+    #     self._checkSecondarySelectors()
+    #     self._curvePreview()
 
     # def currentGlyphDidChangeOutline(self, info):
     #     print("currentGlyphDidChangeOutline", info["glyph"])
     #     self.dglyph = info["glyph"]
     #     self._curvePreview()
 
-    def currentGlyphDidChangeSelection(self, info):
+    def glyphDidChangeSelection(self, info):
         if DEBUG:
-            print("currentGlyphDidChangeSelection", info["glyph"])
+            print("glyphDidChangeSelection", info["glyph"])
         self.dglyph = info["glyph"]
         self._checkSecondarySelectors()
         self._curvePreview()
@@ -480,4 +481,4 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
 
 
 if __name__ == "__main__":
-    CurveEqualizer()
+    CurveEqualizer(currentGlyph=True)
