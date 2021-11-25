@@ -54,7 +54,8 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
     def start(self):
         # Set default value
         self.restore_state()
-        self.update()
+        self.check_ui_activation()
+        # self.update()
 
     @objc.python_method
     def restore_state(self):
