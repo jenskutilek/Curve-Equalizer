@@ -36,7 +36,7 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
         # Word on Run Button (default: Apply)
         self.actionButtonLabel = Glyphs.localize({
             "en": "Equalize selected",
-            "de": "Anwenden",
+            "de": "Auf Auswahl anwenden",
             "fr": "Appliquer",
             "es": "Aplicar",
             "pt": "Aplique",
