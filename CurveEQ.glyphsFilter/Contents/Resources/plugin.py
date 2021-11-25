@@ -74,7 +74,7 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
             Glyphs.defaults[METHOD_KEY]
         )
         self.method = self.methods[
-            self.paletteView.group.eqMethodSelector.get()
+            Glyphs.defaults[METHOD_KEY]
         ]
 
         # default curvature for slider
