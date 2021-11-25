@@ -186,13 +186,6 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
         eqSpline(p0, p1, p2, p3, Glyphs.defaults[TENSION_KEY])
 
     @objc.python_method
-    def generateCustomParameter(self):
-        return "%s; adjustFree:%s;" % (
-            self.__class__.__name__,
-            Glyphs.defaults[fullkey("adjustFree")]
-        )
-
-    @objc.python_method
     def __file__(self):
         """Please leave this method unchanged"""
         return __file__
