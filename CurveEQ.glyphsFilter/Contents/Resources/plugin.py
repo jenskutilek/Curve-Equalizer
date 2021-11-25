@@ -80,7 +80,6 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
         self.paletteView.group.eqCurvatureSlider.set(
             Glyphs.defaults[ADJUST_FREE_KEY]
         )
-        self.curvatureFree = self.w.group.eqCurvatureSlider.get()
 
         # default curvature for Hobby's spline tension slider
         if not Glyphs.defaults[TENSION_KEY]:
@@ -88,7 +87,6 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
         self.paletteView.group.eqHobbyTensionSlider.set(
             Glyphs.defaults[TENSION_KEY]
         )
-        self.tension = self.w.group.eqHobbyTensionSlider.get()
 
         # load preview options
         if not Glyphs.defaults[fullkey("previewCurves")]:
