@@ -67,3 +67,17 @@ class BaseCurveEqualizer:
                 callback=self._eqSelected,
                 sizeStyle="small",
             )
+
+    def _setPreviewOptions(self):
+        if self.method == "balance":
+            if self.alwaysPreviewCurves:
+                self.previewCurves = True
+            else:
+                self.previewCurves = False
+            self.previewHandles = True
+        else:
+            self.previewCurves = True
+            if self.alwaysPreviewHandles:
+                self.previewHandles = True
+            else:
+                self.previewHandles = False
