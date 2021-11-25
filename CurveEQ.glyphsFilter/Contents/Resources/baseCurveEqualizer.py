@@ -1,14 +1,7 @@
-import objc
-
 from vanilla import Button, FloatingWindow, Group, RadioGroup, Slider, Window
-
-from EQExtensionID import extensionID
-from EQMethods import eqBalance, eqPercentage, eqSpline
-from EQMethods.geometry import getTriangleSides, isOnLeft, isOnRight
 
 
 class BaseCurveEqualizer:
-    @objc.python_method
     def build_ui(self, useFloatingWindow=True):
         self.methods = {
             0: "balance",
