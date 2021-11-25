@@ -30,8 +30,6 @@ Version history:
 http://www.kutilek.de/
 """
 
-import vanilla
-
 from math import atan2, cos, sin
 
 from mojo.extensions import getExtensionDefault, setExtensionDefault
@@ -238,7 +236,6 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                 print("Use existing layer")
         return layer
 
-    @objc.python_method
     def _setPreviewOptions(self):
         if self.method == "balance":
             if self.alwaysPreviewCurves:
@@ -277,7 +274,9 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
 
     def windowWillClose(self, sender):
         setExtensionDefault(
-            "%s.%s" % (extensionID, "method"), self.w.group.eqMethodSelector.get()
+            "%s.%s" % (
+                extensionID, "method"
+            ), self.w.group.eqMethodSelector.get()
         )
         setExtensionDefault(
             "%s.%s" % (extensionID, "curvatureFree"),
