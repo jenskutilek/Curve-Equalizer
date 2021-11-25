@@ -1,9 +1,8 @@
 # encoding: utf-8
 import objc
-import traceback
 
-from AppKit import NSMutableArray
-from GlyphsApp import Glyphs, GSCURVE, GSLINE, GSPath, LogError
+# from AppKit import NSMutableArray, NSNumber
+from GlyphsApp import Glyphs, GSCURVE, GSLINE
 from GlyphsApp.plugins import FilterWithDialog
 
 from baseCurveEqualizer import BaseCurveEqualizer
@@ -186,43 +185,6 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
             [self.adjust_tension_segment(s) for s in segments]
         else:
             print(f"WARNING: Unknown equalize method: {self.method}")
-
-    def process_(self, sender):
-        """
-        This method gets called when the user invokes the Dialog.
-        """
-        # From https://github.com/schriftgestalt/GlyphsSDK/blob/87b762f0f03ee20312d72096856a309bbb6dc892/ObjectWrapper/GlyphsApp/plugins.py#L587
-        try:
-            # Create Preview in Edit View, and save & show original in ShadowLayers:
-            ShadowLayers = self.valueForKey_("shadowLayers")
-            Layers = self.valueForKey_("layers")
-            checkSelection = True
-            for k in range(len(ShadowLayers)):
-                ShadowLayer = ShadowLayers[k]
-                Layer = Layers[k]
-                Layer.setShapes_(NSMutableArray.alloc().initWithArray_copyItems_(ShadowLayer.pyobjc_instanceMethods.shapes(), True))
-                Layer.clearSelection()
-                if len(ShadowLayer.selection) > 0 and checkSelection:
-                    for idx in range(len(ShadowLayer.shapes)):
-                        currShadowPath = ShadowLayer.paths[idx]
-                        if isinstance(currShadowPath, GSPath):
-                            currLayerPath = Layer.shapes[idx]
-                            for j in range(len(currShadowPath.nodes)):
-                                currShadowNode = currShadowPath.nodes[j]
-                                if currShadowNode in ShadowLayer.selection:
-                                    Layer.addSelection_(currLayerPath.nodes[j])
-
-                self.filter(Layer, True, {})  # add your class variables here
-                Layer.clearSelection()
-
-            # Safe the values in the FontMaster. But could be saved in UserDefaults, too.
-            # FontMaster = self.valueForKey_("fontMaster")
-            # FontMaster.userData["____myValue____"] = NSNumber.numberWithInteger_(self.____myValue____)
-
-            # call the superclass to trigger the immediate redraw:
-            objc.super(FilterWithDialog, self).process_(sender)
-        except:
-            LogError(traceback.format_exc())
 
     @objc.python_method
     def balance_segment(self, segment):
