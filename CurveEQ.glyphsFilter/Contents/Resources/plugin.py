@@ -135,8 +135,29 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
 
     @objc.python_method
     def _changeMethod(self, sender):
-        Glyphs.defaults[METHOD_KEY] = sender.get()
-        self.update()
+        i = sender.get()
+        m = self.methodNames[i]
+        if m != self.method:
+            self.method = m
+            Glyphs.defaults[METHOD_KEY] = i
+            self.check_ui_activation()
+            self.update()
+
+    @objc.python_method
+    def check_ui_activation(self):
+        m = self.method
+        if m == "balance":
+            self.paletteView.group.eqCurvatureSlider.enable(False)
+            self.paletteView.group.eqHobbyTensionSlider.enable(False)
+        elif m == "free":
+            self.paletteView.group.eqCurvatureSlider.enable(True)
+            self.paletteView.group.eqHobbyTensionSlider.enable(False)
+        elif m == "hobby":
+            self.paletteView.group.eqCurvatureSlider.enable(False)
+            self.paletteView.group.eqHobbyTensionSlider.enable(True)
+        else:
+            self.paletteView.group.eqCurvatureSlider.enable(True)
+            self.paletteView.group.eqHobbyTensionSlider.enable(True)
 
     @objc.python_method
     def _changeCurvatureFree(self, sender):
