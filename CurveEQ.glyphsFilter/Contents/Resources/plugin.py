@@ -56,6 +56,33 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
         self.restore_state()
         self.update()
 
+    @objc.method
+    def read_selection(self, layer):
+        self.segments = []
+        for p in layer.paths:
+            segment = []
+            seenOnCurve = False
+            for n in p.nodes:
+                if n.selected:
+                    if seenOnCurve:
+                        if n.type == GSCURVE:
+                            if segment:
+                                # End segment
+                                segment.append(n)
+                                self.segments.append(segment)
+                                segment = [n]
+                        else:
+                            segment.append(n)
+                    else:
+                        if n.type in (GSCURVE, GSLINE):
+                            # Start of selected segment
+                            seenOnCurve = True
+                            segment.append(n)
+                else:
+                    if segment:
+                        # Remove "dangling" selection
+                        segment = []
+
     @objc.python_method
     def restore_state(self):
 
@@ -129,37 +156,14 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
             print("Curve Equalizer should not be used on export.")
             return
 
-        segments = []
-        for p in layer.paths:
-            segment = []
-            seenOnCurve = False
-            for n in p.nodes:
-                if n.selected:
-                    if seenOnCurve:
-                        if n.type == GSCURVE:
-                            if segment:
-                                # End segment
-                                segment.append(n)
-                                segments.append(segment)
-                                segment = [n]
-                        else:
-                            segment.append(n)
-                    else:
-                        if n.type in (GSCURVE, GSLINE):
-                            # Start of selected segment
-                            seenOnCurve = True
-                            segment.append(n)
-                else:
-                    if segment:
-                        # Remove "dangling" selection
-                        segment = []
+        self.read_selection(layer)
 
         if self.method == "balance":
-            [self.balance_segment(s) for s in segments]
+            [self.balance_segment(s) for s in self.segments]
         elif self.method == "free":
-            [self.adjust_segment(s) for s in segments]
+            [self.adjust_segment(s) for s in self.segments]
         elif self.method == "hobby":
-            [self.adjust_tension_segment(s) for s in segments]
+            [self.adjust_tension_segment(s) for s in self.segments]
         else:
             print(f"WARNING: Unknown equalize method: {self.method}")
 
