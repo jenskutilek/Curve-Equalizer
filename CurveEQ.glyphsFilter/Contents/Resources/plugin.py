@@ -2,11 +2,12 @@
 import objc
 
 # from AppKit import NSMutableArray, NSNumber
-from GlyphsApp import Glyphs
+from GlyphsApp import Glyphs, GSCURVE, GSLINE
 from GlyphsApp.plugins import FilterWithDialog
 
 from baseCurveEqualizer import BaseCurveEqualizer
 from EQExtensionID import extensionID
+from EQMethods import eqBalance, eqPercentage, eqSpline
 
 
 def fullkey(subkey):
@@ -103,68 +104,82 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
             Glyphs.defaults[fullkey("drawGeometry")] = False
         self.drawGeometry = Glyphs.defaults[fullkey("drawGeometry")]
 
-    # Actual filter
+    # Callbacks
+
+    @objc.python_method
+    def _changeMethod(self, sender):
+        Glyphs.defaults[METHOD_KEY] = sender.get()
+        self.update()
+
+    @objc.python_method
+    def _changeCurvatureFree(self, sender):
+        Glyphs.defaults[ADJUST_FREE_KEY] = sender.get()
+        self.update()
+
+    @objc.python_method
+    def _changeTension(self, sender):
+        Glyphs.defaults[TENSION_KEY] = sender.get()
+        self.update()
+
     @objc.python_method
     def filter(self, layer, inEditView, customParameters):
 
         # Called on font export, get value from customParameters
-        if "adjustFree" in customParameters:
-            value = customParameters["adjustFree"]
+        if customParameters:
+            print("Curve Equalizer should not be used on export.")
+            return
 
-        # Called through UI, use stored value
+        segments = []
+        for p in layer.paths:
+            segment = []
+            seenOnCurve = False
+            for n in p.nodes:
+                if n.selected:
+                    if seenOnCurve:
+                        if n.type == GSCURVE:
+                            if segment:
+                                # End segment
+                                segment.append(n)
+                                segments.append(segment)
+                                segment = [n]
+                        else:
+                            segment.append(n)
+                    else:
+                        if n.type in (GSCURVE, GSLINE):
+                            # Start of selected segment
+                            seenOnCurve = True
+                            segment.append(n)
+                else:
+                    if segment:
+                        # Remove "dangling" selection
+                        segment = []
+
+        if self.method == "balance":
+            [self.balance_segment(s) for s in segments]
+        elif self.method == "free":
+            [self.adjust_segment(s) for s in segments]
+        elif self.method == "hobby":
+            [self.adjust_tension_segment(s) for s in segments]
         else:
-            value = float(Glyphs.defaults["de.kutilek.CurveEQ.adjustFree"])
+            print(f"WARNING: Unknown equalize method: {self.method}")
 
-        # Shift all nodes in x and y direction by the value
-        # for path in layer.paths:
-        #     for node in path.nodes:
-        #         node.position = NSPoint(
-        #             node.position.x + value, node.position.y + value
-        #         )
+    @objc.python_method
+    def balance_segment(self, segment):
+        # Balance handles
+        p0, p1, p2, p3 = segment
+        eqBalance(p0, p1, p2, p3)
 
-        return
-        """
-        try:
-            # Create Preview in Edit View, and save & show original in
-            # ShadowLayers:
-            ShadowLayers = self.valueForKey_("shadowLayers")
-            Layers = self.valueForKey_("layers")
-            checkSelection = True
-            for k in range(len(ShadowLayers)):
-                ShadowLayer = ShadowLayers[k]
-                Layer = Layers[k]
-                Layer.setPaths_(
-                    NSMutableArray.alloc().initWithArray_copyItems_(
-                        ShadowLayer.pyobjc_instanceMethods.paths(), True
-                    )
-                )
-                Layer.setSelection_(NSMutableArray.array())
-                if len(ShadowLayer.selection()) > 0 and checkSelection:
-                    for i in range(len(ShadowLayer.paths)):
-                        currShadowPath = ShadowLayer.paths[i]
-                        currLayerPath = Layer.paths[i]
-                        for j in range(len(currShadowPath.nodes)):
-                            currShadowNode = currShadowPath.nodes[j]
-                            if ShadowLayer.selection().containsObject_(
-                                currShadowNode
-                            ):
-                                Layer.addSelection_(currLayerPath.nodes[j])
-                # add your class variables here
-                self.processLayerWithValues(Layer, self.myValue)
-            Layer.clearSelection()
+    @objc.python_method
+    def adjust_segment(self, segment):
+        # Adjust free
+        p0, p1, p2, p3 = segment
+        eqPercentage(p0, p1, p2, p3, Glyphs.defaults[ADJUST_FREE_KEY])
 
-            # Safe the values in the FontMaster. But could be saved in
-            # UserDefaults, too.
-            FontMaster = self.valueForKey_("fontMaster")
-            FontMaster.userData["myValue"] = NSNumber.numberWithInteger_(
-                self.myValue
-            )
-
-            # call the superclass to trigger the immediate redraw:
-            # super(CurveEQ, self).process_(sender)
-        except Exception as e:
-            self.logToConsole("process_: %s" % str(e))
-        """
+    @objc.python_method
+    def adjust_tension_segment(self, segment):
+        # Adjust Hobby
+        p0, p1, p2, p3 = segment
+        eqSpline(p0, p1, p2, p3, Glyphs.defaults[TENSION_KEY])
 
     @objc.python_method
     def generateCustomParameter(self):
