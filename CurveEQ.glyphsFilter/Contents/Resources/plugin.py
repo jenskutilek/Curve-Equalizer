@@ -40,8 +40,8 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
         })
 
         # Build UI
-        self.build_ui(useFloatingWindow=False)
-        self.dialog = self.w.group.getNSView()
+        self.build_ui()
+        self.dialog = self.paletteView.group.getNSView()
 
     # On dialog show
     @objc.python_method
