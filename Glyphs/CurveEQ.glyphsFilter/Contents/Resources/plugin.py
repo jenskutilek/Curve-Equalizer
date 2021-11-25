@@ -3,7 +3,7 @@
 
 import objc
 from AppKit import NSBundle, NSLog, NSMutableArray, NSNumber
-from GlyphsApp import *
+from GlyphsApp import Glyphs
 from GlyphsApp.plugins import FilterWithDialog
 
 from eqmath import BaseCurveEqualizer
@@ -56,166 +56,92 @@ from eqmath import BaseCurveEqualizer
 
 
 class CurveEQ(FilterWithDialog):
-    """
-    All 'myValue' and 'myValueField' references are just an example.
-    They correspond to the 'My Value' field in the .xib file.
-    Replace and add your own class variables.
-    """
+
+    # Definitions of IBOutlets
+
+    # The NSView object from the User Interface. Keep this here!
+    dialog = objc.IBOutlet()
+
     modeSelect = objc.IBOutlet()
     adjustSlider = objc.IBOutlet()
     hobbySlider = objc.IBOutlet()
-    quadraticSlider = objc.IBOutlet()
     freeAdjustMin = objc.IBOutlet()
     freeAdjustMax = objc.IBOutlet()
     tensionMin = objc.IBOutlet()
     tensionMax = objc.IBOutlet()
 
-    def init(self):
-        try:
-            self.eq = BaseCurveEqualizer()
-            NSBundle.loadNibNamed_owner_("CurveEQ", self)
-            return self
-        except Exception as e:
-            self.logToConsole("init: %s" % str(e))
+    @objc.python_method
+    def settings(self):
+        self.menuName = Glyphs.localize({
+            "en": "Curve Equalizer",
+            "de": "Kurven-Equalizer",
+            # "fr": "Mon filtre",
+            # "es": "Mi filtro",
+            # "pt": "Meu filtro",
+            # "jp": "私のフィルター",
+            # "ko": "내 필터",
+            # "zh": "我的过滤器",
+        })
 
-    def interfaceVersion(self):
-        """
-        Distinguishes the API version the plugin was built for.
-        Return 1.
-        """
-        try:
-            return 1
-        except Exception as e:
-            self.logToConsole("interfaceVersion: %s" % str(e))
+        # Word on Run Button (default: Apply)
+        self.actionButtonLabel = Glyphs.localize({
+            "en": "Equalize selected",
+            "de": "Anwenden",
+            "fr": "Appliquer",
+            "es": "Aplicar",
+            "pt": "Aplique",
+            "jp": "申し込む",
+            "ko": "대다",
+            "zh": "应用",
+        })
 
-    def title(self):
-        """
-        This is the name as it appears in the menu
-        and in the title of the dialog window.
-        """
-        try:
-            return "Curve Equalizer"
-        except Exception as e:
-            self.logToConsole("title: %s" % str(e))
+        # Load dialog from .nib (without .extension)
+        self.loadNib("IBdialog", __file__)
 
-    def actionName(self):
-        """
-        This is the title of the button in the settings dialog.
-        Use something descriptive like 'Move', 'Rotate', or at least 'Apply'.
-        """
-        try:
-            return "Equalize selected"
-        except Exception as e:
-            self.logToConsole("actionName: %s" % str(e))
+    # On dialog show
+    @objc.python_method
+    def start(self):
+        # Set default value
+        Glyphs.registerDefault("de.kutilek.CurveHQ.freeAdjustMin", 10)
+        Glyphs.registerDefault("de.kutilek.CurveHQ.freeAdjustMax", 100)
 
-    def keyEquivalent(self):
-        """
-        The key together with Cmd+Shift will be the shortcut for the filter.
-        Return None if you do not want to set a shortcut.
-        Users can set their own shortcuts in System Prefs.
-        """
-        try:
-            return None
-        except Exception as e:
-            self.logToConsole("keyEquivalent: %s" % str(e))
+        # Set value of text field
+        # self.myTextField.setStringValue_(
+        #     Glyphs.defaults['com.myname.myfilter.value']
+        # )
 
-    def setup(self):
-        try:
-            """
-            Prepares and pre-fills the dialog fields.
-            """
-            super(CurveEQ, self).setup()
-            # FontMaster = self.valueForKey_("fontMaster")
-            # NSUserDefaults.standardUserDefaults().registerDefaults_(
-            #     {
-            #         "de.kutilek.CurveHQ.freeAdjustMin": 10,
-            #         "de.kutilek.CurveHQ.freeAdjustMax":100
-            #     }
-            # )
-            # These 2 lines look for saved values (the last ones entered),
-            # 15.0 is a sample default value.
-            # Do this for each value field in your dialog:
-            # self.myValue = self.setDefaultFloatValue(
-            #     "myValue", 15.0, FontMaster
-            # )
-            # self.myValueField.setFloatValue_(self.myValue)
+        # Set focus to text field
+        # self.myTextField.becomeFirstResponder()
 
-            self.process_(None)
-            return None
-        except Exception as e:
-            self.logToConsole("setup: %s" % str(e))
-            # if something goes wrong, you can return an NSError object with
-            # details
+    # def keyEquivalent(self):
+    #     """
+    #     The key together with Cmd+Shift will be the shortcut for the filter.
+    #     Return None if you do not want to set a shortcut.
+    #     Users can set their own shortcuts in System Prefs.
+    #     """
+    #     try:
+    #         return None
+    #     except Exception as e:
+    #         self.logToConsole("keyEquivalent: %s" % str(e))
 
-    def setDefaultFloatValue(self, userDataKey, defaultValue, FontMaster):
-        """
-        Returns either the stored or default value for the given userDataKey.
-        Assumes a floating point value. For use in self.setup().
-        """
-        try:
-            if userDataKey in FontMaster.userData:
-                return FontMaster.userData[userDataKey].floatValue()
-            else:
-                return defaultValue
-        except Exception as e:
-            self.logToConsole("setDefaultFloatValue: %s" % str(e))
-
-    def setDefaultIntegerValue(self, userDataKey, defaultValue, FontMaster):
-        """
-        Returns either the stored or default value for the given userDataKey.
-        Assumes an integer value. For use in self.setup().
-        """
-        try:
-            if userDataKey in FontMaster.userData:
-                return FontMaster.userData[userDataKey].integerValue()
-            else:
-                return defaultValue
-        except Exception as e:
-            self.logToConsole("setDefaultIntegerValue: %s" % str(e))
-
+    # Action triggered by UI
     @objc.IBAction
     def adjustFree_(self, sender):
-        """
-        Called whenever the corresponding dialog field is changed.
-        Gets the contents of the field and puts it into a class variable.
-        Add methods like this for each option in the dialog.
-        Important: the method name must end with an underscore, e.g.,
-        setValue_(), otherwise the dialog action will not be able to connect to
-        it.
-        """
         print("__adjustSlider_", sender.floatValue())
-        return
-        try:
-            myValue = sender.floatValue()
-            if myValue != self.myValue:
-                self.myValue = myValue
-                self.process_(None)
-        except Exception as e:
-            self.logToConsole("adjustFree_: %s" % str(e))
+        # Store value coming in from dialog
+        Glyphs.defaults['de.kutilek.CurveHQ.adjustFree'] = sender.floatValue()
+
+        # Trigger redraw
+        self.update()
 
     @objc.IBAction
     def adjustHobby_(self, sender):
         print("__adjustHobby_", sender.floatValue())
-        return
-        try:
-            myValue = sender.floatValue()
-            if myValue != self.myValue:
-                self.myValue = myValue
-                self.process_(None)
-        except Exception as e:
-            self.logToConsole("adjustHobby_: %s" % str(e))
+        # Store value coming in from dialog
+        Glyphs.defaults['de.kutilek.CurveHQ.adjustHobby'] = sender.floatValue()
 
-    @objc.IBAction
-    def adjustQuadratic_(self, sender):
-        print("__adjustQuadratic_", sender.floatValue())
-        return
-        try:
-            myValue = sender.floatValue()
-            if myValue != self.myValue:
-                self.myValue = myValue
-                self.process_(None)
-        except Exception as e:
-            self.logToConsole("adjustQuadratic_: %s" % str(e))
+        # Trigger redraw
+        self.update()
 
     @objc.IBAction
     def selectMode_(self, sender):
@@ -224,12 +150,7 @@ class CurveEQ(FilterWithDialog):
             self.adjustSlider.setEnabled_(sender.selectedRow() == 0)
             self.hobbySlider.setEnabled_(sender.selectedRow() == 1)
             self.quadraticSlider.setEnabled_(sender.selectedRow() == 3)
-            return
 
-            myValue = sender.floatValue()
-            if myValue != self.myValue:
-                self.myValue = myValue
-                self.process_(None)
         except Exception as e:
             self.logToConsole("selectMode_: %s" % str(e))
 
@@ -246,11 +167,27 @@ class CurveEQ(FilterWithDialog):
         except Exception as e:
             self.logToConsole("processLayerWithValues: %s" % str(e))
 
-    def process_(self, sender):
-        """
-        This method gets called when the user invokes the Dialog.
-        """
+    # Actual filter
+    @objc.python_method
+    def filter(self, layer, inEditView, customParameters):
+
+        # Called on font export, get value from customParameters
+        if "adjustFree" in customParameters:
+            value = customParameters["adjustFree"]
+
+        # Called through UI, use stored value
+        else:
+            value = float(Glyphs.defaults["de.kutilek.CurveEQ.adjustFree"])
+
+        # Shift all nodes in x and y direction by the value
+        # for path in layer.paths:
+        #     for node in path.nodes:
+        #         node.position = NSPoint(
+        #             node.position.x + value, node.position.y + value
+        #         )
+
         return
+
         try:
             # Create Preview in Edit View, and save & show original in
             # ShadowLayers:
@@ -294,8 +231,20 @@ class CurveEQ(FilterWithDialog):
 
     def logToConsole(self, message):
         """
-        The variable 'message' will be passed to Console.app.
+        The variable "message" will be passed to Console.app.
         Use self.logToConsole("bla bla") for debugging.
         """
         myLog = "Filter %s:\n%s" % (self.title(), message)
         NSLog(myLog)
+
+    @objc.python_method
+    def generateCustomParameter(self):
+        return "%s; shift:%s;" % (
+            self.__class__.__name__,
+            Glyphs.defaults["com.myname.myfilter.shift"]
+        )
+
+    @objc.python_method
+    def __file__(self):
+        """Please leave this method unchanged"""
+        return __file__
