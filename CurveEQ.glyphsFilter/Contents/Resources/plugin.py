@@ -109,7 +109,7 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
     @objc.python_method
     def _changeMethod(self, sender):
         i = sender.get()
-        m = self.methodNames[i]
+        m = self.methods[i]
         if m != self.method:
             self.method = m
             Glyphs.defaults[METHOD_KEY] = i
