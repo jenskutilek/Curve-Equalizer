@@ -13,6 +13,11 @@ def fullkey(subkey):
     return f"{extensionID}.{subkey}"
 
 
+METHOD_KEY = fullkey("method")
+ADJUST_FREE_KEY = fullkey("curvatureFree")
+TENSION_KEY = fullkey("tension")
+
+
 class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
     @objc.python_method
     def settings(self):
@@ -47,8 +52,8 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
     @objc.python_method
     def start(self):
         # Set default value
-        # self.restore_state()
-        pass
+        self.restore_state()
+        self.update()
 
     @objc.python_method
     def restore_state(self):
@@ -57,29 +62,31 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
 
         # If we come in from an older version, the selected method index
         # may be out of range
-        if not Glyphs.defaults[fullkey("method")]:
-            Glyphs.defaults[fullkey("method")] = 0
-        if Glyphs.defaults[fullkey("method")] >= len(self.methods):
-            Glyphs.defaults[fullkey("method")] = 0
+        if not Glyphs.defaults[METHOD_KEY]:
+            Glyphs.defaults[METHOD_KEY] = 0
+        if Glyphs.defaults[METHOD_KEY] >= len(self.methods):
+            Glyphs.defaults[METHOD_KEY] = 0
 
-        self.w.group.eqMethodSelector.set(
-            Glyphs.defaults[fullkey("method")]
+        self.paletteView.group.eqMethodSelector.set(
+            Glyphs.defaults[METHOD_KEY]
         )
-        self.method = self.methods[self.w.group.eqMethodSelector.get()]
+        self.method = self.methods[
+            self.paletteView.group.eqMethodSelector.get()
+        ]
 
         # default curvature for slider
-        if not Glyphs.defaults[fullkey("curvatureFree")]:
-            Glyphs.defaults[fullkey("curvatureFree")] = 0.5
-        self.w.group.eqCurvatureSlider.set(
-            Glyphs.defaults[fullkey("curvatureFree")]
+        if not Glyphs.defaults[ADJUST_FREE_KEY]:
+            Glyphs.defaults[ADJUST_FREE_KEY] = 0.5
+        self.paletteView.group.eqCurvatureSlider.set(
+            Glyphs.defaults[ADJUST_FREE_KEY]
         )
         self.curvatureFree = self.w.group.eqCurvatureSlider.get()
 
         # default curvature for Hobby's spline tension slider
-        if not Glyphs.defaults[fullkey("tension")]:
-            Glyphs.defaults[fullkey("tension")] = 0.5
-        self.w.group.eqHobbyTensionSlider.set(
-            Glyphs.defaults[fullkey("tension")]
+        if not Glyphs.defaults[TENSION_KEY]:
+            Glyphs.defaults[TENSION_KEY] = 0.5
+        self.paletteView.group.eqHobbyTensionSlider.set(
+            Glyphs.defaults[TENSION_KEY]
         )
         self.tension = self.w.group.eqHobbyTensionSlider.get()
 
