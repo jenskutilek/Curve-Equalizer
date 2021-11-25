@@ -105,57 +105,6 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
             Glyphs.defaults[fullkey("drawGeometry")] = False
         self.drawGeometry = Glyphs.defaults[fullkey("drawGeometry")]
 
-    # def keyEquivalent(self):
-    #     """
-    #     The key together with Cmd+Shift will be the shortcut for the filter.
-    #     Return None if you do not want to set a shortcut.
-    #     Users can set their own shortcuts in System Prefs.
-    #     """
-    #     try:
-    #         return None
-    #     except Exception as e:
-    #         self.logToConsole("keyEquivalent: %s" % str(e))
-
-    # Action triggered by UI
-    # def adjustFree_(self, sender):
-    #     print("__adjustSlider_", sender.floatValue())
-    #     # Store value coming in from dialog
-    #     Glyphs.defaults['de.kutilek.CurveHQ.adjustFree'] = sender.floatValue()
-
-    #     # Trigger redraw
-    #     self.update()
-
-    # def adjustHobby_(self, sender):
-    #     print("__adjustHobby_", sender.floatValue())
-    #     # Store value coming in from dialog
-    #     Glyphs.defaults['de.kutilek.CurveHQ.adjustHobby'] = sender.floatValue()
-
-    #     # Trigger redraw
-    #     self.update()
-
-    # def selectMode_(self, sender):
-    #     print("__selectMode_", sender, sender.selectedRow())
-    #     try:
-    #         self.adjustSlider.setEnabled_(sender.selectedRow() == 0)
-    #         self.hobbySlider.setEnabled_(sender.selectedRow() == 1)
-    #         self.quadraticSlider.setEnabled_(sender.selectedRow() == 3)
-
-    #     except Exception as e:
-    #         self.logToConsole("selectMode_: %s" % str(e))
-
-    def processLayerWithValues(self, Layer, myValue, NochWas,):
-        """
-        This is where your code for processing each layer goes.
-        This method is the one eventually called by either the Custom Parameter
-        or Dialog UI. Don't call your class variables here, just add a method
-        argument for each Dialog option.
-        """
-        try:
-            # do stuff with Layer and your arguments
-            pass
-        except Exception as e:
-            self.logToConsole("processLayerWithValues: %s" % str(e))
-
     # Actual filter
     @objc.python_method
     def filter(self, layer, inEditView, customParameters):
