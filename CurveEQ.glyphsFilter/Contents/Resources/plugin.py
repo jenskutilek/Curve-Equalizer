@@ -151,7 +151,7 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
             print("Curve Equalizer should not be used on export.")
             return
 
-        print(layer.selection)
+        # print(layer.selection)
 
         segments = []
         segment = []
@@ -172,10 +172,10 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
                     seenOnCurve = True
                     segment.append(n)
 
-        for s in segments:
-            print("Segment:")
-            for n in s:
-                print("   ", n.x, n.y, n.type)
+        # for s in segments:
+        #     print("Segment:")
+        #     for n in s:
+        #         print("   ", n.x, n.y, n.type)
 
         if self.method == "balance":
             [self.balance_segment(s) for s in segments]
