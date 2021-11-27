@@ -1,5 +1,7 @@
 “Curve EQ” is a font editor plugin that lets you quickly balance the Bézier handles of a curve, or change its curvature interactively. There are versions for RoboFont and Glyphs.
 
+See the [docs](https://jenskutilek.github.io/Curve-Equalizer/) for an explanation of how Curve Equalizer works.
+
 
 Curve Equalizer for RoboFont 4
 ==============================
