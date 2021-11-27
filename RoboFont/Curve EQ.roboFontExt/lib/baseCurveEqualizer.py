@@ -27,7 +27,6 @@ class BaseCurveEqualizer:
                 maxSize=(1000, height + 16),
             )
         else:
-            height -= 32
             self.paletteView = Window((width, height))
 
         self.paletteView.group = Group((0, 0, width, height))
