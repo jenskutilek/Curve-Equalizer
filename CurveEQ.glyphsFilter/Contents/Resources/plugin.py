@@ -1,8 +1,7 @@
 # encoding: utf-8
 import objc
 
-# from AppKit import NSMutableArray, NSNumber
-from GlyphsApp import Glyphs, GSCURVE, GSLINE
+from GlyphsApp import GSOFFCURVE, Glyphs
 from GlyphsApp.plugins import FilterWithDialog
 
 from baseCurveEqualizer import BaseCurveEqualizer
@@ -154,23 +153,24 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
         # print(layer.selection)
 
         segments = []
-        segment = []
-        seenOnCurve = False
-        for n in layer.selection:
-            if seenOnCurve:
-                if n.type == GSCURVE:
-                    if segment:
-                        # End segment
-                        segment.append(n)
-                        segments.append(segment)
-                        segment = [n]
-                else:
-                    segment.append(n)
-            else:
-                if n.type in (GSCURVE, GSLINE):
-                    # Start of selected segment
-                    seenOnCurve = True
-                    segment.append(n)
+        first_offcurve = True
+        for path in layer.paths:
+            node_index = 0
+            for n in path.nodes:
+                if n.type == GSOFFCURVE:
+                    if first_offcurve:
+                        # Skip first offcurve point
+                        first_offcurve = False
+                    else:
+                        if n in layer.selection:
+                            segments.append([
+                                path.nodeAtIndex_(node_index - 2),
+                                path.nodeAtIndex_(node_index - 1),
+                                n,
+                                path.nodeAtIndex_(node_index + 1)
+                            ])
+                        first_offcurve = True
+                node_index += 1
 
         # for s in segments:
         #     print("Segment:")
