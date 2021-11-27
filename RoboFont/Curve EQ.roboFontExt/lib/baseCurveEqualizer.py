@@ -1,14 +1,7 @@
-import objc
-
 from vanilla import Button, FloatingWindow, Group, RadioGroup, Slider, Window
-
-from EQExtensionID import extensionID
-from EQMethods import eqBalance, eqPercentage, eqSpline
-from EQMethods.geometry import getTriangleSides, isOnLeft, isOnRight
 
 
 class BaseCurveEqualizer:
-    @objc.python_method
     def build_ui(self, useFloatingWindow=True):
         self.methods = {
             0: "balance",
@@ -27,19 +20,20 @@ class BaseCurveEqualizer:
         sliderX = 76
 
         if useFloatingWindow:
-            self.w = FloatingWindow(
+            self.paletteView = FloatingWindow(
                 posSize=(width, height),
                 title="Curve EQ",
                 minSize=(width, height + 16),
                 maxSize=(1000, height + 16),
             )
         else:
-            self.w = Window((width, height))
+            height -= 32
+            self.paletteView = Window((width, height))
 
-        self.w.group = Group((0, 0, width, height))
+        self.paletteView.group = Group((0, 0, width, height))
 
         y = 8
-        self.w.group.eqMethodSelector = RadioGroup(
+        self.paletteView.group.eqMethodSelector = RadioGroup(
             (8, y, -8, -36),
             titles=self.methodNames,
             callback=self._changeMethod,
@@ -47,7 +41,7 @@ class BaseCurveEqualizer:
         )
 
         y += 22
-        self.w.group.eqCurvatureSlider = Slider(
+        self.paletteView.group.eqCurvatureSlider = Slider(
             (sliderX, y, -8, 17),
             callback=self._changeCurvatureFree,
             minValue=0.5,
@@ -57,7 +51,7 @@ class BaseCurveEqualizer:
         )
 
         y += 25
-        self.w.group.eqHobbyTensionSlider = Slider(
+        self.paletteView.group.eqHobbyTensionSlider = Slider(
             (sliderX, y, -8, 17),
             tickMarkCount=5,
             callback=self._changeTension,
@@ -66,10 +60,25 @@ class BaseCurveEqualizer:
             sizeStyle="small",
         )
 
-        y = height - 32
-        self.w.group.eqSelectedButton = Button(
-            (8, y, -8, 25),
-            "Equalize Selected",
-            callback=self._eqSelected,
-            sizeStyle="small",
-        )
+        if not useFloatingWindow:
+            y = height - 32
+            self.paletteView.group.eqSelectedButton = Button(
+                (8, y, -8, 25),
+                "Equalize Selected",
+                callback=self._eqSelected,
+                sizeStyle="small",
+            )
+
+    def _setPreviewOptions(self):
+        if self.method == "balance":
+            if self.alwaysPreviewCurves:
+                self.previewCurves = True
+            else:
+                self.previewCurves = False
+            self.previewHandles = True
+        else:
+            self.previewCurves = True
+            if self.alwaysPreviewHandles:
+                self.previewHandles = True
+            else:
+                self.previewHandles = False

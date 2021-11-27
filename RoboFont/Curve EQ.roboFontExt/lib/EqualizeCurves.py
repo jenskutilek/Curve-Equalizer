@@ -61,22 +61,22 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         method = getExtensionDefault("%s.%s" % (extensionID, "method"), 0)
         if method >= len(self.methods):
             method = 0
-        self.w.eqMethodSelector.set(
+        self.paletteView.eqMethodSelector.set(
             getExtensionDefault("%s.%s" % (extensionID, "method"), 0)
         )
-        self.method = self.methods[self.w.eqMethodSelector.get()]
+        self.method = self.methods[self.paletteView.eqMethodSelector.get()]
 
         # default curvature for slider
-        self.w.eqCurvatureSlider.set(
+        self.paletteView.eqCurvatureSlider.set(
             getExtensionDefault("%s.%s" % (extensionID, "curvatureFree"), 0.5)
         )
-        self.curvatureFree = self.w.eqCurvatureSlider.get()
+        self.curvatureFree = self.paletteView.eqCurvatureSlider.get()
 
         # default curvature for Hobby's spline tension slider
-        self.w.eqHobbyTensionSlider.set(
+        self.paletteView.eqHobbyTensionSlider.set(
             getExtensionDefault("%s.%s" % (extensionID, "tension"), 0.5)
         )
-        self.tension = self.w.eqHobbyTensionSlider.get()
+        self.tension = self.paletteView.eqHobbyTensionSlider.get()
 
         # load preview options
         self.alwaysPreviewCurves = getExtensionDefault(
@@ -236,20 +236,6 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                 print("Use existing layer")
         return layer
 
-    def _setPreviewOptions(self):
-        if self.method == "balance":
-            if self.alwaysPreviewCurves:
-                self.previewCurves = True
-            else:
-                self.previewCurves = False
-            self.previewHandles = True
-        else:
-            self.previewCurves = True
-            if self.alwaysPreviewHandles:
-                self.previewHandles = True
-            else:
-                self.previewHandles = False
-
     # Callbacks
 
     def _changeMethod(self, sender):
@@ -276,41 +262,41 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         setExtensionDefault(
             "%s.%s" % (
                 extensionID, "method"
-            ), self.w.group.eqMethodSelector.get()
+            ), self.paletteView.group.eqMethodSelector.get()
         )
         setExtensionDefault(
             "%s.%s" % (extensionID, "curvatureFree"),
-            self.w.group.eqCurvatureSlider.get(),
+            self.paletteView.group.eqCurvatureSlider.get(),
         )
         setExtensionDefault(
             "%s.%s" % (extensionID, "tension"),
-            self.w.group.eqHobbyTensionSlider.get(),
+            self.paletteView.group.eqHobbyTensionSlider.get(),
         )
 
     def _checkSecondarySelectors(self):
         # Enable or disable slider/radio buttons
         if self.dglyph is None or not self.dglyph_selection:
-            self.w.group.eqMethodSelector.enable(False)
-            self.w.group.eqSelectedButton.enable(False)
-            self.w.group.eqCurvatureSlider.enable(False)
-            self.w.group.eqHobbyTensionSlider.enable(False)
+            self.paletteView.group.eqMethodSelector.enable(False)
+            self.paletteView.group.eqSelectedButton.enable(False)
+            self.paletteView.group.eqCurvatureSlider.enable(False)
+            self.paletteView.group.eqHobbyTensionSlider.enable(False)
             return
 
-        self.w.group.eqMethodSelector.enable(True)
-        self.w.group.eqSelectedButton.enable(True)
+        self.paletteView.group.eqMethodSelector.enable(True)
+        self.paletteView.group.eqSelectedButton.enable(True)
 
         if self.method == "adjust":
-            self.w.group.eqCurvatureSlider.enable(False)
-            self.w.group.eqHobbyTensionSlider.enable(False)
+            self.paletteView.group.eqCurvatureSlider.enable(False)
+            self.paletteView.group.eqHobbyTensionSlider.enable(False)
         elif self.method == "free":
-            self.w.group.eqCurvatureSlider.enable(True)
-            self.w.group.eqHobbyTensionSlider.enable(False)
+            self.paletteView.group.eqCurvatureSlider.enable(True)
+            self.paletteView.group.eqHobbyTensionSlider.enable(False)
         elif self.method == "hobby":
-            self.w.group.eqCurvatureSlider.enable(False)
-            self.w.group.eqHobbyTensionSlider.enable(True)
+            self.paletteView.group.eqCurvatureSlider.enable(False)
+            self.paletteView.group.eqHobbyTensionSlider.enable(True)
         else:
-            self.w.group.eqCurvatureSlider.enable(False)
-            self.w.group.eqHobbyTensionSlider.enable(False)
+            self.paletteView.group.eqCurvatureSlider.enable(False)
+            self.paletteView.group.eqHobbyTensionSlider.enable(False)
 
     def _drawGeometry(self):
         reference_glyph = self.dglyph
