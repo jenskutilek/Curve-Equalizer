@@ -60,7 +60,7 @@ class BaseCurveEqualizer:
             sizeStyle="small",
         )
 
-        if not useFloatingWindow:
+        if useFloatingWindow:
             y = height - 32
             self.paletteView.group.eqSelectedButton = Button(
                 (8, y, -8, 25),
