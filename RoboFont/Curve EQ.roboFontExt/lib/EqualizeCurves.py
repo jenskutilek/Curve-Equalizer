@@ -61,22 +61,24 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         method = getExtensionDefault("%s.%s" % (extensionID, "method"), 0)
         if method >= len(self.methods):
             method = 0
-        self.paletteView.eqMethodSelector.set(
+        self.paletteView.group.eqMethodSelector.set(
             getExtensionDefault("%s.%s" % (extensionID, "method"), 0)
         )
-        self.method = self.methods[self.paletteView.eqMethodSelector.get()]
+        self.method = self.methods[
+            self.paletteView.group.eqMethodSelector.get()
+        ]
 
         # default curvature for slider
-        self.paletteView.eqCurvatureSlider.set(
+        self.paletteView.group.eqCurvatureSlider.set(
             getExtensionDefault("%s.%s" % (extensionID, "curvatureFree"), 0.5)
         )
-        self.curvatureFree = self.paletteView.eqCurvatureSlider.get()
+        self.curvatureFree = self.paletteView.group.eqCurvatureSlider.get()
 
         # default curvature for Hobby's spline tension slider
-        self.paletteView.eqHobbyTensionSlider.set(
+        self.paletteView.group.eqHobbyTensionSlider.set(
             getExtensionDefault("%s.%s" % (extensionID, "tension"), 0.5)
         )
-        self.tension = self.paletteView.eqHobbyTensionSlider.get()
+        self.tension = self.paletteView.group.eqHobbyTensionSlider.get()
 
         # load preview options
         self.alwaysPreviewCurves = getExtensionDefault(
@@ -94,6 +96,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
 
     def build(self):
         self.build_ui()
+        self.w = self.paletteView
         self.restore_state()
         self.dglyph = None
         self.container = None
@@ -101,7 +104,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
     def started(self):
         self.dglyph = CurrentGlyph()
         self._checkSecondarySelectors()
-        self.w.open()
+        self.paletteView.open()
 
     def destroy(self):
         if self.container is not None:
