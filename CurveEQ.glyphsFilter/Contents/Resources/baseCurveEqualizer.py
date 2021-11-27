@@ -15,9 +15,9 @@ class BaseCurveEqualizer:
             "Hobby:",
         ]
 
-        height = 108
-        width = 200
-        sliderX = 76
+        height = 76
+        width = 240
+        sliderX = 86
 
         if useFloatingWindow:
             self.paletteView = FloatingWindow(
@@ -33,25 +33,25 @@ class BaseCurveEqualizer:
 
         y = 8
         self.paletteView.group.eqMethodSelector = RadioGroup(
-            (8, y, -8, -36),
+            (16, y, -8, -4),
             titles=self.methodNames,
             callback=self._changeMethod,
-            sizeStyle="small",
+            # sizeStyle="small",
         )
 
-        y += 22
+        y = 33
         self.paletteView.group.eqCurvatureSlider = Slider(
-            (sliderX, y, -8, 17),
+            (sliderX, y, -20, 17),
             callback=self._changeCurvatureFree,
             minValue=0.5,
             maxValue=1.0,
             value=0.75,  # Will be replaced by saved value
-            sizeStyle="small",
+            #sizeStyle="small",
         )
 
-        y += 25
+        y = 55
         self.paletteView.group.eqHobbyTensionSlider = Slider(
-            (sliderX, y, -8, 17),
+            (sliderX, y, -20, 17),
             tickMarkCount=5,
             callback=self._changeTension,
             minValue=0.5,
