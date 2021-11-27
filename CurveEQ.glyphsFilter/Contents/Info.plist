@@ -13,9 +13,9 @@
 	<key>CFBundleName</key>
 	<string>CurveEQ</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.0.1</string>
 	<key>UpdateFeedURL</key>
 	<string>https://raw.githubusercontent.com/jenskutilek/Curve-Equalizer/master/Glyphs/CurveEQ.glyphsFilter/Contents/Info.plist</string>
 	<key>productPageURL</key>
