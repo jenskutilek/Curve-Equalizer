@@ -59,14 +59,10 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         # If we come in from an older version, the selected method index
         # may be out of range
         method = getExtensionDefault("%s.%s" % (extensionID, "method"), 0)
-        if method >= len(self.methods):
+        if method < 0 or method >= len(self.methods):
             method = 0
-        self.paletteView.group.eqMethodSelector.set(
-            getExtensionDefault("%s.%s" % (extensionID, "method"), 0)
-        )
-        self.method = self.methods[
-            self.paletteView.group.eqMethodSelector.get()
-        ]
+        self.paletteView.group.eqMethodSelector.set(method)
+        self.method = self.methods[method]
 
         # default curvature for slider
         self.paletteView.group.eqCurvatureSlider.set(
