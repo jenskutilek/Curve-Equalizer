@@ -13,15 +13,15 @@
 	<key>CFBundleName</key>
 	<string>CurveEQ</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>3</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.1</string>
+	<string>1.0.2</string>
 	<key>UpdateFeedURL</key>
 	<string>https://raw.githubusercontent.com/jenskutilek/Curve-Equalizer/master/Glyphs/CurveEQ.glyphsFilter/Contents/Info.plist</string>
 	<key>productPageURL</key>
 	<string>https://github.com/jenskutilek/Curve-Equalizer</string>
 	<key>productReleaseNotes</key>
-	<string>Initial release</string>
+	<string>Bug fix reading selection when the first node of a path is an offcurve point</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright, Jens Kutilek, 2021</string>
 	<key>NSPrincipalClass</key>
