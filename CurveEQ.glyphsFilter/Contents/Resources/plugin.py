@@ -174,11 +174,6 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
                         first_offcurve = True
                 node_index += 1
 
-        # for s in segments:
-        #     print("Segment:")
-        #     for n in s:
-        #         print("   ", n.x, n.y, n.type)
-
         if self.method == "balance":
             [self.balance_segment(s) for s in segments]
         elif self.method == "free":
