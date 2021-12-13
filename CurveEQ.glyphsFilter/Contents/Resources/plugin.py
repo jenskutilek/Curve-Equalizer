@@ -21,28 +21,32 @@ TENSION_KEY = fullkey("tension")
 class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
     @objc.python_method
     def settings(self):
-        self.menuName = Glyphs.localize({
-            "en": "Curve Equalizer",
-            "de": "Kurven-Equalizer",
-            # "fr": "Mon filtre",
-            # "es": "Mi filtro",
-            # "pt": "Meu filtro",
-            # "jp": "私のフィルター",
-            # "ko": "내 필터",
-            # "zh": "我的过滤器",
-        })
+        self.menuName = Glyphs.localize(
+            {
+                "en": "Curve Equalizer",
+                "de": "Kurven-Equalizer",
+                # "fr": "Mon filtre",
+                # "es": "Mi filtro",
+                # "pt": "Meu filtro",
+                # "jp": "私のフィルター",
+                # "ko": "내 필터",
+                # "zh": "我的过滤器",
+            }
+        )
 
         # Word on Run Button (default: Apply)
-        self.actionButtonLabel = Glyphs.localize({
-            "en": "Equalize selected",
-            "de": "Auf Auswahl anwenden",
-            "fr": "Appliquer",
-            "es": "Aplicar",
-            "pt": "Aplique",
-            "jp": "申し込む",
-            "ko": "대다",
-            "zh": "应用",
-        })
+        self.actionButtonLabel = Glyphs.localize(
+            {
+                "en": "Equalize selected",
+                "de": "Auf Auswahl anwenden",
+                "fr": "Appliquer",
+                "es": "Aplicar",
+                "pt": "Aplique",
+                "jp": "申し込む",
+                "ko": "대다",
+                "zh": "应用",
+            }
+        )
 
         # Build UI
         self.build_ui(useFloatingWindow=False)
@@ -71,9 +75,7 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
         self.paletteView.group.eqMethodSelector.set(
             Glyphs.defaults[METHOD_KEY]
         )
-        self.method = self.methods[
-            Glyphs.defaults[METHOD_KEY]
-        ]
+        self.method = self.methods[Glyphs.defaults[METHOD_KEY]]
 
         # default curvature for slider
         if not Glyphs.defaults[ADJUST_FREE_KEY]:
