@@ -171,6 +171,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         self.container = None
 
     def started(self) -> None:
+        self.glyphEditor = self.getGlyphEditor()
         logger.debug("started(): Glyph Editor:", self.glyphEditor)
         self.dglyph = CurrentGlyph()
         logger.debug("started(): Glyph:", self.dglyph)
