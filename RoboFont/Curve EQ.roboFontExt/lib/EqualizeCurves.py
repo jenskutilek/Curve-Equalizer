@@ -118,7 +118,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
     def destroy(self) -> None:
         if self.container is not None:
             self.container.clearSublayers()
-            del(self.container)
+            del self.container
 
     @property
     def dglyph(self) -> RGlyph | None:
