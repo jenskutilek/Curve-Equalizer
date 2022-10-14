@@ -59,6 +59,39 @@ geometryViewWidth = 0.8
 handlePreviewSize = 1.2
 
 
+def _appendHandle(
+    container: Container,
+    pt: RPoint,
+    direction: int = 1,
+    length: float | int = handlePreviewSize,
+    width: float | int = 1,
+):
+    container.appendLineSublayer(
+        startPoint=(pt.x - length, pt.y - direction * length),
+        endPoint=(pt.x + length, pt.y + direction * length),
+        strokeColor=(0, 0, 0, 0.3),
+        strokeWidth=width,
+    )
+
+
+def _appendTriangleSide(
+    container: Container,
+    pt: RPoint,
+    angle: float | int,
+    length: float | int,
+    dist: float | int = 5,
+):
+    container.appendLineSublayer(
+        startPoint=(pt.x, pt.y),
+        endPoint=(
+            pt.x + (length + dist) * cos(angle),
+            pt.y + (length + dist) * sin(angle),
+        ),
+        strokeColor=geometryViewColor,
+        strokeWidth=geometryViewWidth,
+    )
+
+
 class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
     def restore_state(self) -> None:
 
@@ -352,44 +385,18 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                                 or isOnRight(p0, p3, p1)
                                 and isOnRight(p0, p3, p2)
                             ):
-
-                                # alpha, beta, gamma = (
-                                #     getTriangleAngles(p0, p1, p2, p3)
-                                # )
-                                a, b, c = getTriangleSides(p0, p1, p2, p3)
-                                self.container.appendLineSublayer(
-                                    startPoint=(p0.x, p0.y),
-                                    endPoint=(
-                                        p0.x + (c + 5) * cos(alpha),
-                                        p0.y + (c + 5) * sin(alpha),
-                                    ),
-                                    strokeColor=geometryViewColor,
-                                    strokeWidth=geometryViewWidth,
+                                a, _, c = getTriangleSides(p0, p1, p2, p3)
+                                _appendTriangleSide(
+                                    self.container, p0, alpha, c
                                 )
-                                self.container.appendLineSublayer(
-                                    startPoint=(p3.x, p3.y),
-                                    endPoint=(
-                                        p3.x + (a + 5) * cos(beta),
-                                        p3.y + (a + 5) * sin(beta),
-                                    ),
-                                    strokeColor=geometryViewColor,
-                                    strokeWidth=geometryViewWidth,
+                                _appendTriangleSide(
+                                    self.container, p3, beta, a
                                 )
-                                # self.container.appendLineSublayer(
-                                #     startPoint=(p0.x, p0.y),
-                                #     endPoint=(p3.x, p3.y),
-                                #     strokeColor=geometryViewColor,
-                                #     strokeWidth=geometryViewWidth,
-                                # )
-
-                                # line(p1, p2)
-                                # line(p2, p3)
 
     def _handlesPreview(self) -> None:
         if self.tmp_glyph is None or not self.tmp_glyph.contours:
             return
         ref_glyph = self.dglyph
-        ln = handlePreviewSize
         if ref_glyph is None or not ref_glyph.contours:
             return
 
@@ -398,20 +405,8 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             for i, segment in enumerate(contour.segments):
                 if ref_contour[i].selected and segment.type == "curve":
                     for p in segment.points[0:2]:
-                        x = p.x
-                        y = p.y
-                        self.container.appendLineSublayer(
-                            startPoint=(x - ln, y - ln),
-                            endPoint=(x + ln, y + ln),
-                            strokeColor=(0, 0, 0, 0.3),
-                            strokeWidth=1,
-                        )
-                        self.container.appendLineSublayer(
-                            startPoint=(x - ln, y + ln),
-                            endPoint=(x + ln, y - ln),
-                            strokeColor=(0, 0, 0, 0.3),
-                            strokeWidth=1,
-                        )
+                        _appendHandle(self.container, p, 1)
+                        _appendHandle(self.container, p, -1)
 
     def _curvePreview(self) -> None:
         if (
