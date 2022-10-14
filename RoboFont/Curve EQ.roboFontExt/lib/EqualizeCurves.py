@@ -150,7 +150,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
 
     def updateGlyphAndGlyphEditor(self, info: Dict) -> None:
         self.dglyph = info["glyph"]
-        self.glyphEditor = info["glyphEditor"]
+        self.glyphEditor = info.get("glyphEditor", None)
         self.buildContainer(glyphEditor=self.glyphEditor)
         self._checkSecondarySelectors()
         self._curvePreview()
