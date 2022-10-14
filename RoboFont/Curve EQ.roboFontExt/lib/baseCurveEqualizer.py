@@ -97,19 +97,19 @@ class BaseCurveEqualizer:
                 callback=self._eqSelected,
                 sizeStyle="small",
             )
-        
+
     def _changeCurvature(self) -> None:
         raise NotImplementedError
-    
+
     def _changeCurvatureFree(self) -> None:
         raise NotImplementedError
-    
+
     def _changeMethod(self) -> None:
         raise NotImplementedError
-    
+
     def _changeTension(self) -> None:
         raise NotImplementedError
-    
+
     def _eqSelected(self) -> None:
         raise NotImplementedError
 
