@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 """
 Hobby Spline code contributed by
 Juraj Sukop, Lasse Fister, Simon Egli

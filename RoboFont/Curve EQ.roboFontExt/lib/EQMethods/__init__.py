@@ -1,4 +1,5 @@
-from __future__ import absolute_import
+from __future__ import annotations
+
 from .Balance import eqBalance
 from .HobbySpline import eqSpline
 from .Percentage import eqPercentage

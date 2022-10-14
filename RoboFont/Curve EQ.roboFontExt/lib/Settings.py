@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from EQExtensionID import extensionID
 
 # Make jkRFExtensionSettings importable

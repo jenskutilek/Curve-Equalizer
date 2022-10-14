@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from vanilla import Button, FloatingWindow, Group, RadioGroup, Slider, Window
 
 

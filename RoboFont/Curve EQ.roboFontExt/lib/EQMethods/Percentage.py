@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 
 from math import atan2
 from .geometry import getNewCoordinates, getTriangleSides, isOnLeft, isOnRight
