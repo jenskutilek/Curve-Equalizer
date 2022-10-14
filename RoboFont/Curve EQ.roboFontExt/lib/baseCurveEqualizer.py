@@ -4,7 +4,7 @@ from vanilla import Button, FloatingWindow, Group, RadioGroup, Slider, Window
 
 
 class BaseCurveEqualizer:
-    def build_ui(self, useFloatingWindow=True):
+    def build_ui(self, useFloatingWindow: bool = True) -> None:
         self.methods = {
             0: "fl",
             1: "thirds",
@@ -97,8 +97,23 @@ class BaseCurveEqualizer:
                 callback=self._eqSelected,
                 sizeStyle="small",
             )
+        
+    def _changeCurvature(self) -> None:
+        raise NotImplementedError
+    
+    def _changeCurvatureFree(self) -> None:
+        raise NotImplementedError
+    
+    def _changeMethod(self) -> None:
+        raise NotImplementedError
+    
+    def _changeTension(self) -> None:
+        raise NotImplementedError
+    
+    def _eqSelected(self) -> None:
+        raise NotImplementedError
 
-    def _setPreviewOptions(self):
+    def _setPreviewOptions(self) -> None:
         if self.method == "balance":
             if self.alwaysPreviewCurves:
                 self.previewCurves = True
