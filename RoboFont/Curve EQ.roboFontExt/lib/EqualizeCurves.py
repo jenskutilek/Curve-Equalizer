@@ -409,8 +409,8 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             # FIXME: Don't draw the whole glyph, just the equalized selection
             with curveLayer.drawingTools() as bot:
                 bot.fill(None)
-                bot.strokeWidth(5)
-                bot.stroke(0, 0, 0, 0.5)
+                bot.strokeWidth(curvePreviewWidth)
+                bot.stroke(*curvePreviewColor)
                 bot.drawGlyph(self.tmp_glyph)
         if self.drawGeometry:
             self._drawGeometry()
