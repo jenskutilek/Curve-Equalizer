@@ -323,15 +323,18 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         reference_glyph = self.dglyph
         if reference_glyph is None:
             return
-
-        reference_glyph_selected_points = self.dglyph_selection
-        if len(reference_glyph_selected_points) < 2:
+        if not reference_glyph.contours:
             return
 
-        for contourIndex in range(len(reference_glyph.contours)):
-            reference_contour = reference_glyph.contours[contourIndex]
-            for i in range(len(reference_contour.segments)):
-                reference_segment = reference_contour[i]
+        if len(self.dglyph_selection) < 2:
+            return
+
+        if self.container is None:
+            print("Container is None in _drawGeometry, shouldn't happen.")
+            return
+
+        for reference_contour in reference_glyph.contours:
+            for i, reference_segment in enumerate(reference_contour.segments):
                 if (
                     reference_segment.selected
                     and reference_segment.type == "curve"
@@ -383,13 +386,16 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                                 # line(p2, p3)
 
     def _handlesPreview(self) -> None:
+        if self.tmp_glyph is None or not self.tmp_glyph.contours:
+            return
         ref_glyph = self.dglyph
         ln = handlePreviewSize
-        for contourIndex in range(len(self.tmp_glyph)):
-            contour = self.tmp_glyph.contours[contourIndex]
+        if ref_glyph is None or not ref_glyph.contours:
+            return
+
+        for contourIndex, contour in enumerate(self.tmp_glyph):
             ref_contour = ref_glyph.contours[contourIndex]
-            for i in range(len(contour.segments)):
-                segment = contour[i]
+            for i, segment in enumerate(contour.segments):
                 if ref_contour[i].selected and segment.type == "curve":
                     for p in segment.points[0:2]:
                         x = p.x
