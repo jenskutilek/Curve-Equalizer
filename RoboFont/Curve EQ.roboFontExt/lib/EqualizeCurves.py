@@ -170,7 +170,6 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             self.dglyph_selection = self._dglyph.selectedPoints
             if not self._dglyph.contours:
                 if self.container is not None:
-                    del self.container
                     self.container = None
 
     @property
