@@ -233,6 +233,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                 if DEBUG:
                     print("Clear layers")
                 self.container.clearSublayers()
+                self.container = None
             else:
                 if DEBUG:
                     print("No layers to clear")
