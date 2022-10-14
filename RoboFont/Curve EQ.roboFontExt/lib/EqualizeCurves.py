@@ -196,9 +196,9 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         else:
             self.tmp_glyph = self._dglyph.copy()
             self.dglyph_selection = self._dglyph.selectedPoints
-            if not self._dglyph.contours:
-                if self.container is not None:
-                    self.container = None
+            # if not self._dglyph.contours:
+            #     if self.container is not None:
+            #         self.container = None
 
     @property
     def dglyph_selection(self) -> List:
