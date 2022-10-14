@@ -133,7 +133,9 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                 * 100
             )
         )
-        self.curvatureFree = self.paletteView.group.eqCurvatureSlider.get()
+        self.curvatureFree = (
+            self.paletteView.group.eqCurvatureSlider.get() / 100
+        )
         logger.debug("Curvature free:", self.curvatureFree)
 
         # default curvature for Hobby's spline tension slider
@@ -143,7 +145,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                 * 100
             )
         )
-        self.tension = self.paletteView.group.eqHobbyTensionSlider.get()
+        self.tension = self.paletteView.group.eqHobbyTensionSlider.get() / 100
         logger.debug("Hobby tension:", self.tension)
 
         # load preview options
