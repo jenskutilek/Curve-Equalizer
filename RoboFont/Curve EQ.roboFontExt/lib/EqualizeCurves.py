@@ -458,12 +458,20 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                         if len(modify_segment.points) == 3:
                             p1, p2, p3 = modify_segment.points
 
-                            if self.method == "free":
+                            if self.method == "fl":
+                                p1, p2 = eqPercentage(p0, p1, p2, p3)
+                            elif self.method == "thirds":
+                                p1, p2 = eqThirds(p0, p1, p2, p3)
+                            elif self.method == "balance":
+                                p1, p2 = eqBalance(p0, p1, p2, p3)
+                            elif self.method == "adjust":
+                                p1, p2 = eqPercentage(
+                                    p0, p1, p2, p3, self.curvature
+                                )
+                            elif self.method == "free":
                                 p1, p2 = eqPercentage(
                                     p0, p1, p2, p3, self.curvatureFree
                                 )
-                            elif self.method == "balance":
-                                p1, p2 = eqBalance(p0, p1, p2, p3)
                             elif self.method == "hobby":
                                 p1, p2 = eqSpline(p0, p1, p2, p3, self.tension)
                             else:
