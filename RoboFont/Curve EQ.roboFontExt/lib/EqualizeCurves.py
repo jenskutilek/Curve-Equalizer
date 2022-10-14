@@ -93,7 +93,13 @@ def _appendTriangleSide(
     )
 
 
-class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
+class CurveEqualizer(Subscriber, BaseCurveEqualizer, WindowController):
+    def __init__(self, currentGlyph):
+        super().__init__(currentGlyph=currentGlyph)
+        self.alwaysPreviewCurves: bool = True
+        self.alwaysPreviewHandles: bool = False
+        self.method: str | None = None
+
     def restore_state(self) -> None:
 
         # Restore saved state
