@@ -104,7 +104,6 @@ if getExtensionDefault(f"{extensionID}.debug", False):
 
 class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
     def restore_state(self) -> None:
-
         # Restore saved state
         logger.debug("Restoring state ...")
 
