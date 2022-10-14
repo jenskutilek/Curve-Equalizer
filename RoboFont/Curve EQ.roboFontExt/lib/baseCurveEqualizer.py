@@ -6,18 +6,32 @@ from vanilla import Button, FloatingWindow, Group, RadioGroup, Slider, Window
 class BaseCurveEqualizer:
     def build_ui(self, useFloatingWindow=True):
         self.methods = {
-            0: "balance",
-            1: "free",
-            2: "hobby",
+            0: "fl",
+            1: "thirds",
+            2: "balance",
+            3: "adjust",
+            4: "free",
+            5: "hobby",
         }
 
         self.methodNames = [
+            "Circle",
+            "Thirds",
             "Balance",
+            "Fixed:",
             "Adjust:",
             "Hobby:",
         ]
 
-        height = 108
+        self.curvatures = {
+            0: 0.552,
+            1: 0.577,
+            2: 0.602,
+            3: 0.627,
+            4: 0.652,
+        }
+
+        height = 180
         width = 200
         sliderX = 76
 
@@ -31,7 +45,7 @@ class BaseCurveEqualizer:
         else:
             self.paletteView = Window((width, height))
 
-        self.paletteView.group = Group((0, 0, width, height))
+        self.paletteView.group = Group((0, 0, -0, -0))
 
         y = 8
         self.paletteView.group.eqMethodSelector = RadioGroup(
@@ -41,7 +55,21 @@ class BaseCurveEqualizer:
             sizeStyle="small",
         )
 
-        y += 22
+        y = 76
+        self.paletteView.group.eqCurvatureSelector = RadioGroup(
+            (sliderX, y, -0, 17),
+            isVertical=False,
+            titles=[
+                "",
+                "",
+                "",
+                "",
+            ],
+            callback=self._changeCurvature,
+            sizeStyle="small",
+        )
+
+        y += 21
         self.paletteView.group.eqCurvatureSlider = Slider(
             (sliderX, y, -8, 17),
             callback=self._changeCurvatureFree,
@@ -51,7 +79,7 @@ class BaseCurveEqualizer:
             sizeStyle="small",
         )
 
-        y += 25
+        y += 23
         self.paletteView.group.eqHobbyTensionSlider = Slider(
             (sliderX, y, -8, 17),
             tickMarkCount=5,

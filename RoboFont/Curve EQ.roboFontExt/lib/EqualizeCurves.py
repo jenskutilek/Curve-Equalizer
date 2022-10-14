@@ -38,7 +38,7 @@ from mojo.subscriber import Subscriber, WindowController
 
 from baseCurveEqualizer import BaseCurveEqualizer
 from EQExtensionID import extensionID
-from EQMethods import eqBalance, eqPercentage, eqSpline
+from EQMethods import eqBalance, eqPercentage, eqSpline, eqThirds
 from EQMethods.geometry import getTriangleSides, isOnLeft, isOnRight
 
 
@@ -63,6 +63,12 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             method = 0
         self.paletteView.group.eqMethodSelector.set(method)
         self.method = self.methods[method]
+
+        # default curvature for radio buttons
+        self.paletteView.group.eqCurvatureSelector.set(
+            getExtensionDefault("%s.%s" % (extensionID, "curvature"), 0)
+        )
+        self.curvature = self.paletteView.group.eqCurvatureSelector.get()
 
         # default curvature for slider
         self.paletteView.group.eqCurvatureSlider.set(
@@ -264,6 +270,10 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             ), self.paletteView.group.eqMethodSelector.get()
         )
         setExtensionDefault(
+            "%s.%s" % (extensionID, "curvature"),
+            self.paletteView.group.eqCurvatureSelector.get(),
+        )
+        setExtensionDefault(
             "%s.%s" % (extensionID, "curvatureFree"),
             self.paletteView.group.eqCurvatureSlider.get(),
         )
@@ -277,6 +287,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         if self.dglyph is None or not self.dglyph_selection:
             self.paletteView.group.eqMethodSelector.enable(False)
             self.paletteView.group.eqSelectedButton.enable(False)
+            self.paletteView.group.eqCurvatureSelector.enable(False)
             self.paletteView.group.eqCurvatureSlider.enable(False)
             self.paletteView.group.eqHobbyTensionSlider.enable(False)
             return
@@ -285,15 +296,19 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         self.paletteView.group.eqSelectedButton.enable(True)
 
         if self.method == "adjust":
+            self.paletteView.group.eqCurvatureSelector.enable(True)
             self.paletteView.group.eqCurvatureSlider.enable(False)
             self.paletteView.group.eqHobbyTensionSlider.enable(False)
         elif self.method == "free":
+            self.paletteView.group.eqCurvatureSelector.enable(False)
             self.paletteView.group.eqCurvatureSlider.enable(True)
             self.paletteView.group.eqHobbyTensionSlider.enable(False)
         elif self.method == "hobby":
+            self.paletteView.group.eqCurvatureSelector.enable(False)
             self.paletteView.group.eqCurvatureSlider.enable(False)
             self.paletteView.group.eqHobbyTensionSlider.enable(True)
         else:
+            self.paletteView.group.eqCurvatureSelector.enable(False)
             self.paletteView.group.eqCurvatureSlider.enable(False)
             self.paletteView.group.eqHobbyTensionSlider.enable(False)
 
