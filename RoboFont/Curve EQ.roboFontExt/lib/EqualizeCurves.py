@@ -208,7 +208,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                 self.container = glyphEditor.extensionContainer(
                     identifier=f"{extensionID}.preview",
                     location="background",
-                    clear=True
+                    clear=True,
                 )
             else:
                 if DEBUG:
@@ -272,9 +272,8 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
 
     def windowWillClose(self, sender) -> None:
         setExtensionDefault(
-            "%s.%s" % (
-                extensionID, "method"
-            ), self.paletteView.group.eqMethodSelector.get()
+            "%s.%s" % (extensionID, "method"),
+            self.paletteView.group.eqMethodSelector.get(),
         )
         setExtensionDefault(
             "%s.%s" % (extensionID, "curvature"),
