@@ -4,6 +4,11 @@ from vanilla import Button, FloatingWindow, Group, RadioGroup, Slider, Window
 
 
 class BaseCurveEqualizer:
+    def __init__(self):
+        self.alwaysPreviewCurves: bool = True
+        self.alwaysPreviewHandles: bool = False
+        self.method: str | None = None
+
     def build_ui(self, useFloatingWindow: bool = True) -> None:
         self.methods = {
             0: "fl",
