@@ -320,118 +320,121 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
 
     def _drawGeometry(self) -> None:
         reference_glyph = self.dglyph
+        if reference_glyph is None:
+            return
+
         reference_glyph_selected_points = self.dglyph_selection
-        if reference_glyph_selected_points != []:
-            for contourIndex in range(len(reference_glyph.contours)):
-                reference_contour = reference_glyph.contours[contourIndex]
-                for i in range(len(reference_contour.segments)):
-                    reference_segment = reference_contour[i]
-                    if (
-                        reference_segment.selected
-                        and reference_segment.type == "curve"
-                    ):
-                        # last point of the previous segment
-                        p0 = reference_contour[i - 1][-1]
-                        if len(reference_segment.points) == 3:
-                            p1, p2, p3 = reference_segment.points
-                            alpha = atan2(p1.y - p0.y, p1.x - p0.x)
-                            beta = atan2(p2.y - p3.y, p2.x - p3.x)
-                            if abs(alpha - beta) >= 0.7853981633974483:
-                                if (
-                                    isOnLeft(p0, p3, p1)
-                                    and isOnLeft(p0, p3, p2)
-                                    or isOnRight(p0, p3, p1)
-                                    and isOnRight(p0, p3, p2)
-                                ):
+        if len(reference_glyph_selected_points) < 2:
+            return
 
-                                    # alpha, beta, gamma = (
-                                    #     getTriangleAngles(p0, p1, p2, p3)
-                                    # )
-                                    a, b, c = getTriangleSides(p0, p1, p2, p3)
-                                    self.container.appendLineSublayer(
-                                        startPoint=(p0.x, p0.y),
-                                        endPoint=(
-                                            p0.x + (c + 5) * cos(alpha),
-                                            p0.y + (c + 5) * sin(alpha),
-                                        ),
-                                        strokeColor=geometryViewColor,
-                                        strokeWidth=geometryViewWidth,
-                                    )
-                                    self.container.appendLineSublayer(
-                                        startPoint=(p3.x, p3.y),
-                                        endPoint=(
-                                            p3.x + (a + 5) * cos(beta),
-                                            p3.y + (a + 5) * sin(beta),
-                                        ),
-                                        strokeColor=geometryViewColor,
-                                        strokeWidth=geometryViewWidth,
-                                    )
-                                    # self.container.appendLineSublayer(
-                                    #     startPoint=(p0.x, p0.y),
-                                    #     endPoint=(p3.x, p3.y),
-                                    #     strokeColor=geometryViewColor,
-                                    #     strokeWidth=geometryViewWidth,
-                                    # )
+        for contourIndex in range(len(reference_glyph.contours)):
+            reference_contour = reference_glyph.contours[contourIndex]
+            for i in range(len(reference_contour.segments)):
+                reference_segment = reference_contour[i]
+                if (
+                    reference_segment.selected
+                    and reference_segment.type == "curve"
+                ):
+                    # last point of the previous segment
+                    p0 = reference_contour[i - 1][-1]
+                    if len(reference_segment.points) == 3:
+                        p1, p2, p3 = reference_segment.points
+                        alpha = atan2(p1.y - p0.y, p1.x - p0.x)
+                        beta = atan2(p2.y - p3.y, p2.x - p3.x)
+                        if abs(alpha - beta) >= 0.7853981633974483:
+                            if (
+                                isOnLeft(p0, p3, p1)
+                                and isOnLeft(p0, p3, p2)
+                                or isOnRight(p0, p3, p1)
+                                and isOnRight(p0, p3, p2)
+                            ):
 
-                                    # line(p1, p2)
-                                    # line(p2, p3)
+                                # alpha, beta, gamma = (
+                                #     getTriangleAngles(p0, p1, p2, p3)
+                                # )
+                                a, b, c = getTriangleSides(p0, p1, p2, p3)
+                                self.container.appendLineSublayer(
+                                    startPoint=(p0.x, p0.y),
+                                    endPoint=(
+                                        p0.x + (c + 5) * cos(alpha),
+                                        p0.y + (c + 5) * sin(alpha),
+                                    ),
+                                    strokeColor=geometryViewColor,
+                                    strokeWidth=geometryViewWidth,
+                                )
+                                self.container.appendLineSublayer(
+                                    startPoint=(p3.x, p3.y),
+                                    endPoint=(
+                                        p3.x + (a + 5) * cos(beta),
+                                        p3.y + (a + 5) * sin(beta),
+                                    ),
+                                    strokeColor=geometryViewColor,
+                                    strokeWidth=geometryViewWidth,
+                                )
+                                # self.container.appendLineSublayer(
+                                #     startPoint=(p0.x, p0.y),
+                                #     endPoint=(p3.x, p3.y),
+                                #     strokeColor=geometryViewColor,
+                                #     strokeWidth=geometryViewWidth,
+                                # )
+
+                                # line(p1, p2)
+                                # line(p2, p3)
 
     def _handlesPreview(self) -> None:
-        if (
-            self.dglyph is not None
-            and len(self.dglyph.components) == 0  # FIXME
-            and len(self.dglyph_selection) > 1
-        ):
-            ref_glyph = self.dglyph
-            ln = handlePreviewSize
-            for contourIndex in range(len(self.tmp_glyph)):
-                contour = self.tmp_glyph.contours[contourIndex]
-                ref_contour = ref_glyph.contours[contourIndex]
-                for i in range(len(contour.segments)):
-                    segment = contour[i]
-                    if ref_contour[i].selected and segment.type == "curve":
-                        for p in segment.points[0:2]:
-                            x = p.x
-                            y = p.y
-                            self.container.appendLineSublayer(
-                                startPoint=(x - ln, y - ln),
-                                endPoint=(x + ln, y + ln),
-                                strokeColor=(0, 0, 0, 0.3),
-                                strokeWidth=1,
-                            )
-                            self.container.appendLineSublayer(
-                                startPoint=(x - ln, y + ln),
-                                endPoint=(x + ln, y - ln),
-                                strokeColor=(0, 0, 0, 0.3),
-                                strokeWidth=1,
-                            )
+        ref_glyph = self.dglyph
+        ln = handlePreviewSize
+        for contourIndex in range(len(self.tmp_glyph)):
+            contour = self.tmp_glyph.contours[contourIndex]
+            ref_contour = ref_glyph.contours[contourIndex]
+            for i in range(len(contour.segments)):
+                segment = contour[i]
+                if ref_contour[i].selected and segment.type == "curve":
+                    for p in segment.points[0:2]:
+                        x = p.x
+                        y = p.y
+                        self.container.appendLineSublayer(
+                            startPoint=(x - ln, y - ln),
+                            endPoint=(x + ln, y + ln),
+                            strokeColor=(0, 0, 0, 0.3),
+                            strokeWidth=1,
+                        )
+                        self.container.appendLineSublayer(
+                            startPoint=(x - ln, y + ln),
+                            endPoint=(x + ln, y - ln),
+                            strokeColor=(0, 0, 0, 0.3),
+                            strokeWidth=1,
+                        )
 
     def _curvePreview(self) -> None:
         if (
-            self.dglyph is not None
-            and self.dglyph.contours
-            and not self.dglyph.components  # FIXME: Support mixed composites
-            and len(self.dglyph_selection) > 1
+            self.dglyph is None
+            or not self.dglyph.contours
+            or len(self.dglyph_selection) < 2
         ):
-            if DEBUG:
-                print("Building curve preview ...")
-            self._eqSelected()
-            if self.previewCurves:
-                # self.buildContainer(self.glyphEditor)
-                curveLayer = self.getCurveLayer()
-                if curveLayer is None:
-                    return
-                # FIXME: Don't draw the whole glyph, just the equalized
-                # selection
-                with curveLayer.drawingTools() as bot:
-                    bot.fill(None)
-                    bot.strokeWidth(1)
-                    bot.stroke(0, 0, 0, 0.5)
-                    bot.drawGlyph(self.tmp_glyph)
-            if self.drawGeometry:
-                self._drawGeometry()
-            if self.previewHandles:
-                self._handlesPreview()
+            if self.container is not None:
+                self.container.clearSublayers()
+                self.container = None
+            return
+
+        if DEBUG:
+            print("Building curve preview ...")
+        self._eqSelected()
+        if self.previewCurves:
+            # self.buildContainer(self.glyphEditor)
+            curveLayer = self.getCurveLayer()
+            if curveLayer is None:
+                return
+            # FIXME: Don't draw the whole glyph, just the equalized selection
+            with curveLayer.drawingTools() as bot:
+                bot.fill(None)
+                bot.strokeWidth(5)
+                bot.stroke(0, 0, 0, 0.5)
+                bot.drawGlyph(self.tmp_glyph)
+        if self.drawGeometry:
+            self._drawGeometry()
+        if self.previewHandles:
+            self._handlesPreview()
 
     # The main method, check which EQ should be applied and do it (or just
     # apply it on the preview glyph)
