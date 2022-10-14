@@ -48,6 +48,7 @@ if TYPE_CHECKING:
     from fontParts.fontshell import RPoint
     from lib.fontObjects.fontPartsWrappers import RGlyph
     from merz.objects.container import Container
+    from merz.tools.caLayerClasses import MerzCALayer
 
 
 DEBUG = getExtensionDefault(f"{extensionID}.debug", False)
@@ -248,8 +249,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                 if DEBUG:
                     print("Using existing container")
 
-    def getCurveLayer(self) -> None:
-        # FIXME: Why can't the existing layer be reused?
+    def getCurveLayer(self) -> MerzCALayer | None:
         if self.container is None:
             return None
 
@@ -260,26 +260,6 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             strokeColor=curvePreviewColor,
             strokeWidth=curvePreviewWidth,
         )
-        return layer
-
-        # Code below doesn't work:
-
-        layer = self.container.getSublayer("curveLayer")
-        if layer is None:
-            if DEBUG:
-                print("Make layer")
-            layer = self.container.appendPathSublayer(
-                name="curveLayer",
-                # fillColor=(0, 1, 0, 0.1),
-                # strokeColor=(0, 0, 0, 0.5),
-                # strokeWidth=1,
-            )
-            # layer.setFillColor((0, 1, 0, 0.1))
-            # layer.setStrokeColor((0, 0, 0, 0.5))
-            # layer.setStrokeWidth(1)
-        else:
-            if DEBUG:
-                print("Use existing layer")
         return layer
 
     # Callbacks
@@ -426,6 +406,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             # self.buildContainer(self.glyphEditor)
             curveLayer = self.getCurveLayer()
             if curveLayer is None:
+                print("Could not get curve layer.")
                 return
             # FIXME: Don't draw the whole glyph, just the equalized selection
             with curveLayer.drawingTools() as bot:
