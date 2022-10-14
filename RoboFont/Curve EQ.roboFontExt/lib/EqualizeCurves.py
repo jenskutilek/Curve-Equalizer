@@ -114,13 +114,21 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
 
         # default curvature for slider
         self.paletteView.group.eqCurvatureSlider.set(
-            getExtensionDefault("%s.%s" % (extensionID, "curvatureFree"), 0.5)
+            round(
+                getExtensionDefault(
+                    "%s.%s" % (extensionID, "curvatureFree"), 50
+                )
+                * 100
+            )
         )
         self.curvatureFree = self.paletteView.group.eqCurvatureSlider.get()
 
         # default curvature for Hobby's spline tension slider
         self.paletteView.group.eqHobbyTensionSlider.set(
-            getExtensionDefault("%s.%s" % (extensionID, "tension"), 0.5)
+            round(
+                getExtensionDefault("%s.%s" % (extensionID, "tension"), 50)
+                * 100
+            )
         )
         self.tension = self.paletteView.group.eqHobbyTensionSlider.get()
 
@@ -278,11 +286,11 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         self._curvePreview()
 
     def _changeCurvatureFree(self, sender) -> None:
-        self.curvatureFree = sender.get()
+        self.curvatureFree = sender.get() / 100
         self._curvePreview()
 
     def _changeTension(self, sender) -> None:
-        self.tension = sender.get()
+        self.tension = sender.get() / 100
         self._curvePreview()
 
     def windowWillClose(self, sender) -> None:
@@ -296,11 +304,11 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         )
         setExtensionDefault(
             "%s.%s" % (extensionID, "curvatureFree"),
-            self.paletteView.group.eqCurvatureSlider.get(),
+            self.paletteView.group.eqCurvatureSlider.get() / 100,
         )
         setExtensionDefault(
             "%s.%s" % (extensionID, "tension"),
-            self.paletteView.group.eqHobbyTensionSlider.get(),
+            self.paletteView.group.eqHobbyTensionSlider.get() / 100,
         )
 
     def _checkSecondarySelectors(self) -> None:

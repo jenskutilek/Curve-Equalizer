@@ -78,9 +78,9 @@ class BaseCurveEqualizer:
         self.paletteView.group.eqCurvatureSlider = Slider(
             (sliderX, y, -8, 17),
             callback=self._changeCurvatureFree,
-            minValue=0.5,
-            maxValue=1.0,
-            value=0.75,  # Will be replaced by saved value
+            minValue=50,
+            maxValue=100,
+            value=75,  # Will be replaced by saved value
             sizeStyle="small",
         )
 
@@ -89,8 +89,8 @@ class BaseCurveEqualizer:
             (sliderX, y, -8, 17),
             tickMarkCount=5,
             callback=self._changeTension,
-            minValue=0.5,
-            maxValue=1.0,
+            minValue=50,
+            maxValue=100,
             sizeStyle="small",
         )
 
