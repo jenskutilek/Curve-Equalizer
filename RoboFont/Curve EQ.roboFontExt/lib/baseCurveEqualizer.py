@@ -1,6 +1,11 @@
 from __future__ import annotations
 
+import logging
+
 from vanilla import Button, FloatingWindow, Group, RadioGroup, Slider, Window
+
+
+logger = logging.getLogger(__name__)
 
 
 class BaseCurveEqualizer:
