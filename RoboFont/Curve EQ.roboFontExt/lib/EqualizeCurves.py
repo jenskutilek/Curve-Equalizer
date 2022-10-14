@@ -1,4 +1,7 @@
 from __future__ import annotations
+
+import logging
+
 from typing import Dict, List
 
 """
@@ -51,7 +54,8 @@ if TYPE_CHECKING:
     from merz.tools.caLayerClasses import MerzCALayer
 
 
-DEBUG = getExtensionDefault(f"{extensionID}.debug", False)
+logger = logging.getLogger(__name__)
+
 
 curvePreviewColor = (0, 0, 0, 0.5)
 curvePreviewWidth = 1
@@ -93,10 +97,16 @@ def _appendTriangleSide(
     )
 
 
+if getExtensionDefault(f"{extensionID}.debug", False):
+    logging.basicConfig(level=logging.DEBUG)
+    print("DEBUG mode is on")
+
+
 class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
     def restore_state(self) -> None:
 
         # Restore saved state
+        logger.debug("Restoring state ...")
 
         # If we come in from an older version, the selected method index
         # may be out of range
@@ -111,6 +121,9 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             getExtensionDefault("%s.%s" % (extensionID, "curvature"), 0)
         )
         self.curvature = self.paletteView.group.eqCurvatureSelector.get()
+        logger.debug(
+            f"Curvature radiobutton: {self.curvature}/{len(self.curvatures)}"
+        )
 
         # default curvature for slider
         self.paletteView.group.eqCurvatureSlider.set(
@@ -122,6 +135,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             )
         )
         self.curvatureFree = self.paletteView.group.eqCurvatureSlider.get()
+        logger.debug("Curvature free:", self.curvatureFree)
 
         # default curvature for Hobby's spline tension slider
         self.paletteView.group.eqHobbyTensionSlider.set(
@@ -131,6 +145,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             )
         )
         self.tension = self.paletteView.group.eqHobbyTensionSlider.get()
+        logger.debug("Hobby tension:", self.tension)
 
         # load preview options
         self.alwaysPreviewCurves = getExtensionDefault(
@@ -147,6 +162,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         )
 
     def build(self) -> None:
+        logger.debug("Curve Equalizer starting in debug mode")
         self.build_ui()
         self.w = self.paletteView
         self.restore_state()
@@ -154,7 +170,9 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         self.container = None
 
     def started(self) -> None:
+        logger.debug("started(): Glyph Editor:", self.glyphEditor)
         self.dglyph = CurrentGlyph()
+        logger.debug("started(): Glyph:", self.dglyph)
         self._checkSecondarySelectors()
         self.paletteView.open()
 
@@ -193,42 +211,39 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
     def updateGlyphAndGlyphEditor(self, info: Dict) -> None:
         self.dglyph = info["glyph"]
         self.glyphEditor = info.get("glyphEditor", None)
+        logger.debug("update glyphEditor:", self.glyphEditor)
         self.buildContainer(glyphEditor=self.glyphEditor)
         self._checkSecondarySelectors()
         self._curvePreview()
 
     def glyphEditorDidOpen(self, info) -> None:
-        if DEBUG:
-            print("glyphEditorDidOpen", info)
+        logger.debug("glyphEditorDidOpen", info.get("glyphEditor", None))
         self.updateGlyphAndGlyphEditor(info)
 
     def glyphEditorDidSetGlyph(self, info) -> None:
-        if DEBUG:
-            print("glyphEditorDidSetGlyph", info)
+        logger.debug("glyphEditorDidSetGlyph", info.get("glyphEditor", None))
         self.updateGlyphAndGlyphEditor(info)
 
     def glyphEditorWillClose(self, info) -> None:
-        if DEBUG:
-            print("glyphEditorWillClose", info)
+        logger.debug("glyphEditorWillClose", info)
         self.dglyph = None
         self.glyphEditor = None
         self.buildContainer(glyphEditor=None)
         self._checkSecondarySelectors()
 
     def roboFontDidSwitchCurrentGlyph(self, info) -> None:
-        if DEBUG:
-            print("roboFontDidSwitchCurrentGlyph", info["glyph"])
-        self.updateGlyphAndGlyphEditor(info)
+        logger.debug("roboFontDidSwitchCurrentGlyph", info["glyph"])
+        self.dglyph = info["glyph"]
+        self._checkSecondarySelectors()
+        self._curvePreview()
 
     def currentGlyphDidChangeOutline(self, info) -> None:
-        if DEBUG:
-            print("currentGlyphDidChangeOutline", info["glyph"])
+        logger.debug("currentGlyphDidChangeOutline", info["glyph"])
         self.updateGlyphAndGlyphEditor(info)
 
     def glyphDidChangeSelection(self, info) -> None:
-        if DEBUG:
-            print("glyphDidChangeSelection", info["glyph"])
-            print("Selection:", info["glyph"].selectedPoints)
+        logger.debug("glyphDidChangeSelection", info["glyph"])
+        logger.debug("Selection:", info["glyph"].selectedPoints)
         if len(info["glyph"].selectedPoints) < 2:
             self.buildContainer(glyphEditor=None)
             self._checkSecondarySelectors()
@@ -236,27 +251,23 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             self.updateGlyphAndGlyphEditor(info)
 
     def buildContainer(self, glyphEditor) -> None:
+        logger.debug("Build container for glyph editor", glyphEditor)
         if glyphEditor is None:
             if self.container is not None:
-                if DEBUG:
-                    print("Clear layers")
+                logger.debug("Clear layers")
                 self.container.clearSublayers()
-                self.container = None
             else:
-                if DEBUG:
-                    print("No layers to clear")
+                logger.debug("No layers to clear")
         else:
             if self.container is None:
-                if DEBUG:
-                    print("Make container")
+                logger.debug("Make container")
                 self.container = glyphEditor.extensionContainer(
                     identifier=f"{extensionID}.preview",
                     location="background",
                     clear=True,
                 )
             else:
-                if DEBUG:
-                    print("Using existing container")
+                logger.debug("Using existing container")
 
     def getCurveLayer(self) -> MerzCALayer | None:
         if self.container is None:
@@ -352,7 +363,9 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             return
 
         if self.container is None:
-            print("Container is None in _drawGeometry, shouldn't happen.")
+            logger.error(
+                "Container is None in _drawGeometry, shouldn't happen."
+            )
             return
 
         for reference_contour in reference_glyph.contours:
@@ -408,8 +421,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                 self.container = None
             return
 
-        if DEBUG:
-            print("Building curve preview ...")
+        logger.debug("Building curve preview ...")
         self._eqSelected()
         if self.previewCurves:
             curveLayer = self.getCurveLayer()
@@ -474,9 +486,8 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                             elif self.method == "hobby":
                                 p1, p2 = eqSpline(p0, p1, p2, p3, self.tension)
                             else:
-                                print(
-                                    "WARNING: Unknown equalize method: %s"
-                                    % self.method
+                                logger.error(
+                                    "Unknown equalize method: {self.method}"
                                 )
                             if sender is not None:
                                 p1.round()
