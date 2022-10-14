@@ -429,6 +429,11 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             curveLayer = self.getCurveLayer()
             if curveLayer is None:
                 self.buildContainer(self.glyphEditor)
+                curveLayer = self.getCurveLayer()
+                if curveLayer is None:
+                    logger.error("Could not build container.")
+                    return
+
             # FIXME: Don't draw the whole glyph, just the equalized selection
             with curveLayer.drawingTools() as bot:
                 bot.fill(None)
