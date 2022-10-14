@@ -27,20 +27,25 @@ Version history:
 1.1.0 by Jens Kutilek 2018-01-10
 2.0.0-dev by Jens Kutilek 2021-10-21
 2.0.1 by Jens Kutilek 2021-11-10
+2.1.0 by Jens Kutilek 2022-10-14
 
 http://www.kutilek.de/
 """
 
 from math import atan2, cos, sin
-
 from mojo.extensions import getExtensionDefault, setExtensionDefault
 from mojo.roboFont import CurrentGlyph
 from mojo.subscriber import Subscriber, WindowController
+from typing import TYPE_CHECKING
 
 from baseCurveEqualizer import BaseCurveEqualizer
 from EQExtensionID import extensionID
 from EQMethods import eqBalance, eqPercentage, eqSpline, eqThirds
 from EQMethods.geometry import getTriangleSides, isOnLeft, isOnRight
+
+if TYPE_CHECKING:
+    from lib.fontObjects.doodleGlyph import DoodleGlyph
+    from lib.fontObjects.fontPartsWrappers import RGlyph
 
 
 DEBUG = getExtensionDefault(f"{extensionID}.debug", False)
@@ -115,11 +120,11 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             del(self.container)
 
     @property
-    def dglyph(self):
+    def dglyph(self) -> RGlyph | None:
         return self._dglyph
 
     @dglyph.setter
-    def dglyph(self, value) -> None:
+    def dglyph(self, value: RGlyph | None) -> None:
         self._dglyph = value
         if self._dglyph is None:
             self.tmp_glyph = None
@@ -127,7 +132,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         else:
             self.tmp_glyph = self._dglyph.copy()
             self.dglyph_selection = self._dglyph.selectedPoints
-            if not self.dglyph.contours:
+            if not self._dglyph.contours:
                 if self.container is not None:
                     del self.container
                     self.container = None
