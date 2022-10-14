@@ -104,7 +104,7 @@ def getNewCoordinates(
     targetPoint: RPoint,
     referencePoint: RPoint,
     alternateReferencePoint: RPoint,
-    distance: float | int,
+    distance: float,
 ) -> Tuple[float, float]:
     if targetPoint.y == referencePoint.y and targetPoint.x == referencePoint.x:
         phi = atan2(

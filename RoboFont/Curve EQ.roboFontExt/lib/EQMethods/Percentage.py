@@ -13,7 +13,7 @@ def eqPercentage(
     p1: RPoint,
     p2: RPoint,
     p3: RPoint,
-    curvature: float | int = 0.552,
+    curvature: float = 0.552,
 ) -> Tuple[RPoint, RPoint]:
 
     # Check for zero handles

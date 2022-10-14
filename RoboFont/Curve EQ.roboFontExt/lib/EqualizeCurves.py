@@ -6,7 +6,7 @@ Curve Equalizer
 
 An extension for the RoboFont editor
 
-Requires RoboFont 1.6
+Requires RoboFont 4
 
 Version history:
 0.1 by Jens Kutilek 2013-02-13
