@@ -45,8 +45,9 @@ from EQMethods import eqBalance, eqPercentage, eqSpline, eqThirds
 from EQMethods.geometry import getTriangleSides, isOnLeft, isOnRight
 
 if TYPE_CHECKING:
-    from lib.fontObjects.doodleGlyph import DoodleGlyph
+    from fontParts.fontshell import RPoint
     from lib.fontObjects.fontPartsWrappers import RGlyph
+    from merz.objects.container import Container
 
 
 DEBUG = getExtensionDefault(f"{extensionID}.debug", False)
