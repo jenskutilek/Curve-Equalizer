@@ -173,17 +173,15 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         self.buildContainer(glyphEditor=None)
         self._checkSecondarySelectors()
 
-    # def roboFontDidSwitchCurrentGlyph(self, info) -> None:
-    #     if DEBUG:
-    #         print("roboFontDidSwitchCurrentGlyph", info["glyph"])
-    #     self.dglyph = info["glyph"]
-    #     self._checkSecondarySelectors()
-    #     self._curvePreview()
+    def roboFontDidSwitchCurrentGlyph(self, info) -> None:
+        if DEBUG:
+            print("roboFontDidSwitchCurrentGlyph", info["glyph"])
+        self.updateGlyphAndGlyphEditor(info)
 
-    # def currentGlyphDidChangeOutline(self, info) -> None:
-    #     print("currentGlyphDidChangeOutline", info["glyph"])
-    #     self.dglyph = info["glyph"]
-    #     self._curvePreview()
+    def currentGlyphDidChangeOutline(self, info) -> None:
+        if DEBUG:
+            print("currentGlyphDidChangeOutline", info["glyph"])
+        self.updateGlyphAndGlyphEditor(info)
 
     def glyphDidChangeSelection(self, info) -> None:
         if DEBUG:
