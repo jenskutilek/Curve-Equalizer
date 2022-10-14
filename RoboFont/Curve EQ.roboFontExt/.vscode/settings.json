@@ -1,0 +1,8 @@
+{
+    "python.analysis.extraPaths": [
+        "/Applications/RoboFont.app/Contents/Resources/lib/python3.7"
+    ],
+    "python.autoComplete.extraPaths": [
+        "/Applications/RoboFont.app/Contents/Resources/lib/python3.7"
+    ]
+}
