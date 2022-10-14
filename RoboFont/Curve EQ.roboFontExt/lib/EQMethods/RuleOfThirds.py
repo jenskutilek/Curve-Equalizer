@@ -1,9 +1,15 @@
 from __future__ import annotations
 
 from .geometry import distance, getNewCoordinates
+from typing import TYPE_CHECKING, Tuple
+
+if TYPE_CHECKING:
+    from fontParts.fontshell import RPoint
 
 
-def eqThirds(p0, p1, p2, p3):
+def eqThirds(
+    p0: RPoint, p1: RPoint, p2: RPoint, p3: RPoint
+) -> Tuple[RPoint, RPoint]:
     # get distances
     a = distance(p0, p1)
     b = distance(p1, p2)

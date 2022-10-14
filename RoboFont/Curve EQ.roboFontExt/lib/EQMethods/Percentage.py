@@ -2,9 +2,19 @@ from __future__ import annotations
 
 from math import atan2
 from .geometry import getNewCoordinates, getTriangleSides, isOnLeft, isOnRight
+from typing import TYPE_CHECKING, Tuple
+
+if TYPE_CHECKING:
+    from fontParts.fontshell import RPoint
 
 
-def eqPercentage(p0, p1, p2, p3, curvature=0.552):
+def eqPercentage(
+    p0: RPoint,
+    p1: RPoint,
+    p2: RPoint,
+    p3: RPoint,
+    curvature: float | int = 0.552,
+) -> Tuple[RPoint, RPoint]:
 
     # Check for zero handles
     zero = False
