@@ -188,9 +188,11 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
     def glyphDidChangeSelection(self, info) -> None:
         if DEBUG:
             print("glyphDidChangeSelection", info["glyph"])
-        self.dglyph = info["glyph"]
-        self._checkSecondarySelectors()
-        self._curvePreview()
+        if len(info["glyph"].selectedPoints) < 2:
+            self.buildContainer(glyphEditor=None)
+            self._checkSecondarySelectors()
+        else:
+            self.updateGlyphAndGlyphEditor(info)
 
     def buildContainer(self, glyphEditor) -> None:
         if glyphEditor is None:
