@@ -84,14 +84,14 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
 
         # default curvature for slider
         self.curvatureFree = getExtensionDefault(
-            f"{extensionID}.curvatureFree", 75
+            f"{extensionID}.curvatureFree", 0.75
         )
-        self.paletteView.group.eqCurvatureSlider.set(self.curvatureFree)
+        self.paletteView.group.eqCurvatureSlider.set(self.curvatureFree * 100)
         logger.debug("Curvature free:", self.curvatureFree)
 
         # default curvature for Hobby's spline tension slider
-        self.tension = getExtensionDefault(f"{extensionID}.tension", 75)
-        self.paletteView.group.eqHobbyTensionSlider.set(self.tension)
+        self.tension = getExtensionDefault(f"{extensionID}.tension", 0.75)
+        self.paletteView.group.eqHobbyTensionSlider.set(self.tension * 100)
         logger.debug("Hobby tension:", self.tension)
 
         # load preview options
@@ -236,11 +236,11 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         self._curvePreview()
 
     def _changeCurvatureFree(self, sender) -> None:
-        self.curvatureFree = sender.get()
+        self.curvatureFree = sender.get() / 100
         self._curvePreview()
 
     def _changeTension(self, sender) -> None:
-        self.tension = sender.get()
+        self.tension = sender.get() / 100
         self._curvePreview()
 
     def windowWillClose(self, sender) -> None:
@@ -254,11 +254,11 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         )
         setExtensionDefault(
             f"{extensionID}.curvatureFree",
-            self.paletteView.group.eqCurvatureSlider.get(),
+            self.paletteView.group.eqCurvatureSlider.get() / 100,
         )
         setExtensionDefault(
             f"{extensionID}.tension",
-            self.paletteView.group.eqHobbyTensionSlider.get(),
+            self.paletteView.group.eqHobbyTensionSlider.get() / 100,
         )
 
     def _checkSecondarySelectors(self) -> None:
