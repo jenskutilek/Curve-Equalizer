@@ -315,6 +315,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         reference_glyph = self.dglyph
         if reference_glyph is None:
             return
+
         if not reference_glyph.contours:
             return
 
@@ -355,6 +356,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
     def _handlesPreview(self) -> None:
         if self.tmp_glyph is None or not self.tmp_glyph.contours:
             return
+
         ref_glyph = self.dglyph
         if ref_glyph is None or not ref_glyph.contours:
             return
