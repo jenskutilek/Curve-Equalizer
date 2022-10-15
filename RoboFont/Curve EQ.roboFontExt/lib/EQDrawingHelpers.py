@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 # Colors
 curvePreviewColor = (0, 0, 0, 0.5)
-curvePreviewWidth = 3
+curvePreviewWidth = 1
 geometryViewColor = (0.5, 0.6, 0.9, 0.8)
 geometryViewWidth = 0.8
 handlePreviewSize = 1.2
