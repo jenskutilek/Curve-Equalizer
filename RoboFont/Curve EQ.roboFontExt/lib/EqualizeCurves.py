@@ -58,15 +58,16 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-if getExtensionDefault(f"{extensionID}.debug", False):
-    logging.basicConfig(level=logging.DEBUG)
-    logger.debug("DEBUG mode is on")
+DEBUG = getExtensionDefault(f"{extensionID}.debug", False)
+if DEBUG:
+    print("DEBUG mode is on")
 
 
 class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
     def restore_state(self) -> None:
         # Restore saved state
-        logger.debug("Restoring state ...")
+        if DEBUG:
+            print("Restoring state ...")
 
         # If we come in from an older version, the selected method index
         # may be out of range
@@ -80,19 +81,22 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         curvature_index = getExtensionDefault(f"{extensionID}.curvature", 0)
         self.curvature = self.curvatures[curvature_index]
         self.paletteView.group.eqCurvatureSelector.set(curvature_index)
-        logger.debug(f"Curvature radiobutton: {curvature_index}")
+        if DEBUG:
+            print(f"Curvature radiobutton: {curvature_index}")
 
         # default curvature for slider
         self.curvatureFree = getExtensionDefault(
             f"{extensionID}.curvatureFree", 0.75
         )
         self.paletteView.group.eqCurvatureSlider.set(self.curvatureFree * 100)
-        logger.debug("Curvature free:", self.curvatureFree)
+        if DEBUG:
+            print("Curvature free:", self.curvatureFree)
 
         # default curvature for Hobby's spline tension slider
         self.tension = getExtensionDefault(f"{extensionID}.tension", 0.75)
         self.paletteView.group.eqHobbyTensionSlider.set(self.tension * 100)
-        logger.debug("Hobby tension:", self.tension)
+        if DEBUG:
+            print("Hobby tension:", self.tension)
 
         # load preview options
         self.alwaysPreviewCurves = getExtensionDefault(
@@ -155,58 +159,71 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
     # Events
 
     def glyphEditorDidSetGlyph(self, info) -> None:
-        logger.debug("glyphEditorDidSetGlyph", info["glyph"])
+        if DEBUG:
+            print("glyphEditorDidSetGlyph", info["glyph"])
         glyph = info.get("glyph", None)
         self.dglyph = glyph
         glyphEditor = info.get("glyphEditor", None)
         if glyphEditor != self.glyphEditor:
             self.glyphEditor = glyphEditor
-            logger.debug("Update glyphEditor:", self.glyphEditor)
+            if DEBUG:
+                print("Update glyphEditor:", self.glyphEditor)
             self.buildContainer()
         self._checkSecondarySelectors()
         self._curvePreview()
 
     def glyphEditorWillClose(self, info) -> None:
-        logger.debug("glyphEditorWillClose")
+        if DEBUG:
+            print("glyphEditorWillClose")
         self.dglyph = None
         self.glyphEditor = None
         if self.container is not None:
-            logger.debug("  Clear layers")
+            if DEBUG:
+                print("  Clear layers")
             self.container.clearSublayers()
         self._checkSecondarySelectors()
 
     def currentGlyphDidChangeOutline(self, info) -> None:
-        logger.debug("currentGlyphDidChangeOutline")
+        if DEBUG:
+            print("currentGlyphDidChangeOutline")
         self._curvePreview()
 
     def glyphDidChangeSelection(self, info) -> None:
-        logger.debug("glyphDidChangeSelection")
+        if DEBUG:
+            print("glyphDidChangeSelection")
         glyph = info["glyph"]
         self.dglyph = glyph
-        logger.debug("Selection:", self.dglyph_selection)
+        if DEBUG:
+            print("Selection:", self.dglyph_selection)
         self._checkSecondarySelectors()
         self._curvePreview()
 
     def buildContainer(self) -> None:
-        logger.debug("Building container for glyph editor", self.glyphEditor)
+        if DEBUG:
+            print("Building container for glyph editor", self.glyphEditor)
         if self.glyphEditor is None:
             if self.container is not None:
-                logger.debug("  Clear layers")
+                if DEBUG:
+                    print("  Clear layers")
                 self.container.clearSublayers()
             else:
-                logger.debug("  No layers to clear")
+                if DEBUG:
+                    print("  No layers to clear")
         else:
             if self.container is None:
-                logger.debug("  Making a new container")
+                if DEBUG:
+                    print("  Making a new container")
                 self.container = self.glyphEditor.extensionContainer(
                     identifier=f"{extensionID}.preview",
                     location="background",
                     clear=True,
                 )
             else:
-                logger.debug("  Using existing container")
+                if DEBUG:
+                    print("  Using existing container")
                 self.container.clearSublayers()
-        logger.debug("Done building container.")
+        if DEBUG:
+            print("Done building container.")
 
     def getCurveLayer(self) -> MerzCALayer | None:
         if self.container is None:
@@ -348,15 +365,18 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                         appendHandle(self.container, p, -1)
 
     def _curvePreview(self) -> None:
-        logger.debug("Building curve preview ...")
+        if DEBUG:
+            print("Building curve preview ...")
         if (
             self.dglyph is None
             or not self.dglyph.contours
             or len(self.dglyph_selection) < 2
         ):
-            logger.debug("  Aborting ...")
+            if DEBUG:
+                print("  Aborting ...")
             if self.container is not None:
-                logger.debug("  Clearing layers")
+                if DEBUG:
+                    print("  Clearing layers")
                 self.container.clearSublayers()
             return
 
