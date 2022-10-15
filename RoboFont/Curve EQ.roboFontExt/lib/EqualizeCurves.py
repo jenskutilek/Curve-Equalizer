@@ -78,50 +78,35 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         self.method = self.methods[method]
 
         # default curvature for radio buttons
-        self.paletteView.group.eqCurvatureSelector.set(
-            getExtensionDefault("%s.%s" % (extensionID, "curvature"), 0)
-        )
-        self.curvature = self.paletteView.group.eqCurvatureSelector.get()
-        logger.debug(
-            f"Curvature radiobutton: {self.curvature}/{len(self.curvatures)}"
-        )
+        curvature_index = getExtensionDefault(f"{extensionID}.curvature", 0)
+        self.curvature = self.curvatures[curvature_index]
+        self.paletteView.group.eqCurvatureSelector.set(curvature_index)
+        logger.debug(f"Curvature radiobutton: {curvature_index}")
 
         # default curvature for slider
-        self.paletteView.group.eqCurvatureSlider.set(
-            round(
-                getExtensionDefault(
-                    "%s.%s" % (extensionID, "curvatureFree"), 50
-                )
-                * 100
-            )
+        self.curvatureFree = getExtensionDefault(
+            f"{extensionID}.curvatureFree", 75
         )
-        self.curvatureFree = (
-            self.paletteView.group.eqCurvatureSlider.get() / 100
-        )
+        self.paletteView.group.eqCurvatureSlider.set(self.curvatureFree)
         logger.debug("Curvature free:", self.curvatureFree)
 
         # default curvature for Hobby's spline tension slider
-        self.paletteView.group.eqHobbyTensionSlider.set(
-            round(
-                getExtensionDefault("%s.%s" % (extensionID, "tension"), 50)
-                * 100
-            )
-        )
-        self.tension = self.paletteView.group.eqHobbyTensionSlider.get() / 100
+        self.tension = getExtensionDefault(f"{extensionID}.tension", 75)
+        self.paletteView.group.eqHobbyTensionSlider.set(self.tension)
         logger.debug("Hobby tension:", self.tension)
 
         # load preview options
         self.alwaysPreviewCurves = getExtensionDefault(
-            "%s.%s" % (extensionID, "previewCurves"), False
+            f"{extensionID}.previewCurves", False
         )
         self.alwaysPreviewHandles = getExtensionDefault(
-            "%s.%s" % (extensionID, "previewHandles"), False
+            f"{extensionID}.previewHandles", False
         )
 
         self._setPreviewOptions()
 
         self.drawGeometry = getExtensionDefault(
-            "%s.%s" % (extensionID, "drawGeometry"), False
+            f"{extensionID}.drawGeometry", False
         )
 
     def build(self) -> None:
@@ -261,29 +246,29 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         self._curvePreview()
 
     def _changeCurvatureFree(self, sender) -> None:
-        self.curvatureFree = sender.get() / 100
+        self.curvatureFree = sender.get()
         self._curvePreview()
 
     def _changeTension(self, sender) -> None:
-        self.tension = sender.get() / 100
+        self.tension = sender.get()
         self._curvePreview()
 
     def windowWillClose(self, sender) -> None:
         setExtensionDefault(
-            "%s.%s" % (extensionID, "method"),
+            f"{extensionID}.method",
             self.paletteView.group.eqMethodSelector.get(),
         )
         setExtensionDefault(
-            "%s.%s" % (extensionID, "curvature"),
+            f"{extensionID}.curvature",
             self.paletteView.group.eqCurvatureSelector.get(),
         )
         setExtensionDefault(
-            "%s.%s" % (extensionID, "curvatureFree"),
-            self.paletteView.group.eqCurvatureSlider.get() / 100,
+            f"{extensionID}.curvatureFree",
+            self.paletteView.group.eqCurvatureSlider.get(),
         )
         setExtensionDefault(
-            "%s.%s" % (extensionID, "tension"),
-            self.paletteView.group.eqHobbyTensionSlider.get() / 100,
+            f"{extensionID}.tension",
+            self.paletteView.group.eqHobbyTensionSlider.get(),
         )
 
     def _checkSecondarySelectors(self) -> None:
