@@ -1,11 +1,13 @@
 {
     "python.autoComplete.extraPaths": [
-        "/Applications/RF4-beta/RoboFont.app/Contents/Resources/lib/python3.7",
+        "/Applications/RoboFont.app/Contents/Resources/lib/python3.7",
+        "/Users/kuti/Quellen/RoboFont/robofontse/Resources/lib/python37",
         "/Users/kuti/Quellen/GlyphsSDK/ObjectWrapper",
         "/Users/kuti/Quellen/vanilla/Lib"
     ],
     "python.analysis.extraPaths": [
-        "/Applications/RF4-beta/RoboFont.app/Contents/Resources/lib/python3.7",
+        "/Applications/RoboFont.app/Contents/Resources/lib/python3.7",
+        "/Users/kuti/Quellen/RoboFont/robofontse/Resources/lib/python37",
         "/Users/kuti/Quellen/GlyphsSDK/ObjectWrapper",
         "/Users/kuti/Quellen/vanilla/Lib"
     ],

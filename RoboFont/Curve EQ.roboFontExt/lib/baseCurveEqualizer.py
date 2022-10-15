@@ -1,6 +1,11 @@
 from __future__ import annotations
 
+import logging
+
 from vanilla import Button, FloatingWindow, Group, RadioGroup, Slider, Window
+
+
+logger = logging.getLogger(__name__)
 
 
 class BaseCurveEqualizer:
@@ -73,9 +78,9 @@ class BaseCurveEqualizer:
         self.paletteView.group.eqCurvatureSlider = Slider(
             (sliderX, y, -8, 17),
             callback=self._changeCurvatureFree,
-            minValue=0.5,
-            maxValue=1.0,
-            value=0.75,  # Will be replaced by saved value
+            minValue=50,
+            maxValue=100,
+            value=75,  # Will be replaced by saved value
             sizeStyle="small",
         )
 
@@ -84,8 +89,8 @@ class BaseCurveEqualizer:
             (sliderX, y, -8, 17),
             tickMarkCount=5,
             callback=self._changeTension,
-            minValue=0.5,
-            maxValue=1.0,
+            minValue=50,
+            maxValue=100,
             sizeStyle="small",
         )
 
@@ -97,19 +102,19 @@ class BaseCurveEqualizer:
                 callback=self._eqSelected,
                 sizeStyle="small",
             )
-        
+
     def _changeCurvature(self) -> None:
         raise NotImplementedError
-    
+
     def _changeCurvatureFree(self) -> None:
         raise NotImplementedError
-    
+
     def _changeMethod(self) -> None:
         raise NotImplementedError
-    
+
     def _changeTension(self) -> None:
         raise NotImplementedError
-    
+
     def _eqSelected(self) -> None:
         raise NotImplementedError
 
