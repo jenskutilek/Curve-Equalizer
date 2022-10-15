@@ -164,8 +164,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
     def glyphEditorDidSetGlyph(self, info) -> None:
         if DEBUG:
             print("glyphEditorDidSetGlyph", info["glyph"])
-        glyph = info.get("glyph", None)
-        self.dglyph = glyph
+        self.dglyph = info.get("glyph", None)
         glyphEditor = info.get("glyphEditor", None)
         if glyphEditor != self.glyphEditor:
             self.glyphEditor = glyphEditor
