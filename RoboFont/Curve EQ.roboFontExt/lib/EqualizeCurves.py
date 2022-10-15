@@ -277,6 +277,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             f"{extensionID}.tension",
             self.paletteView.group.eqHobbyTensionSlider.get() / 100,
         )
+        setExtensionDefault(f"{extensionID}.debug", DEBUG)
 
     def _checkSecondarySelectors(self) -> None:
         # Enable or disable slider/radio buttons
