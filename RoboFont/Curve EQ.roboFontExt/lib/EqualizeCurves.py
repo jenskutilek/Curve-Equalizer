@@ -36,7 +36,12 @@ import logging
 
 from math import atan2
 from mojo.extensions import getExtensionDefault, setExtensionDefault
-from mojo.subscriber import Subscriber, WindowController
+from mojo.subscriber import (
+    Subscriber,
+    WindowController,
+    registerGlyphEditorSubscriber,
+    unregisterGlyphEditorSubscriber,
+)
 from typing import TYPE_CHECKING, List
 
 from baseCurveEqualizer import BaseCurveEqualizer
@@ -64,7 +69,113 @@ if DEBUG:
     print("DEBUG mode is on")
 
 
-class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
+class CurveEqSubscriber(Subscriber):
+
+    debug = True
+
+    controller: CurveEqualizer | None = None
+
+    def build(self):
+        if self.debug:
+            print("build")
+        if self.controller is None:
+            return
+
+        # self.controller.build()
+
+    def started(self):
+        if self.debug:
+            print("subscription started")
+        if self.controller is None:
+            return
+
+        # self.controller.started()
+
+    def destroy(self):
+        if self.debug:
+            print("stop subscription")
+        if self.controller is None:
+            return
+
+        # self.controller.destroy()
+
+    def glyphEditorDidOpen(self, info) -> None:
+        if DEBUG:
+            print("**** glyphEditorDidOpen", info["glyph"])
+        return
+
+        self.dglyph = info.get("glyph", None)
+        glyphEditor = info.get("glyphEditor", None)
+        if glyphEditor != self.glyphEditor:
+            self.glyphEditor = glyphEditor
+            if DEBUG:
+                print("Update glyphEditor:", self.glyphEditor)
+            self.buildContainer()
+        self.checkSecondarySelectors()
+        self.updateCurvePreview()
+
+    def glyphEditorDidSetGlyph(self, info) -> None:
+        if DEBUG:
+            print("glyphEditorDidSetGlyph", info["glyph"])
+        if self.controller is None:
+            return
+
+        self.controller.dglyph = info.get("glyph", None)
+        glyphEditor = info.get("glyphEditor", None)
+        if glyphEditor != self.controller.glyphEditor:
+            self.controller.glyphEditor = glyphEditor
+            if DEBUG:
+                print("Update glyphEditor:", self.controller.glyphEditor)
+            self.controller.buildContainer()
+        self.controller.checkSecondarySelectors()
+        self.controller.updateCurvePreview()
+
+    def glyphEditorWillClose(self, info) -> None:
+        if DEBUG:
+            print("glyphEditorWillClose")
+        if self.controller is None:
+            return
+
+        self.controller.dglyph = None
+        self.controller.glyphEditor = None
+        if self.controller.container is not None:
+            if DEBUG:
+                print("  Clear layers")
+            self.controller.container.clearSublayers()
+        self.controller.checkSecondarySelectors()
+
+    def currentGlyphDidChangeOutline(self, info) -> None:
+        if DEBUG:
+            print("currentGlyphDidChangeOutline")
+        if self.controller is None:
+            return
+
+        self.controller._dglyph = info.get("glyph", None)
+        if self.controller._dglyph is None:
+            self.controller.tmp_glyph = None
+            return
+
+        self.controller.tmp_glyph = self.controller._dglyph.copy()
+        self.controller.updateCurvePreview()
+
+    def glyphDidChangeSelection(self, info) -> None:
+        if DEBUG:
+            print("glyphDidChangeSelection")
+        if self.controller is None:
+            return
+
+        glyph = info["glyph"]
+        self.controller.dglyph = glyph
+        if DEBUG:
+            print("Selection:", self.controller.dglyph_selection)
+        self.controller.checkSecondarySelectors()
+        self.controller.updateCurvePreview()
+
+
+class CurveEqualizer(BaseCurveEqualizer, WindowController):
+
+    glyphEditorSubscriberClass = CurveEqSubscriber
+
     def restore_state(self) -> None:
         # Restore saved state
         if DEBUG:
@@ -122,12 +233,16 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         self.container = None
 
     def started(self) -> None:
-        self._checkSecondarySelectors()
+        self.checkSecondarySelectors()
         self.paletteView.open()
+        self.glyphEditorSubscriberClass.controller = self
+        registerGlyphEditorSubscriber(self.glyphEditorSubscriberClass)
 
     def destroy(self) -> None:
         if self.container is not None:
             self.container.clearSublayers()
+        unregisterGlyphEditorSubscriber(self.glyphEditorSubscriberClass)
+        self.glyphEditorSubscriberClass.controller = None
 
     @property
     def dglyph(self) -> RGlyph | None:
@@ -156,67 +271,6 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
     @dglyph_selection.setter
     def dglyph_selection(self, value: List) -> None:
         self._dglyph_selection = value
-
-    # Events
-
-    def glyphEditorDidOpen(self, info) -> None:
-        print("**** glyphEditorDidOpen", info["glyph"])
-        return
-
-        self.dglyph = info.get("glyph", None)
-        glyphEditor = info.get("glyphEditor", None)
-        if glyphEditor != self.glyphEditor:
-            self.glyphEditor = glyphEditor
-            if DEBUG:
-                print("Update glyphEditor:", self.glyphEditor)
-            self.buildContainer()
-        self._checkSecondarySelectors()
-        self._curvePreview()
-
-    def glyphEditorDidSetGlyph(self, info) -> None:
-        if DEBUG:
-            print("glyphEditorDidSetGlyph", info["glyph"])
-        self.dglyph = info.get("glyph", None)
-        glyphEditor = info.get("glyphEditor", None)
-        if glyphEditor != self.glyphEditor:
-            self.glyphEditor = glyphEditor
-            if DEBUG:
-                print("Update glyphEditor:", self.glyphEditor)
-            self.buildContainer()
-        self._checkSecondarySelectors()
-        self._curvePreview()
-
-    def glyphEditorWillClose(self, info) -> None:
-        if DEBUG:
-            print("glyphEditorWillClose")
-        self.dglyph = None
-        self.glyphEditor = None
-        if self.container is not None:
-            if DEBUG:
-                print("  Clear layers")
-            self.container.clearSublayers()
-        self._checkSecondarySelectors()
-
-    def currentGlyphDidChangeOutline(self, info) -> None:
-        if DEBUG:
-            print("currentGlyphDidChangeOutline")
-        self._dglyph = info.get("glyph", None)
-        if self._dglyph is None:
-            self.tmp_glyph = None
-            return
-
-        self.tmp_glyph = self._dglyph.copy()
-        self._curvePreview()
-
-    def glyphDidChangeSelection(self, info) -> None:
-        if DEBUG:
-            print("glyphDidChangeSelection")
-        glyph = info["glyph"]
-        self.dglyph = glyph
-        if DEBUG:
-            print("Selection:", self.dglyph_selection)
-        self._checkSecondarySelectors()
-        self._curvePreview()
 
     def buildContainer(self) -> None:
         if DEBUG:
@@ -258,27 +312,27 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         )
         return layer
 
-    # Callbacks
+    # UI Callbacks
 
     def _changeMethod(self, sender) -> None:
         choice = sender.get()
         self.method = self.methods[choice]
         self._setPreviewOptions()
-        self._checkSecondarySelectors()
-        self._curvePreview()
+        self.checkSecondarySelectors()
+        self.updateCurvePreview()
 
     def _changeCurvature(self, sender) -> None:
         choice = sender.get()
         self.curvature = self.curvatures[choice]
-        self._curvePreview()
+        self.updateCurvePreview()
 
     def _changeCurvatureFree(self, sender) -> None:
         self.curvatureFree = sender.get() / 100
-        self._curvePreview()
+        self.updateCurvePreview()
 
     def _changeTension(self, sender) -> None:
         self.tension = sender.get() / 100
-        self._curvePreview()
+        self.updateCurvePreview()
 
     def windowWillClose(self, sender) -> None:
         setExtensionDefault(
@@ -299,7 +353,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         )
         setExtensionDefault(f"{extensionID}.debug", DEBUG)
 
-    def _checkSecondarySelectors(self) -> None:
+    def checkSecondarySelectors(self) -> None:
         # Enable or disable slider/radio buttons
         if self.dglyph is None or not self.dglyph_selection:
             self.paletteView.group.eqMethodSelector.enable(False)
@@ -371,7 +425,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                                 )
                                 appendTriangleSide(self.container, p3, beta, a)
 
-    def _curvePreview(self) -> None:
+    def updateCurvePreview(self) -> None:
         if DEBUG:
             print("Building curve preview ...")
         if (
@@ -477,4 +531,4 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
 
 
 if __name__ == "__main__":
-    CurveEqualizer(currentGlyph=True)
+    OpenWindow(CurveEqualizer)
