@@ -340,8 +340,8 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             )
             return
 
-        for reference_contour in reference_glyph.contours:
-            for i, reference_segment in enumerate(reference_contour.segments):
+        for reference_contour in reference_glyph:
+            for i, reference_segment in enumerate(reference_contour):
                 if (
                     reference_segment.selected
                     and reference_segment.type == "curve"
@@ -430,7 +430,7 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                     undoTitle="Equalize curve in /%s" % reference_glyph.name
                 )
             for contourIndex, reference_contour in enumerate(reference_glyph):
-                modify_contour = modify_glyph.contours[contourIndex]
+                modify_contour = modify_glyph[contourIndex]
                 for i, reference_segment in enumerate(reference_contour):
                     modify_segment = modify_contour[i]
                     if (
