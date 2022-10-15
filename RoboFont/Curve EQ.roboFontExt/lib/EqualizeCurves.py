@@ -1,9 +1,5 @@
 from __future__ import annotations
 
-import logging
-
-from typing import Dict, List
-
 """
 Curve Equalizer
 
@@ -36,65 +32,31 @@ Version history:
 http://www.kutilek.de/
 """
 
-from math import atan2, cos, sin
+import logging
+
+from math import atan2
 from mojo.extensions import getExtensionDefault, setExtensionDefault
 from mojo.roboFont import CurrentGlyph
 from mojo.subscriber import Subscriber, WindowController
 from typing import TYPE_CHECKING
 
 from baseCurveEqualizer import BaseCurveEqualizer
+from EQDrawingHelpers import (
+    appendHandle,
+    appendTriangleSide,
+    curvePreviewColor,
+    curvePreviewWidth,
+)
 from EQExtensionID import extensionID
 from EQMethods import eqBalance, eqPercentage, eqSpline, eqThirds
 from EQMethods.geometry import getTriangleSides, isOnLeft, isOnRight
 
 if TYPE_CHECKING:
-    from fontParts.fontshell import RPoint
     from lib.fontObjects.fontPartsWrappers import RGlyph
-    from merz.objects.container import Container
     from merz.tools.caLayerClasses import MerzCALayer
 
 
 logger = logging.getLogger(__name__)
-
-
-curvePreviewColor = (0, 0, 0, 0.5)
-curvePreviewWidth = 3
-geometryViewColor = (0.5, 0.6, 0.9, 0.8)
-geometryViewWidth = 0.8
-handlePreviewSize = 1.2
-
-
-def _appendHandle(
-    container: Container,
-    pt: RPoint,
-    direction: int = 1,
-    length: float | int = handlePreviewSize,
-    width: float | int = 1,
-):
-    container.appendLineSublayer(
-        startPoint=(pt.x - length, pt.y - direction * length),
-        endPoint=(pt.x + length, pt.y + direction * length),
-        strokeColor=(0, 0, 0, 0.3),
-        strokeWidth=width,
-    )
-
-
-def _appendTriangleSide(
-    container: Container,
-    pt: RPoint,
-    angle: float | int,
-    length: float | int,
-    dist: float | int = 5,
-):
-    container.appendLineSublayer(
-        startPoint=(pt.x, pt.y),
-        endPoint=(
-            pt.x + (length + dist) * cos(angle),
-            pt.y + (length + dist) * sin(angle),
-        ),
-        strokeColor=geometryViewColor,
-        strokeWidth=geometryViewWidth,
-    )
 
 
 if getExtensionDefault(f"{extensionID}.debug", False):
