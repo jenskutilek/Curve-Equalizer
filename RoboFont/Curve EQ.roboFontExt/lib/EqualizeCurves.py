@@ -323,8 +323,8 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             return
 
         if self.container is None:
-            logger.error(
-                "Container is None in _drawGeometry, shouldn't happen."
+            print(
+                "ERROR: Container is None in _drawGeometry, shouldn't happen."
             )
             return
 
@@ -389,8 +389,8 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         if self.previewCurves:
             curveLayer = self.getCurveLayer()
             if curveLayer is None:
-                logger.error(
-                    "Could not get curveLayer while building curve preview"
+                print(
+                    "ERROR: Could not get curveLayer while building curve preview"
                 )
                 return
 
