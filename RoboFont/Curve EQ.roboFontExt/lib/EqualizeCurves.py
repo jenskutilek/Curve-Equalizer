@@ -36,9 +36,8 @@ import logging
 
 from math import atan2
 from mojo.extensions import getExtensionDefault, setExtensionDefault
-from mojo.roboFont import CurrentGlyph
 from mojo.subscriber import Subscriber, WindowController
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from baseCurveEqualizer import BaseCurveEqualizer
 from EQDrawingHelpers import (
@@ -61,7 +60,7 @@ logger = logging.getLogger(__name__)
 
 if getExtensionDefault(f"{extensionID}.debug", False):
     logging.basicConfig(level=logging.DEBUG)
-    print("DEBUG mode is on")
+    logger.debug("DEBUG mode is on")
 
 
 class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
@@ -110,25 +109,20 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
         )
 
     def build(self) -> None:
-        logger.debug("Curve Equalizer starting in debug mode")
         self.build_ui()
         self.w = self.paletteView
         self.restore_state()
+        self.glyphEditor = None
         self.dglyph = None
         self.container = None
 
     def started(self) -> None:
-        self.glyphEditor = self.getGlyphEditor()
-        logger.debug("started(): Glyph Editor:", self.glyphEditor)
-        self.dglyph = CurrentGlyph()
-        logger.debug("started(): Glyph:", self.dglyph)
         self._checkSecondarySelectors()
         self.paletteView.open()
 
     def destroy(self) -> None:
         if self.container is not None:
             self.container.clearSublayers()
-            self.container = None
 
     @property
     def dglyph(self) -> RGlyph | None:
@@ -136,87 +130,83 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
 
     @dglyph.setter
     def dglyph(self, value: RGlyph | None) -> None:
-        self._dglyph = value
-        if self._dglyph is None:
+        if value is None:
+            self._dglyph = None
             self.tmp_glyph = None
-            self.dglyph_selection = []
-        else:
+            self._dglyph_selection = []
+            return
+        if self._dglyph != value:
+            self._dglyph = value
             self.tmp_glyph = self._dglyph.copy()
-            self.dglyph_selection = self._dglyph.selectedPoints
-            # if not self._dglyph.contours:
-            #     if self.container is not None:
-            #         self.container = None
+        if self._dglyph is None:
+            self._dglyph_selection = []
+            return
+
+        self._dglyph_selection = self._dglyph.selectedPoints
 
     @property
     def dglyph_selection(self) -> List:
         return self._dglyph_selection
 
     @dglyph_selection.setter
-    def dglyph_selection(self, value) -> None:
+    def dglyph_selection(self, value: List) -> None:
         self._dglyph_selection = value
 
-    # Ex-observers
-
-    def updateGlyphAndGlyphEditor(self, info: Dict) -> None:
-        self.dglyph = info["glyph"]
-        self.glyphEditor = info.get("glyphEditor", None)
-        logger.debug("update glyphEditor:", self.glyphEditor)
-        self.buildContainer(glyphEditor=self.glyphEditor)
-        self._checkSecondarySelectors()
-        self._curvePreview()
-
-    def glyphEditorDidOpen(self, info) -> None:
-        logger.debug("glyphEditorDidOpen", info.get("glyphEditor", None))
-        self.updateGlyphAndGlyphEditor(info)
+    # Events
 
     def glyphEditorDidSetGlyph(self, info) -> None:
-        logger.debug("glyphEditorDidSetGlyph", info.get("glyphEditor", None))
-        self.updateGlyphAndGlyphEditor(info)
-
-    def glyphEditorWillClose(self, info) -> None:
-        logger.debug("glyphEditorWillClose", info)
-        self.dglyph = None
-        self.glyphEditor = None
-        self.buildContainer(glyphEditor=None)
-        self._checkSecondarySelectors()
-
-    def roboFontDidSwitchCurrentGlyph(self, info) -> None:
-        logger.debug("roboFontDidSwitchCurrentGlyph", info["glyph"])
-        self.dglyph = info["glyph"]
+        logger.debug("glyphEditorDidSetGlyph", info["glyph"])
+        glyph = info.get("glyph", None)
+        self.dglyph = glyph
+        glyphEditor = info.get("glyphEditor", None)
+        if glyphEditor != self.glyphEditor:
+            self.glyphEditor = glyphEditor
+            logger.debug("Update glyphEditor:", self.glyphEditor)
+            self.buildContainer()
         self._checkSecondarySelectors()
         self._curvePreview()
 
+    def glyphEditorWillClose(self, info) -> None:
+        logger.debug("glyphEditorWillClose")
+        self.dglyph = None
+        self.glyphEditor = None
+        if self.container is not None:
+            logger.debug("  Clear layers")
+            self.container.clearSublayers()
+        self._checkSecondarySelectors()
+
     def currentGlyphDidChangeOutline(self, info) -> None:
-        logger.debug("currentGlyphDidChangeOutline", info["glyph"])
-        self.updateGlyphAndGlyphEditor(info)
+        logger.debug("currentGlyphDidChangeOutline")
+        self._curvePreview()
 
     def glyphDidChangeSelection(self, info) -> None:
-        logger.debug("glyphDidChangeSelection", info["glyph"])
-        logger.debug("Selection:", info["glyph"].selectedPoints)
-        if len(info["glyph"].selectedPoints) < 2:
-            self.buildContainer(glyphEditor=None)
-            self._checkSecondarySelectors()
-        else:
-            self.updateGlyphAndGlyphEditor(info)
+        logger.debug("glyphDidChangeSelection")
+        glyph = info["glyph"]
+        self.dglyph = glyph
+        logger.debug("Selection:", self.dglyph_selection)
+        self._checkSecondarySelectors()
+        self._curvePreview()
 
-    def buildContainer(self, glyphEditor) -> None:
-        logger.debug("Build container for glyph editor", glyphEditor)
-        if glyphEditor is None:
+    def buildContainer(self) -> None:
+        logger.debug("Building container for glyph editor", self.glyphEditor)
+        if self.glyphEditor is None:
             if self.container is not None:
-                logger.debug("Clear layers")
+                logger.debug("  Clear layers")
                 self.container.clearSublayers()
             else:
-                logger.debug("No layers to clear")
+                logger.debug("  No layers to clear")
         else:
             if self.container is None:
-                logger.debug("Make container")
-                self.container = glyphEditor.extensionContainer(
+                logger.debug("  Making a new container")
+                self.container = self.glyphEditor.extensionContainer(
                     identifier=f"{extensionID}.preview",
                     location="background",
                     clear=True,
                 )
             else:
-                logger.debug("Using existing container")
+                logger.debug("  Using existing container")
+                self.container.clearSublayers()
+        logger.debug("Done building container.")
 
     def getCurveLayer(self) -> MerzCALayer | None:
         if self.container is None:
@@ -358,26 +348,26 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                         appendHandle(self.container, p, -1)
 
     def _curvePreview(self) -> None:
+        logger.debug("Building curve preview ...")
         if (
             self.dglyph is None
             or not self.dglyph.contours
             or len(self.dglyph_selection) < 2
         ):
+            logger.debug("  Aborting ...")
             if self.container is not None:
+                logger.debug("  Clearing layers")
                 self.container.clearSublayers()
-                self.container = None
             return
 
-        logger.debug("Building curve preview ...")
         self._eqSelected()
         if self.previewCurves:
             curveLayer = self.getCurveLayer()
             if curveLayer is None:
-                self.buildContainer(self.glyphEditor)
-                curveLayer = self.getCurveLayer()
-                if curveLayer is None:
-                    logger.error("Could not build container.")
-                    return
+                logger.error(
+                    "Could not get curveLayer while building curve preview"
+                )
+                return
 
             # FIXME: Don't draw the whole glyph, just the equalized selection
             with curveLayer.drawingTools() as bot:
