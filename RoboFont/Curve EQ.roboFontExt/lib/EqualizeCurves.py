@@ -200,6 +200,12 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
     def currentGlyphDidChangeOutline(self, info) -> None:
         if DEBUG:
             print("currentGlyphDidChangeOutline")
+        self._dglyph = info.get("glyph", None)
+        if self._dglyph is None:
+            self.tmp_glyph = None
+            return
+
+        self.tmp_glyph = self._dglyph.copy()
         self._curvePreview()
 
     def glyphDidChangeSelection(self, info) -> None:
