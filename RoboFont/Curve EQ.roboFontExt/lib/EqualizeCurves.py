@@ -41,6 +41,7 @@ from typing import TYPE_CHECKING, List
 
 from baseCurveEqualizer import BaseCurveEqualizer
 from EQDrawingHelpers import (
+    appendCurveSegment,
     appendHandle,
     appendTriangleSide,
     curvePreviewColor,
@@ -364,22 +365,6 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                                 )
                                 appendTriangleSide(self.container, p3, beta, a)
 
-    def _handlesPreview(self) -> None:
-        if self.tmp_glyph is None or not self.tmp_glyph.contours:
-            return
-
-        ref_glyph = self.dglyph
-        if ref_glyph is None or not ref_glyph.contours:
-            return
-
-        for contourIndex, contour in enumerate(self.tmp_glyph):
-            ref_contour = ref_glyph.contours[contourIndex]
-            for i, segment in enumerate(contour):
-                if ref_contour[i].selected and segment.type == "curve":
-                    for p in segment.points[0:2]:
-                        appendHandle(self.container, p, 1)
-                        appendHandle(self.container, p, -1)
-
     def _curvePreview(self) -> None:
         if DEBUG:
             print("Building curve preview ...")
@@ -397,24 +382,36 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             return
 
         self._eqSelected()
-        if self.previewCurves:
+        if self.previewCurves or self.previewHandles:
             curveLayer = self.getCurveLayer()
             if curveLayer is None:
                 print(
-                    "ERROR: Could not get curveLayer while building curve preview"
+                    "ERROR: Could not get curveLayer while building curve "
+                    "preview"
                 )
                 return
 
-            # FIXME: Don't draw the whole glyph, just the equalized selection
-            with curveLayer.drawingTools() as bot:
-                bot.fill(None)
-                bot.strokeWidth(curvePreviewWidth)
-                bot.stroke(*curvePreviewColor)
-                bot.drawGlyph(self.tmp_glyph)
+            for ci, contour in enumerate(self.tmp_glyph):
+                ref_contour = self.dglyph[ci]
+                for si, segment in enumerate(contour):
+                    if ref_contour[si].selected and segment.type == "curve":
+                        if len(segment.points) == 3:
+                            p0 = contour[si - 1][-1]
+                            p1, p2, p3 = segment.points
+                            if self.previewCurves:
+                                appendCurveSegment(curveLayer, p0, p1, p2, p3)
+                            if self.previewHandles:
+                                for pt in (p1, p2):
+                                    appendHandle(self.container, pt, 1)
+                                    appendHandle(self.container, pt, -1)
+                        else:
+                            print(
+                                "ERROR: Don't know how to draw this segment:"
+                            )
+                            for point in segment.points:
+                                print(f"    {point}")
         if self.drawGeometry:
             self._drawGeometry()
-        if self.previewHandles:
-            self._handlesPreview()
 
     # The main method, check which EQ should be applied and do it (or just
     # apply it on the preview glyph)
