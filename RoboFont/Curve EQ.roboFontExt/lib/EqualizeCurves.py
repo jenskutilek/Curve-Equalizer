@@ -337,12 +337,10 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
                                 and isOnRight(p0, p3, p2)
                             ):
                                 a, _, c = getTriangleSides(p0, p1, p2, p3)
-                                _appendTriangleSide(
+                                appendTriangleSide(
                                     self.container, p0, alpha, c
                                 )
-                                _appendTriangleSide(
-                                    self.container, p3, beta, a
-                                )
+                                appendTriangleSide(self.container, p3, beta, a)
 
     def _handlesPreview(self) -> None:
         if self.tmp_glyph is None or not self.tmp_glyph.contours:
@@ -356,8 +354,8 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
             for i, segment in enumerate(contour.segments):
                 if ref_contour[i].selected and segment.type == "curve":
                     for p in segment.points[0:2]:
-                        _appendHandle(self.container, p, 1)
-                        _appendHandle(self.container, p, -1)
+                        appendHandle(self.container, p, 1)
+                        appendHandle(self.container, p, -1)
 
     def _curvePreview(self) -> None:
         if (
