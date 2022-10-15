@@ -158,6 +158,9 @@ class CurveEqualizer(BaseCurveEqualizer, Subscriber, WindowController):
 
     # Events
 
+    def glyphEditorDidOpen(self, info) -> None:
+        print("**** glyphEditorDidOpen", info["glyphEditor"], info["glyph"])
+
     def glyphEditorDidSetGlyph(self, info) -> None:
         if DEBUG:
             print("glyphEditorDidSetGlyph", info["glyph"])
