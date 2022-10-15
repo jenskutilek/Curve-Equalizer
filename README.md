@@ -8,10 +8,9 @@ Curve Equalizer for RoboFont 4
 
 Bring up the dialog by pressing ctrl-cmd-E, or via the menu “Extensions – Curve Equalizer – Curve EQ”.
 
-<img src="https://raw.githubusercontent.com/jenskutilek/Curve-Equalizer/master/images/curve-eq.png" width="600" height="350" alt="">
+<img src="https://raw.githubusercontent.com/jenskutilek/Curve-Equalizer/master/images/curve-eq.png" width="566" height="613" alt="">
 
-Select the curve adjustment method from the window and click “Equalize Selected” to apply the adjustment to the current selection in the glyph window.
-
+Select the curve adjustment method from the window and click "Equalize selected" to apply the adjustment to the current selection in the glyph window.
 
 Curve Equalizer for Glyphs 3
 ============================

@@ -14,8 +14,24 @@ Select the curve adjustment method.
 		<th>Description</th>
 	</tr>
 	<tr>
+		<td>Circle</td>
+		<td>The result is similar to what FontLab Studio 5 does when you alt-shift-click a curve segment. If the triangle between the first and last point of the segment is rectangular with two 45° angles, the result will approximate a quarter circle.</td>
+	</tr>
+	<tr>
+		<td>Rule of thirds</td>
+		<td>The resulting handles and an imaginary line between the two handles will each be nearly equal in length.</td>
+	</tr>
+	<!--<tr>
+		<td>TT (experimental)</td>
+				<td>Change the curve so it is well suited for conversion to a quadratic (TrueType) Bézier curve. Don’t use this, the results are terrible at the moment.</td>
+	</tr>-->
+	<tr>
 		<td>Balance</td>
 		<td>The curvature is not changed, only the length of the handles is distributed evenly between the in- and outgoing handle. This is similar to the «Tunnifier» script by Eduardo Tunni.</td>
+	</tr>
+	<tr>
+		<td>Fixed</td>
+		<td>Select the desired curvature from the horizontal radio buttons. The first will result in the same curve as the «Circle» method. The other buttons gradually add more curvature.</td>
 	</tr>
 	<tr>
 		<td>Adjust</td>
@@ -45,6 +61,6 @@ These are my notes from which I derived the trigonometry at work:
 
 <hr>
 
-Curve Equalizer is © 2013–2021 by Jens Kutilek.
+Curve Equalizer is © 2013–2022 by Jens Kutilek.
 
 The Hobby Spline code was sent in by Simon Egli with contributions by Juraj Sukop and Lasse Fister.
