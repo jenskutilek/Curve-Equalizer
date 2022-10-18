@@ -1,36 +1,41 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
+
 """
 Triangle Geometry helpers
 """
-
 from math import atan2, cos, pi, sin, sqrt
+from typing import TYPE_CHECKING, Tuple
+
+if TYPE_CHECKING:
+    from fontParts.fontshell import RPoint
+
 
 # helper functions
 
 
-def getTriangleArea(a, b, c):
+def getTriangleArea(a: RPoint, b: RPoint, c: RPoint) -> float:
     return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y)
 
 
-def isOnLeft(a, b, c):
+def isOnLeft(a: RPoint, b: RPoint, c: RPoint) -> bool:
     if getTriangleArea(a, b, c) > 0:
         return True
     return False
 
 
-def isOnRight(a, b, c):
+def isOnRight(a: RPoint, b: RPoint, c: RPoint) -> bool:
     if getTriangleArea(a, b, c) < 0:
         return True
     return False
 
 
-def isCollinear(a, b, c):
+def isCollinear(a: RPoint, b: RPoint, c: RPoint) -> bool:
     if getTriangleArea(a, b, c) == 0:
         return True
     return False
 
 
-def distance(p0, p1, doRound=False):
+def distance(p0: RPoint, p1: RPoint, doRound: bool = False) -> float | int:
     # Calculate the distance between two points
     d = sqrt((p0.x - p1.x) ** 2 + (p0.y - p1.y) ** 2)
     if doRound:
@@ -54,7 +59,9 @@ def distance(p0, p1, doRound=False):
 # gamma = the angle between p3I and p0I
 
 
-def getTriangleAngles(p0, p1, p2, p3):
+def getTriangleAngles(
+    p0: RPoint, p1: RPoint, p2: RPoint, p3: RPoint
+) -> Tuple[float, float, float]:
 
     # Calculate the angles
 
@@ -79,7 +86,9 @@ def getTriangleAngles(p0, p1, p2, p3):
     return alpha, beta, gamma
 
 
-def getTriangleSides(p0, p1, p2, p3):
+def getTriangleSides(
+    p0: RPoint, p1: RPoint, p2: RPoint, p3: RPoint
+) -> Tuple[float, float, float]:
     alpha, beta, gamma = getTriangleAngles(p0, p1, p2, p3)
 
     # Calculate the sides of the triangle
@@ -92,8 +101,11 @@ def getTriangleSides(p0, p1, p2, p3):
 
 
 def getNewCoordinates(
-    targetPoint, referencePoint, alternateReferencePoint, distance
-):
+    targetPoint: RPoint,
+    referencePoint: RPoint,
+    alternateReferencePoint: RPoint,
+    distance: float,
+) -> Tuple[float, float]:
     if targetPoint.y == referencePoint.y and targetPoint.x == referencePoint.x:
         phi = atan2(
             alternateReferencePoint.y - referencePoint.y,

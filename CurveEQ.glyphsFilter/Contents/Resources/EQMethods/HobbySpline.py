@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
+
 """
 Hobby Spline code contributed by
 Juraj Sukop, Lasse Fister, Simon Egli
@@ -6,13 +7,14 @@ http://metapolator.com
 
 Implemented since Curve Equalizer version 0.6
 """
-
 from math import atan2, cos, e, fabs, hypot, sin, sqrt
+from typing import TYPE_CHECKING, Tuple
 
-# from cmath (it is not available in RoboFont)
+if TYPE_CHECKING:
+    from fontParts.fontshell import RPoint
 
 
-def csqrt(x):
+def csqrt(x: float | int) -> complex:
     """csqrt(x)
 
     Return the square root of x."""
@@ -38,11 +40,11 @@ def csqrt(x):
 # helper functions for Hobby Splines
 
 
-def arg(x):  # phase
+def arg(x: complex) -> float:  # phase
     return atan2(x.imag, x.real)
 
 
-def hobby(theta, phi):
+def hobby(theta: float, phi: float) -> complex:
     st, ct = sin(theta), cos(theta)
     sp, cp = sin(phi), cos(phi)
     return (
@@ -61,7 +63,7 @@ def controls(z0, w0, alpha, beta, w1, z1):
 # the main EQ function
 
 
-def eqSpline(p0, p1, p2, p3, tension=1.75):
+def eqSpline(p0, p1, p2, p3, tension=1.75) -> Tuple[RPoint, RPoint]:
     # Hobby's splines with given tension
 
     # Check for zero handles

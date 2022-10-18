@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 
 from math import atan2
 from .geometry import (
@@ -8,12 +8,18 @@ from .geometry import (
     isOnLeft,
     isOnRight,
 )
+from typing import TYPE_CHECKING, Tuple
+
+if TYPE_CHECKING:
+    from fontParts.fontshell import RPoint
 
 # Adjustment factor for curves with zero handles
 tension_adjust = 1.18
 
 
-def eqBalance(p0, p1, p2, p3):
+def eqBalance(
+    p0: RPoint, p1: RPoint, p2: RPoint, p3: RPoint
+) -> Tuple[RPoint, RPoint]:
 
     # Check for zero handles
     factor = 1
