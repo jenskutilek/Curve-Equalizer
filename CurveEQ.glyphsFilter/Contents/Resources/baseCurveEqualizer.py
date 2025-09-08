@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 
-from vanilla import Button, FloatingWindow, Group, RadioGroup, Slider, Window
+from vanilla import Button, EditText, FloatingWindow, Group, RadioGroup, Slider, Window
 
 
 logger = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ class BaseCurveEqualizer:
         }
 
         height = 180
-        width = 200
+        width = 250
         sliderX = 76
 
         if useFloatingWindow:
@@ -54,7 +54,7 @@ class BaseCurveEqualizer:
 
         y = 8
         self.paletteView.group.eqMethodSelector = RadioGroup(
-            (8, y, -8, -36),
+            (10, y, -8, -36),
             titles=self.methodNames,
             callback=self._changeMethod,
             sizeStyle="small",
@@ -76,21 +76,35 @@ class BaseCurveEqualizer:
 
         y += 21
         self.paletteView.group.eqCurvatureSlider = Slider(
-            (sliderX, y, -8, 17),
+            (sliderX, y, -60, 17),
             callback=self._changeCurvatureFree,
             minValue=50,
             maxValue=100,
             value=75,  # Will be replaced by saved value
             sizeStyle="small",
         )
+        self.paletteView.group.eqCurvatureValue = EditText(
+            (-52, y, -8, 17),
+            # callback=self._changeCurvatureFree,
+            text="",
+            readOnly=True,
+            sizeStyle="small",
+        )
 
         y += 23
         self.paletteView.group.eqHobbyTensionSlider = Slider(
-            (sliderX, y, -8, 17),
+            (sliderX, y, -60, 17),
             tickMarkCount=5,
             callback=self._changeTension,
             minValue=50,
             maxValue=100,
+            sizeStyle="small",
+        )
+        self.paletteView.group.eqHobbyTensionValue = EditText(
+            (-52, y, -8, 17),
+            # callback=self._changeCurvatureFree,
+            text="",
+            readOnly=True,
             sizeStyle="small",
         )
 
