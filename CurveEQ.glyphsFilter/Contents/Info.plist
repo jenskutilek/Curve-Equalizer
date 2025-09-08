@@ -13,17 +13,17 @@
 	<key>CFBundleName</key>
 	<string>CurveEQ</string>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>215</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.1.4</string>
+	<string>2.1.5</string>
 	<key>UpdateFeedURL</key>
 	<string>https://raw.githubusercontent.com/jenskutilek/Curve-Equalizer/master/Glyphs/CurveEQ.glyphsFilter/Contents/Info.plist</string>
 	<key>productPageURL</key>
 	<string>https://github.com/jenskutilek/Curve-Equalizer</string>
 	<key>productReleaseNotes</key>
-	<string>Added new equalizer methods</string>
+	<string>Show numerical values next to sliders</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright, Jens Kutilek, 2022</string>
+	<string>Copyright, Jens Kutilek, 2025</string>
 	<key>NSPrincipalClass</key>
 	<string>CurveEQ</string>
 	<key>PyMainFileNames</key>
