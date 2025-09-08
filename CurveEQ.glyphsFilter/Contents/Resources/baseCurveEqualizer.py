@@ -103,19 +103,19 @@ class BaseCurveEqualizer:
                 sizeStyle="small",
             )
 
-    def _changeCurvature(self) -> None:
+    def _changeCurvature(self, sender) -> None:
         raise NotImplementedError
 
-    def _changeCurvatureFree(self) -> None:
+    def _changeCurvatureFree(self, sender) -> None:
         raise NotImplementedError
 
-    def _changeMethod(self) -> None:
+    def _changeMethod(self, sender) -> None:
         raise NotImplementedError
 
-    def _changeTension(self) -> None:
+    def _changeTension(self, sender) -> None:
         raise NotImplementedError
 
-    def _eqSelected(self) -> None:
+    def _eqSelected(self, sender) -> None:
         raise NotImplementedError
 
     def _setPreviewOptions(self) -> None:
