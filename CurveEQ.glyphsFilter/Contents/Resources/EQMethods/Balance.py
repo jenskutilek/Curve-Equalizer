@@ -17,10 +17,7 @@ if TYPE_CHECKING:
 tension_adjust = 1.18
 
 
-def eqBalance(
-    p0: RPoint, p1: RPoint, p2: RPoint, p3: RPoint
-) -> Tuple[RPoint, RPoint]:
-
+def eqBalance(p0: RPoint, p1: RPoint, p2: RPoint, p3: RPoint) -> Tuple[RPoint, RPoint]:
     # Check for zero handles
     factor = 1
     zero = False
@@ -47,7 +44,6 @@ def eqBalance(
             or isOnRight(p0, p3, p1)
             and isOnRight(p0, p3, p2)
         ):
-
             a, b, c = getTriangleSides(p0, p1, p2, p3)
 
             # Calculate current handle lengths as percentage of triangle side length

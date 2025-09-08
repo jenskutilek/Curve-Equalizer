@@ -7,9 +7,7 @@ if TYPE_CHECKING:
     from fontParts.fontshell import RPoint
 
 
-def eqThirds(
-    p0: RPoint, p1: RPoint, p2: RPoint, p3: RPoint
-) -> Tuple[RPoint, RPoint]:
+def eqThirds(p0: RPoint, p1: RPoint, p2: RPoint, p3: RPoint) -> Tuple[RPoint, RPoint]:
     # get distances
     a = distance(p0, p1)
     b = distance(p1, p2)

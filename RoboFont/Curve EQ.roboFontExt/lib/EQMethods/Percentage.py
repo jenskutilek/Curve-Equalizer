@@ -15,7 +15,6 @@ def eqPercentage(
     p3: RPoint,
     curvature: float = 0.552,
 ) -> Tuple[RPoint, RPoint]:
-
     # Check for zero handles
     zero = False
     if p1.y == p0.y and p1.x == p0.x:
@@ -39,7 +38,6 @@ def eqPercentage(
             or isOnRight(p0, p3, p1)
             and isOnRight(p0, p3, p2)
         ):
-
             a, b, c = getTriangleSides(p0, p1, p2, p3)
 
             # Scale triangle sides a and c by requested curvature

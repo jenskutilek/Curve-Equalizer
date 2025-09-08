@@ -70,7 +70,6 @@ if DEBUG:
 
 
 class CurveEqSubscriber(Subscriber):
-
     debug = True
 
     controller: CurveEqualizer | None = None
@@ -173,7 +172,6 @@ class CurveEqSubscriber(Subscriber):
 
 
 class CurveEqualizer(BaseCurveEqualizer, WindowController):
-
     glyphEditorSubscriberClass = CurveEqSubscriber
 
     def restore_state(self) -> None:
@@ -197,9 +195,7 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
             print(f"Curvature radiobutton: {curvature_index}")
 
         # default curvature for slider
-        self.curvatureFree = getExtensionDefault(
-            f"{extensionID}.curvatureFree", 0.75
-        )
+        self.curvatureFree = getExtensionDefault(f"{extensionID}.curvatureFree", 0.75)
         self.paletteView.group.eqCurvatureSlider.set(self.curvatureFree * 100)
         if DEBUG:
             print("Curvature free:", self.curvatureFree)
@@ -220,9 +216,7 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
 
         self._setPreviewOptions()
 
-        self.drawGeometry = getExtensionDefault(
-            f"{extensionID}.drawGeometry", False
-        )
+        self.drawGeometry = getExtensionDefault(f"{extensionID}.drawGeometry", False)
 
     def build(self) -> None:
         self.build_ui()
@@ -395,17 +389,12 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
             return
 
         if self.container is None:
-            print(
-                "ERROR: Container is None in _drawGeometry, shouldn't happen."
-            )
+            print("ERROR: Container is None in _drawGeometry, shouldn't happen.")
             return
 
         for reference_contour in reference_glyph:
             for i, reference_segment in enumerate(reference_contour):
-                if (
-                    reference_segment.selected
-                    and reference_segment.type == "curve"
-                ):
+                if reference_segment.selected and reference_segment.type == "curve":
                     # last point of the previous segment
                     p0 = reference_contour[i - 1][-1]
                     if len(reference_segment.points) == 3:
@@ -420,9 +409,7 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
                                 and isOnRight(p0, p3, p2)
                             ):
                                 a, _, c = getTriangleSides(p0, p1, p2, p3)
-                                appendTriangleSide(
-                                    self.container, p0, alpha, c
-                                )
+                                appendTriangleSide(self.container, p0, alpha, c)
                                 appendTriangleSide(self.container, p3, beta, a)
 
     def updateCurvePreview(self) -> None:
@@ -445,10 +432,7 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
         if self.previewCurves or self.previewHandles:
             curveLayer = self.getCurveLayer()
             if curveLayer is None:
-                print(
-                    "ERROR: Could not get curveLayer while building curve "
-                    "preview"
-                )
+                print("ERROR: Could not get curveLayer while building curve preview")
                 return
 
             for ci, contour in enumerate(self.tmp_glyph):
@@ -465,9 +449,7 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
                                     appendHandle(self.container, pt, 1)
                                     appendHandle(self.container, pt, -1)
                         else:
-                            print(
-                                "ERROR: Don't know how to draw this segment:"
-                            )
+                            print("ERROR: Don't know how to draw this segment:")
                             for point in segment.points:
                                 print(f"    {point}")
         if self.drawGeometry:
@@ -493,10 +475,7 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
                 modify_contour = modify_glyph[contourIndex]
                 for i, reference_segment in enumerate(reference_contour):
                     modify_segment = modify_contour[i]
-                    if (
-                        reference_segment.selected
-                        and reference_segment.type == "curve"
-                    ):
+                    if reference_segment.selected and reference_segment.type == "curve":
                         # last point of the previous segment
                         p0 = modify_contour[i - 1][-1]
                         if len(modify_segment.points) == 3:
@@ -509,9 +488,7 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
                             elif self.method == "balance":
                                 p1, p2 = eqBalance(p0, p1, p2, p3)
                             elif self.method == "adjust":
-                                p1, p2 = eqPercentage(
-                                    p0, p1, p2, p3, self.curvature
-                                )
+                                p1, p2 = eqPercentage(p0, p1, p2, p3, self.curvature)
                             elif self.method == "free":
                                 p1, p2 = eqPercentage(
                                     p0, p1, p2, p3, self.curvatureFree
@@ -519,9 +496,7 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
                             elif self.method == "hobby":
                                 p1, p2 = eqSpline(p0, p1, p2, p3, self.tension)
                             else:
-                                logger.error(
-                                    "Unknown equalize method: {self.method}"
-                                )
+                                logger.error("Unknown equalize method: {self.method}")
                             if sender is not None:
                                 p1.round()
                                 p2.round()

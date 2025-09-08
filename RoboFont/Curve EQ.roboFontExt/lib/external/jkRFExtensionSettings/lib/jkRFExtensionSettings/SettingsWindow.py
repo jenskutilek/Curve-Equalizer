@@ -19,9 +19,7 @@ class SettingsWindow(BaseWindowController):
 
     def add(self, settings_key, default_value, display_name=None):
         self.settings_list.append(settings_key)
-        self.settings[settings_key] = Setting(
-            settings_key, default_value, display_name
-        )
+        self.settings[settings_key] = Setting(settings_key, default_value, display_name)
 
     def _init_settings(self):
         self.settings_list = []

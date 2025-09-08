@@ -62,7 +62,6 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
 
     @objc.python_method
     def restore_state(self):
-
         # Restore saved state
 
         # If we come in from an older version, the selected method index
@@ -72,17 +71,13 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
         if Glyphs.defaults[METHOD_KEY] >= len(self.methods):
             Glyphs.defaults[METHOD_KEY] = 0
 
-        self.paletteView.group.eqMethodSelector.set(
-            Glyphs.defaults[METHOD_KEY]
-        )
+        self.paletteView.group.eqMethodSelector.set(Glyphs.defaults[METHOD_KEY])
         self.method = self.methods[Glyphs.defaults[METHOD_KEY]]
 
         # default curvature for radio buttons
         if not Glyphs.defaults[ADJUST_KEY]:
             Glyphs.defaults[ADJUST_KEY] = 0
-        self.paletteView.group.eqCurvatureSelector.set(
-            Glyphs.defaults[ADJUST_KEY]
-        )
+        self.paletteView.group.eqCurvatureSelector.set(Glyphs.defaults[ADJUST_KEY])
 
         # default curvature for slider
         if not Glyphs.defaults[ADJUST_FREE_KEY]:
@@ -162,7 +157,6 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
 
     @objc.python_method
     def filter(self, layer, inEditView, customParameters):
-
         # Called on font export, get value from customParameters
         if customParameters:
             print("Curve Equalizer should not be used on export.")

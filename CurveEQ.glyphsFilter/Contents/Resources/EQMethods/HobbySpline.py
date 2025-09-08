@@ -47,9 +47,9 @@ def arg(x: complex) -> float:  # phase
 def hobby(theta: float, phi: float) -> complex:
     st, ct = sin(theta), cos(theta)
     sp, cp = sin(phi), cos(phi)
-    return (
-        2 + csqrt(2) * (st - 1 / 16 * sp) * (sp - 1 / 16 * st) * (ct - cp)
-    ) / (3 * (1 + 0.5 * (csqrt(5) - 1) * ct + 0.5 * (3 - csqrt(5)) * cp))
+    return (2 + csqrt(2) * (st - 1 / 16 * sp) * (sp - 1 / 16 * st) * (ct - cp)) / (
+        3 * (1 + 0.5 * (csqrt(5) - 1) * ct + 0.5 * (3 - csqrt(5)) * cp)
+    )
 
 
 def controls(z0, w0, alpha, beta, w1, z1):
@@ -86,9 +86,7 @@ def eqSpline(p0, p1, p2, p3, tension=1.75) -> Tuple[RPoint, RPoint]:
     w1 = complex(sin(rad1), cos(rad1))
 
     alpha, beta = 1 * tension, 1 * tension
-    u, v = controls(
-        complex(p0.x, p0.y), w0, alpha, beta, w1, complex(p3.x, p3.y)
-    )
+    u, v = controls(complex(p0.x, p0.y), w0, alpha, beta, w1, complex(p3.x, p3.y))
     p1.x, p1.y = u.real, u.imag
     p2.x, p2.y = v.real, v.imag
     return p1, p2

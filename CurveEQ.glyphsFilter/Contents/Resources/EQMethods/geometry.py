@@ -62,7 +62,6 @@ def distance(p0: RPoint, p1: RPoint, doRound: bool = False) -> float | int:
 def getTriangleAngles(
     p0: RPoint, p1: RPoint, p2: RPoint, p3: RPoint
 ) -> Tuple[float, float, float]:
-
     # Calculate the angles
 
     alpha1 = atan2(p3.y - p0.y, p3.x - p0.x)
@@ -112,9 +111,7 @@ def getNewCoordinates(
             alternateReferencePoint.x - referencePoint.x,
         )
     else:
-        phi = atan2(
-            targetPoint.y - referencePoint.y, targetPoint.x - referencePoint.x
-        )
+        phi = atan2(targetPoint.y - referencePoint.y, targetPoint.x - referencePoint.x)
     x = referencePoint.x + cos(phi) * distance
     y = referencePoint.y + sin(phi) * distance
     return (x, y)
