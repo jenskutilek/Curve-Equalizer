@@ -1,16 +1,12 @@
 {
     "python.autoComplete.extraPaths": [
-        "/Applications/RoboFont.app/Contents/Resources/lib/python3.7",
-        "/Users/kuti/Quellen/RoboFont/robofontse/Resources/lib/python37",
+        "/Applications/RoboFont.app/Contents/Resources/lib/python3.12",
         "/Users/kuti/Quellen/GlyphsSDK/ObjectWrapper",
         "/Users/kuti/Quellen/vanilla/Lib"
     ],
     "python.analysis.extraPaths": [
-        "/Applications/RoboFont.app/Contents/Resources/lib/python3.7",
-        "/Users/kuti/Quellen/RoboFont/robofontse/Resources/lib/python37",
+        "/Applications/RoboFont.app/Contents/Resources/lib/python3.12",
         "/Users/kuti/Quellen/GlyphsSDK/ObjectWrapper",
         "/Users/kuti/Quellen/vanilla/Lib"
-    ],
-    "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true
+    ]
 }
