@@ -68,6 +68,8 @@ DEBUG = getExtensionDefault(f"{extensionID}.debug", False)
 if DEBUG:
     print("DEBUG mode is on")
 
+DECIMALS = 2
+
 
 class CurveEqSubscriber(Subscriber):
     debug = True
@@ -198,7 +200,7 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
         self.curvatureFree = getExtensionDefault(f"{extensionID}.curvatureFree", 0.75)
         curvature = self.curvatureFree * 100
         self.paletteView.group.eqCurvatureSlider.set(curvature)
-        self.paletteView.group.eqCurvatureValue.set(str(round(curvature, 3)))
+        self.paletteView.group.eqCurvatureValue.set(str(round(curvature, DECIMALS)))
         if DEBUG:
             print("Curvature free:", self.curvatureFree)
 
@@ -206,7 +208,7 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
         self.tension = getExtensionDefault(f"{extensionID}.tension", 0.75)
         tension = self.tension * 100
         self.paletteView.group.eqHobbyTensionSlider.set(tension)
-        self.paletteView.group.eqHobbyTensionValue.set(str(round(tension, 3)))
+        self.paletteView.group.eqHobbyTensionValue.set(str(round(tension, DECIMALS)))
         if DEBUG:
             print("Hobby tension:", self.tension)
 
@@ -327,13 +329,13 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
     def _changeCurvatureFree(self, sender) -> None:
         value = sender.get()
         self.curvatureFree = value / 100
-        self.paletteView.group.eqCurvatureValue.set(str(round(value, 3)))
+        self.paletteView.group.eqCurvatureValue.set(str(round(value, DECIMALS)))
         self.updateCurvePreview()
 
     def _changeTension(self, sender) -> None:
         value = sender.get()
         self.tension = value / 100
-        self.paletteView.group.eqHobbyTensionValue.set(str(round(value, 3)))
+        self.paletteView.group.eqHobbyTensionValue.set(str(round(value, DECIMALS)))
         self.updateCurvePreview()
 
     def windowWillClose(self, sender) -> None:
