@@ -196,13 +196,17 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
 
         # default curvature for slider
         self.curvatureFree = getExtensionDefault(f"{extensionID}.curvatureFree", 0.75)
-        self.paletteView.group.eqCurvatureSlider.set(self.curvatureFree * 100)
+        curvature = self.curvatureFree * 100
+        self.paletteView.group.eqCurvatureSlider.set(curvature)
+        self.paletteView.group.eqCurvatureValue.set(str(round(curvature, 3)))
         if DEBUG:
             print("Curvature free:", self.curvatureFree)
 
         # default curvature for Hobby's spline tension slider
         self.tension = getExtensionDefault(f"{extensionID}.tension", 0.75)
-        self.paletteView.group.eqHobbyTensionSlider.set(self.tension * 100)
+        tension = self.tension * 100
+        self.paletteView.group.eqHobbyTensionSlider.set(tension)
+        self.paletteView.group.eqHobbyTensionValue.set(str(round(tension, 3)))
         if DEBUG:
             print("Hobby tension:", self.tension)
 
@@ -321,11 +325,15 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
         self.updateCurvePreview()
 
     def _changeCurvatureFree(self, sender) -> None:
-        self.curvatureFree = sender.get() / 100
+        value = sender.get()
+        self.curvatureFree = value / 100
+        self.paletteView.group.eqCurvatureValue.set(str(round(value, 3)))
         self.updateCurvePreview()
 
     def _changeTension(self, sender) -> None:
-        self.tension = sender.get() / 100
+        value = sender.get()
+        self.tension = value / 100
+        self.paletteView.group.eqHobbyTensionValue.set(str(round(value, 3)))
         self.updateCurvePreview()
 
     def windowWillClose(self, sender) -> None:

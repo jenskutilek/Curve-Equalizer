@@ -82,16 +82,16 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
         # default curvature for slider
         if not Glyphs.defaults[ADJUST_FREE_KEY]:
             Glyphs.defaults[ADJUST_FREE_KEY] = 0.75
-        self.paletteView.group.eqCurvatureSlider.set(
-            Glyphs.defaults[ADJUST_FREE_KEY] * 100
-        )
+        curvature = Glyphs.defaults[ADJUST_FREE_KEY] * 100
+        self.paletteView.group.eqCurvatureSlider.set(curvature)
+        self.paletteView.group.eqCurvatureValue.set(str(round(curvature, 3)))
 
         # default curvature for Hobby's spline tension slider
         if not Glyphs.defaults[TENSION_KEY]:
             Glyphs.defaults[TENSION_KEY] = 0.75
-        self.paletteView.group.eqHobbyTensionSlider.set(
-            Glyphs.defaults[TENSION_KEY] * 100
-        )
+        tension = Glyphs.defaults[TENSION_KEY] * 100
+        self.paletteView.group.eqHobbyTensionSlider.set(tension)
+        self.paletteView.group.eqHobbyTensionValue.set(str(round(curvature, 3)))
 
         # load preview options
         if not Glyphs.defaults[fullkey("previewCurves")]:
@@ -127,12 +127,16 @@ class CurveEQ(FilterWithDialog, BaseCurveEqualizer):
 
     @objc.python_method
     def _changeCurvatureFree(self, sender):
-        Glyphs.defaults[ADJUST_FREE_KEY] = sender.get() / 100
+        value = sender.get()
+        Glyphs.defaults[ADJUST_FREE_KEY] = value / 100
+        self.paletteView.group.eqCurvatureValue.set(str(round(value, 3)))
         self.update()
 
     @objc.python_method
     def _changeTension(self, sender):
-        Glyphs.defaults[TENSION_KEY] = sender.get() / 100
+        value = sender.get()
+        Glyphs.defaults[TENSION_KEY] = value / 100
+        self.paletteView.group.eqHobbyTensionValue.set(str(round(value, 3)))
         self.update()
 
     @objc.python_method
