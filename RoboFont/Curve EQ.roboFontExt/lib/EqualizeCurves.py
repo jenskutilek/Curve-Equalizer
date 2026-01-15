@@ -18,6 +18,7 @@ from mojo.subscriber import (
     registerGlyphEditorSubscriber,
     unregisterGlyphEditorSubscriber,
 )
+from mojo.UI import inDarkMode
 
 if TYPE_CHECKING:
     from lib.fontObjects.fontPartsWrappers import RGlyph
@@ -219,6 +220,12 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
 
         self.drawGeometry = getExtensionDefault(f"{extensionID}.drawGeometry", False)
 
+        color_key = "glyphViewEchoStrokeColor"
+        if inDarkMode():
+            color_key += ".dark"
+        self.stroke_color = NSColorToRgba(getDefaultColor(color_key))
+        self.stroke_width = getDefault("glyphViewStrokeWidth")
+
     def build(self) -> None:
         self.build_ui()
         self.w = self.paletteView
@@ -301,9 +308,10 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
         self.container.clearSublayers()
         layer = self.container.appendPathSublayer(
             name="curveLayer",
-            fillColor=None,  # FIXME: Why are the color attributes not used?
-            strokeColor=curvePreviewColor,
-            strokeWidth=curvePreviewWidth,
+            # FIXME: Why are the color attributes not used?
+            fillColor=None,
+            strokeColor=self.stroke_color,
+            strokeWidth=self.stroke_width,
         )
         return layer
 
@@ -414,8 +422,22 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
                                 and isOnRight(p0, p3, p2)
                             ):
                                 a, _, c = getTriangleSides(p0, p1, p2, p3)
-                                appendTriangleSide(self.container, p0, alpha, c)
-                                appendTriangleSide(self.container, p3, beta, a)
+                                appendTriangleSide(
+                                    self.container,
+                                    p0,
+                                    alpha,
+                                    c,
+                                    color=self.stroke_color,
+                                    width=self.stroke_width,
+                                )
+                                appendTriangleSide(
+                                    self.container,
+                                    p3,
+                                    beta,
+                                    a,
+                                    color=self.stroke_color,
+                                    width=self.stroke_width,
+                                )
 
     def updateCurvePreview(self) -> None:
         if DEBUG:
@@ -448,11 +470,31 @@ class CurveEqualizer(BaseCurveEqualizer, WindowController):
                             p0 = contour[si - 1][-1]
                             p1, p2, p3 = segment.points
                             if self.previewCurves:
-                                appendCurveSegment(curveLayer, p0, p1, p2, p3)
+                                appendCurveSegment(
+                                    curveLayer,
+                                    p0,
+                                    p1,
+                                    p2,
+                                    p3,
+                                    self.stroke_color,
+                                    self.stroke_width,
+                                )
                             if self.previewHandles:
                                 for pt in (p1, p2):
-                                    appendHandle(self.container, pt, 1)
-                                    appendHandle(self.container, pt, -1)
+                                    appendHandle(
+                                        self.container,
+                                        pt,
+                                        1,
+                                        color=self.stroke_color,
+                                        width=self.stroke_width,
+                                    )
+                                    appendHandle(
+                                        self.container,
+                                        pt,
+                                        -1,
+                                        color=self.stroke_color,
+                                        width=self.stroke_width,
+                                    )
                         else:
                             print("ERROR: Don't know how to draw this segment:")
                             for point in segment.points:

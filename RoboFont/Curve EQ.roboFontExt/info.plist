@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>addToMenu</key>
-	<array>
-		<dict>
-			<key>path</key>
-			<string>EqualizeCurves.py</string>
-			<key>preferredName</key>
-			<string>Curve EQ</string>
-			<key>shortKey</key>
-			<string>e</string>
-		</dict>
-		<dict>
-			<key>path</key>
-			<string>Settings.py</string>
-			<key>preferredName</key>
-			<string>Settings...</string>
-			<key>shortKey</key>
-			<string></string>
-		</dict>
-	</array>
-	<key>developer</key>
-	<string>Jens Kutilek</string>
-	<key>developerURL</key>
-	<string>http://www.kutilek.de/</string>
-	<key>html</key>
-	<true/>
-	<key>launchAtStartUp</key>
-	<integer>0</integer>
-	<key>mainScript</key>
-	<string>EqualizeCurves.py</string>
-	<key>name</key>
-	<string>Curve Equalizer</string>
-	<key>requiresVersionMajor</key>
-	<string>4</string>
-	<key>requiresVersionMinor</key>
-	<string>0</string>
-	<key>timeStamp</key>
-	<real>1757319850.0</real>
-	<key>version</key>
-	<string>2.1.5</string>
-	<key>com.robofontmechanic.Mechanic</key>
 	<dict>
-		<key>repository</key>
-		<string>jenskutilek/Curve-Equalizer</string>
-		<key>summary</key>
-		<string>A panel to adjust and balance curve handles.</string>
+		<key>addToMenu</key>
+		<array>
+			<dict>
+				<key>path</key>
+				<string>EqualizeCurves.py</string>
+				<key>preferredName</key>
+				<string>Curve EQ</string>
+				<key>shortKey</key>
+				<string>e</string>
+			</dict>
+			<dict>
+				<key>path</key>
+				<string>Settings.py</string>
+				<key>preferredName</key>
+				<string>Settings...</string>
+				<key>shortKey</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>developer</key>
+		<string>Jens Kutilek</string>
+		<key>developerURL</key>
+		<string>http://www.kutilek.de/</string>
+		<key>html</key>
+		<true />
+		<key>launchAtStartUp</key>
+		<integer>0</integer>
+		<key>mainScript</key>
+		<string>EqualizeCurves.py</string>
+		<key>name</key>
+		<string>Curve Equalizer</string>
+		<key>requiresVersionMajor</key>
+		<string>4</string>
+		<key>requiresVersionMinor</key>
+		<string>0</string>
+		<key>timeStamp</key>
+		<real>1768479109.0</real>
+		<key>version</key>
+		<string>2.2.0</string>
+		<key>com.robofontmechanic.Mechanic</key>
+		<dict>
+			<key>repository</key>
+			<string>jenskutilek/Curve-Equalizer</string>
+			<key>summary</key>
+			<string>A panel to adjust and balance curve handles.</string>
+		</dict>
 	</dict>
-</dict>
 </plist>
