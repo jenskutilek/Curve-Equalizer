@@ -4,7 +4,6 @@ import logging
 
 from vanilla import Button, EditText, FloatingWindow, Group, RadioGroup, Slider, Window
 
-
 logger = logging.getLogger(__name__)
 
 

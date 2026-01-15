@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from math import atan2
-from .geometry import getNewCoordinates, getTriangleSides, isOnLeft, isOnRight
 from typing import TYPE_CHECKING, Tuple
+
+from .geometry import getNewCoordinates, getTriangleSides, isOnLeft, isOnRight
 
 if TYPE_CHECKING:
     from fontParts.fontshell import RPoint

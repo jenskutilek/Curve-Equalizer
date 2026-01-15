@@ -33,15 +33,7 @@ http://www.kutilek.de/
 """
 
 import logging
-
 from math import atan2
-from mojo.extensions import getExtensionDefault, setExtensionDefault
-from mojo.subscriber import (
-    Subscriber,
-    WindowController,
-    registerGlyphEditorSubscriber,
-    unregisterGlyphEditorSubscriber,
-)
 from typing import TYPE_CHECKING, List
 
 from baseCurveEqualizer import BaseCurveEqualizer
@@ -55,6 +47,13 @@ from EQDrawingHelpers import (
 from EQExtensionID import extensionID
 from EQMethods import eqBalance, eqPercentage, eqSpline, eqThirds
 from EQMethods.geometry import getTriangleSides, isOnLeft, isOnRight
+from mojo.extensions import getExtensionDefault, setExtensionDefault
+from mojo.subscriber import (
+    Subscriber,
+    WindowController,
+    registerGlyphEditorSubscriber,
+    unregisterGlyphEditorSubscriber,
+)
 
 if TYPE_CHECKING:
     from lib.fontObjects.fontPartsWrappers import RGlyph

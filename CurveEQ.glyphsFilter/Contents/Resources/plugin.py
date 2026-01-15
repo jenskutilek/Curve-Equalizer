@@ -1,11 +1,9 @@
 import objc
-
-from GlyphsApp import GSOFFCURVE, Glyphs
-from GlyphsApp.plugins import FilterWithDialog
-
 from baseCurveEqualizer import BaseCurveEqualizer
 from EQExtensionID import extensionID
 from EQMethods import eqBalance, eqPercentage, eqSpline, eqThirds
+from GlyphsApp import GSOFFCURVE, Glyphs
+from GlyphsApp.plugins import FilterWithDialog
 
 
 def fullkey(subkey):

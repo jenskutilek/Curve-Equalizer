@@ -7,8 +7,9 @@ This is supposed to find a cubic Bezier than can be expressed as a quadratic
 Bezier without loss of precision.
 """
 
-from fontTools.misc.bezierTools import calcCubicParameters, calcCubicPoints
 from typing import TYPE_CHECKING, Tuple
+
+from fontTools.misc.bezierTools import calcCubicParameters, calcCubicPoints
 
 if TYPE_CHECKING:
     from fontParts.fontshell import RPoint

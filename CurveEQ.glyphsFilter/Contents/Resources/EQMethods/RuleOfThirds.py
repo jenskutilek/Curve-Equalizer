@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from .geometry import distance, getNewCoordinates
 from typing import TYPE_CHECKING, Tuple
+
+from .geometry import distance, getNewCoordinates
 
 if TYPE_CHECKING:
     from fontParts.fontshell import RPoint

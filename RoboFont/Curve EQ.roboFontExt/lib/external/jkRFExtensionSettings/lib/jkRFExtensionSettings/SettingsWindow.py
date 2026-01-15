@@ -1,6 +1,7 @@
+import vanilla
 from defconAppKit.windows.baseWindow import BaseWindowController
 from mojo.extensions import getExtensionDefault, setExtensionDefault
-import vanilla
+
 from .Setting import Setting
 
 

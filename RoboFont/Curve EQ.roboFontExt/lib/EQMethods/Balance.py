@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from math import atan2
+from typing import TYPE_CHECKING, Tuple
+
 from .geometry import (
     distance,
     getNewCoordinates,
@@ -8,7 +10,6 @@ from .geometry import (
     isOnLeft,
     isOnRight,
 )
-from typing import TYPE_CHECKING, Tuple
 
 if TYPE_CHECKING:
     from fontParts.fontshell import RPoint
