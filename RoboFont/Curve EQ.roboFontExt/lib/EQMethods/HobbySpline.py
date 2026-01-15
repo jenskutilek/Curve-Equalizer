@@ -1,5 +1,11 @@
 from __future__ import annotations
 
+from math import atan2, cos, e, fabs, hypot, sin, sqrt
+from typing import TYPE_CHECKING, Tuple
+
+if TYPE_CHECKING:
+    from fontParts.fontshell import RPoint
+
 """
 Hobby Spline code contributed by
 Juraj Sukop, Lasse Fister, Simon Egli
@@ -7,11 +13,6 @@ http://metapolator.com
 
 Implemented since Curve Equalizer version 0.6
 """
-from math import atan2, cos, e, fabs, hypot, sin, sqrt
-from typing import TYPE_CHECKING, Tuple
-
-if TYPE_CHECKING:
-    from fontParts.fontshell import RPoint
 
 
 def csqrt(x: float | int) -> complex:

@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-"""
-Triangle Geometry helpers
-"""
 from math import atan2, cos, pi, sin, sqrt
 from typing import TYPE_CHECKING, Tuple
 
 if TYPE_CHECKING:
     from fontParts.fontshell import RPoint
 
+"""
+Triangle Geometry helpers
+"""
 
 # helper functions
 

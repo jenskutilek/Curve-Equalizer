@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from pathlib import Path
-from EQExtensionID import extensionID
+import sys
 
 # Make jkRFExtensionSettings importable
-from os.path import dirname, join
-import sys
+from pathlib import Path
+
+from EQExtensionID import extensionID
 
 local_path = Path(__file__).parent / "external" / "jkRFExtensionSettings" / "lib"
 if local_path not in sys.path:

@@ -1,5 +1,29 @@
 from __future__ import annotations
 
+import logging
+from math import atan2
+from typing import TYPE_CHECKING, List
+
+from baseCurveEqualizer import BaseCurveEqualizer
+from EQDrawingHelpers import appendCurveSegment, appendHandle, appendTriangleSide
+from EQExtensionID import extensionID
+from EQMethods import eqBalance, eqPercentage, eqSpline, eqThirds
+from EQMethods.geometry import getTriangleSides, isOnLeft, isOnRight
+from lib.tools.defaults import getDefault, getDefaultColor
+from lib.tools.misc import NSColorToRgba
+from mojo.extensions import getExtensionDefault, setExtensionDefault
+from mojo.subscriber import (
+    Subscriber,
+    WindowController,
+    registerGlyphEditorSubscriber,
+    unregisterGlyphEditorSubscriber,
+)
+
+if TYPE_CHECKING:
+    from lib.fontObjects.fontPartsWrappers import RGlyph
+    from merz.tools.caLayerClasses import MerzCALayer
+
+
 """
 Curve Equalizer
 
@@ -31,34 +55,6 @@ Version history:
 
 http://www.kutilek.de/
 """
-
-import logging
-from math import atan2
-from typing import TYPE_CHECKING, List
-
-from baseCurveEqualizer import BaseCurveEqualizer
-from EQDrawingHelpers import (
-    appendCurveSegment,
-    appendHandle,
-    appendTriangleSide,
-    curvePreviewColor,
-    curvePreviewWidth,
-)
-from EQExtensionID import extensionID
-from EQMethods import eqBalance, eqPercentage, eqSpline, eqThirds
-from EQMethods.geometry import getTriangleSides, isOnLeft, isOnRight
-from mojo.extensions import getExtensionDefault, setExtensionDefault
-from mojo.subscriber import (
-    Subscriber,
-    WindowController,
-    registerGlyphEditorSubscriber,
-    unregisterGlyphEditorSubscriber,
-)
-
-if TYPE_CHECKING:
-    from lib.fontObjects.fontPartsWrappers import RGlyph
-    from merz.tools.caLayerClasses import MerzCALayer
-
 
 logger = logging.getLogger(__name__)
 
