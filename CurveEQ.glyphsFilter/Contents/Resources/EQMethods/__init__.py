@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from .Balance import eqBalance
-from .HobbySpline import eqSpline
-from .Percentage import eqPercentage
-
-# from .Quadratic import eqQuadratic
-from .RuleOfThirds import eqThirds
+from EQMethods.Balance import eqBalance
+from EQMethods.HobbySpline import eqSpline
+from EQMethods.Percentage import eqPercentage
+from EQMethods.Quadratic import eqQuadratic
+from EQMethods.RuleOfThirds import eqThirds
 
 __all__ = [
     "eqBalance",

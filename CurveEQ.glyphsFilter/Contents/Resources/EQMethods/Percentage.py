@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from math import atan2
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING
 
 from .geometry import getNewCoordinates, getTriangleSides, isOnLeft, isOnRight
 
@@ -15,7 +15,7 @@ def eqPercentage(
     p2: RPoint,
     p3: RPoint,
     curvature: float = 0.552,
-) -> Tuple[RPoint, RPoint]:
+) -> tuple[RPoint, RPoint]:
     # Check for zero handles
     zero = False
     if p1.y == p0.y and p1.x == p0.x:

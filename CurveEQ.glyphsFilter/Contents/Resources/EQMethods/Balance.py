@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from math import atan2
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING
 
 from .geometry import (
     distance,
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 tension_adjust = 1.18
 
 
-def eqBalance(p0: RPoint, p1: RPoint, p2: RPoint, p3: RPoint) -> Tuple[RPoint, RPoint]:
+def eqBalance(p0: RPoint, p1: RPoint, p2: RPoint, p3: RPoint) -> tuple[RPoint, RPoint]:
     # Check for zero handles
     factor = 1
     zero = False

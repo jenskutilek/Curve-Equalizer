@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-"""
-Triangle Geometry helpers
-"""
 from math import atan2, cos, pi, sin, sqrt
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from fontParts.fontshell import RPoint
 
+"""
+Triangle Geometry helpers
+"""
 
 # helper functions
 
@@ -61,7 +61,7 @@ def distance(p0: RPoint, p1: RPoint, doRound: bool = False) -> float | int:
 
 def getTriangleAngles(
     p0: RPoint, p1: RPoint, p2: RPoint, p3: RPoint
-) -> Tuple[float, float, float]:
+) -> tuple[float, float, float]:
     # Calculate the angles
 
     alpha1 = atan2(p3.y - p0.y, p3.x - p0.x)
@@ -87,7 +87,7 @@ def getTriangleAngles(
 
 def getTriangleSides(
     p0: RPoint, p1: RPoint, p2: RPoint, p3: RPoint
-) -> Tuple[float, float, float]:
+) -> tuple[float, float, float]:
     alpha, beta, gamma = getTriangleAngles(p0, p1, p2, p3)
 
     # Calculate the sides of the triangle
@@ -104,7 +104,7 @@ def getNewCoordinates(
     referencePoint: RPoint,
     alternateReferencePoint: RPoint,
     distance: float,
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     if targetPoint.y == referencePoint.y and targetPoint.x == referencePoint.x:
         phi = atan2(
             alternateReferencePoint.y - referencePoint.y,

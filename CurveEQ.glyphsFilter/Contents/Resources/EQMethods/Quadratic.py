@@ -1,5 +1,12 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+from fontTools.misc.bezierTools import calcCubicParameters, calcCubicPoints
+
+if TYPE_CHECKING:
+    from fontParts.fontshell import RPoint
+
 """
 Experimental quadratic optimization
 
@@ -7,17 +14,10 @@ This is supposed to find a cubic Bezier than can be expressed as a quadratic
 Bezier without loss of precision.
 """
 
-from typing import TYPE_CHECKING, Tuple
-
-from fontTools.misc.bezierTools import calcCubicParameters, calcCubicPoints
-
-if TYPE_CHECKING:
-    from fontParts.fontshell import RPoint
-
 
 def eqQuadratic(
     p0: RPoint, p1: RPoint, p2: RPoint, p3: RPoint
-) -> Tuple[RPoint, RPoint]:
+) -> tuple[RPoint, RPoint]:
     # Nearest quadratic bezier (TT curve)
     # print("In: ", p0, p1, p2, p3)
     a, b, c, d = calcCubicParameters(

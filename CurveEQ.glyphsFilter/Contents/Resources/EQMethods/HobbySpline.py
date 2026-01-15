@@ -1,5 +1,11 @@
 from __future__ import annotations
 
+from math import atan2, cos, e, fabs, hypot, sin, sqrt
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from fontParts.fontshell import RPoint
+
 """
 Hobby Spline code contributed by
 Juraj Sukop, Lasse Fister, Simon Egli
@@ -7,11 +13,6 @@ http://metapolator.com
 
 Implemented since Curve Equalizer version 0.6
 """
-from math import atan2, cos, e, fabs, hypot, sin, sqrt
-from typing import TYPE_CHECKING, Tuple
-
-if TYPE_CHECKING:
-    from fontParts.fontshell import RPoint
 
 
 def csqrt(x: float | int) -> complex:
@@ -63,7 +64,7 @@ def controls(z0, w0, alpha, beta, w1, z1):
 # the main EQ function
 
 
-def eqSpline(p0, p1, p2, p3, tension=1.75) -> Tuple[RPoint, RPoint]:
+def eqSpline(p0, p1, p2, p3, tension=1.75) -> tuple[RPoint, RPoint]:
     # Hobby's splines with given tension
 
     # Check for zero handles
